@@ -23,10 +23,20 @@ namespace PDS_project_2017
         public MainWindow()
         {
             InitializeComponent();
+
+            FilesAcceptance filesAcceptance = new FilesAcceptance();
+            filesAcceptance.Show();
+
+            UsersSelection usersSelection = new UsersSelection();
+            usersSelection.Show();
+
+            TransferProgress transferProgress = new TransferProgress();
+            transferProgress.Show();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            /*
             if (RadioButton1.IsChecked == true)
             {
                 MessageBox.Show("Hello.");
@@ -36,6 +46,7 @@ namespace PDS_project_2017
                 RadioButton2.IsChecked = true;
                 MessageBox.Show("Goodbye.");
             }
+            */
         }
     }
 }

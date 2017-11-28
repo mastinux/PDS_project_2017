@@ -13,5 +13,6 @@ namespace PDS_project_2017
     /// </summary>
     public partial class App : Application
     {
+        
     }
 }
