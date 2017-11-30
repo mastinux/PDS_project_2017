@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace PDS_project_2017
 {
@@ -20,10 +23,40 @@ namespace PDS_project_2017
     /// </summary>
     public partial class MainWindow : Window
     {
+        // https://stackoverflow.com/questions/1472633/wpf-application-that-only-has-a-tray-icon
+        private System.Windows.Forms.NotifyIcon notifyIcon = null;
+        private Dictionary<string, System.Drawing.Icon> appIcons = null;
+
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            Trace.WriteLine("oninitialized");
+
+            base.OnInitialized(e);
+
+            appIcons = new Dictionary<string, System.Drawing.Icon>();
+            appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\images\LAN-Sharing.ico")));
+
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.Click += notifyIcon_Click;
+            //notifyIcon.DoubleClick += new EventHandler(notifyIcon_DoubleClick);
+            notifyIcon.Icon = appIcons["QuickLaunch"];
+        }
+
+        private void notifyIcon_Click(object sender, EventArgs e)
+        {
+            Trace.WriteLine("notifyicon_click");
+
+        }
+        
         public MainWindow()
         {
+            Trace.WriteLine("constructor");
+
             InitializeComponent();
 
+            notifyIcon.Visible = true;
+            /*
             FilesAcceptance filesAcceptance = new FilesAcceptance();
             filesAcceptance.Show();
 
@@ -32,11 +65,12 @@ namespace PDS_project_2017
 
             TransferProgress transferProgress = new TransferProgress();
             transferProgress.Show();
+            */
         }
 
+        /*
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            /*
             if (RadioButton1.IsChecked == true)
             {
                 MessageBox.Show("Hello.");
@@ -46,7 +80,7 @@ namespace PDS_project_2017
                 RadioButton2.IsChecked = true;
                 MessageBox.Show("Goodbye.");
             }
-            */
         }
+        */
     }
 }
