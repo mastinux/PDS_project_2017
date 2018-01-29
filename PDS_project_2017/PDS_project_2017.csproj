@@ -128,7 +128,7 @@
     <Resource Include="LAN-Sharing.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TODOs.md" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
