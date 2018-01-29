@@ -35,7 +35,7 @@ namespace PDS_project_2017
             base.OnInitialized(e);
 
             appIcons = new Dictionary<string, System.Drawing.Icon>();
-            appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\images\LAN-Sharing.ico")));
+            appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\UI\images\LAN-Sharing.ico")));
 
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Click += notifyIcon_Click;

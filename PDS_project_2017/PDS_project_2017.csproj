@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>LAN-Sharing.ico</ApplicationIcon>
+    <ApplicationIcon>UI\LAN-Sharing.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -61,20 +61,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="FilesAcceptance.xaml.cs">
+    <Compile Include="Core\User.cs" />
+    <Compile Include="UI\FilesAcceptance.xaml.cs">
       <DependentUpon>FilesAcceptance.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TransferProgress.xaml.cs">
+    <Compile Include="UI\TransferProgress.xaml.cs">
       <DependentUpon>TransferProgress.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UsersSelection.xaml.cs">
+    <Compile Include="UI\UsersSelection.xaml.cs">
       <DependentUpon>UsersSelection.xaml</DependentUpon>
     </Compile>
-    <Page Include="FilesAcceptance.xaml">
+    <Page Include="UI\FilesAcceptance.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Main.xaml">
+    <Page Include="UI\Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -82,15 +83,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Main.xaml.cs">
+    <Compile Include="UI\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="TransferProgress.xaml">
+    <Page Include="UI\TransferProgress.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UsersSelection.xaml">
+    <Page Include="UI\UsersSelection.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -122,13 +123,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\LAN-Sharing.ico" />
+    <Resource Include="UI\images\LAN-Sharing.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="LAN-Sharing.ico" />
+    <Resource Include="UI\LAN-Sharing.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
