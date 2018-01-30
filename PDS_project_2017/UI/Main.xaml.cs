@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
+using PDS_project_2017.Core;
 
 namespace PDS_project_2017
 {
@@ -30,7 +32,7 @@ namespace PDS_project_2017
 
         protected override void OnInitialized(EventArgs e)
         {
-            Trace.WriteLine("oninitialized");
+            Trace.WriteLine(this.GetType().Name + ": oninitialized");
 
             base.OnInitialized(e);
 
@@ -45,13 +47,13 @@ namespace PDS_project_2017
 
         private void notifyIcon_Click(object sender, EventArgs e)
         {
-            Trace.WriteLine("notifyicon_click");
+            Trace.WriteLine(this.GetType().Name + ": notifyicon_click");
 
         }
         
         public MainWindow()
         {
-            Trace.WriteLine("constructor");
+            Trace.WriteLine(this.GetType().Name + ": constructor");
 
             InitializeComponent();
 
@@ -59,13 +61,24 @@ namespace PDS_project_2017
             /*
             FilesAcceptance filesAcceptance = new FilesAcceptance();
             filesAcceptance.Show();
-
+            
             UsersSelection usersSelection = new UsersSelection();
             usersSelection.Show();
 
             TransferProgress transferProgress = new TransferProgress();
             transferProgress.Show();
             */
+
+            // udp socket listening for request
+            UdpListener udpListener = new UdpListener();
+
+            // launching background thread
+            Thread udpListenerThread = new Thread(udpListener.listen);
+            udpListenerThread.IsBackground = true;
+            udpListenerThread.Start();
+
+            UdpRequester udpRequester = new UdpRequester();
+            udpRequester.request();
         }
 
         /*

@@ -61,6 +61,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\UdpListener.cs" />
+    <Compile Include="Core\UdpRequester.cs" />
     <Compile Include="Core\User.cs" />
     <Compile Include="UI\FilesAcceptance.xaml.cs">
       <DependentUpon>FilesAcceptance.xaml</DependentUpon>
