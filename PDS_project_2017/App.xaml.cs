@@ -34,9 +34,6 @@ namespace PDS_project_2017
             {
                 var application = new App();
 
-                application.InitializeComponent();
-                application.Run();
-
                 // Register Shell Context Menu
 
                 // full path to self, %L is placeholder for selected file
@@ -48,9 +45,18 @@ namespace PDS_project_2017
                     App.KeyName, App.MenuText,
                     menuCommand);
 
+                application.InitializeComponent();
+                application.Run();
+
                 // Allow single instance code to perform cleanup operations
                 SingleInstance<App>.Cleanup();
             }
+        }
+
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            MainWindow m = new MainWindow();
         }
 
         #region ISingleInstanceApp Members
@@ -69,6 +75,7 @@ namespace PDS_project_2017
             //  Show the ouput.
             //MessageBox.Show(builder.ToString());
 
+            //check if there are args
             MessageBox.Show(string.Format("File to send: {0}", args[1]));
 
             return true;
