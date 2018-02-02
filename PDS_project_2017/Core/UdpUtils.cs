@@ -12,12 +12,14 @@ namespace PDS_project_2017.Core
         // this function checks if remoteIpEndPoint address equals current machine IP address
         public static bool isSelfUdpMessage(IPEndPoint remoteIpEndPoint)
         {
+            // on testing environment remove the followig return
             return false;
 
             var host = Dns.GetHostEntry(Dns.GetHostName());
 
             foreach (var ip in host.AddressList)
             {
+                // TODO: check if is IPv6 compliant
                 if (ip.Equals(remoteIpEndPoint.Address))
                     return true;
             }

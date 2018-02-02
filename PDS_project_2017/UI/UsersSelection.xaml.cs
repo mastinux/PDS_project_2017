@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,10 +32,14 @@ namespace PDS_project_2017
             InitializeComponent();
 
             availableUsers = new ObservableCollection<User>();
-
-            udpRequester = new UdpRequester(new AddNewUserCallback(AddAvailableUserCallback));
             
-            udpRequester.retrievaAvailableUsers();
+            // udp socket requesting available users
+            udpRequester = new UdpRequester(new AddNewUserCallback(AddAvailableUserCallback));
+
+            // launching background thread
+            Thread udpListenerThread = new Thread(udpRequester.retrievaAvailableUsers);
+            udpListenerThread.IsBackground = true;
+            udpListenerThread.Start();
         }
 
         public void AddAvailableUserCallback(User newAvailableUser)
