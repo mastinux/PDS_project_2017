@@ -16,6 +16,8 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
 using MahApps.Metro.Controls;
+using System.Threading;
+using PDS_project_2017.Core;
 
 namespace PDS_project_2017
 {
@@ -106,7 +108,7 @@ namespace PDS_project_2017
 
         public MainWindow()
         {
-            Trace.WriteLine("constructor");
+            Trace.WriteLine(this.GetType().Name + ": constructor");
 
             InitializeComponent();
 
@@ -114,13 +116,24 @@ namespace PDS_project_2017
             /*
             FilesAcceptance filesAcceptance = new FilesAcceptance();
             filesAcceptance.Show();
-
+            
             UsersSelection usersSelection = new UsersSelection();
             usersSelection.Show();
 
             TransferProgress transferProgress = new TransferProgress();
             transferProgress.Show();
             */
+
+            // udp socket listening for request
+            UdpListener udpListener = new UdpListener();
+
+            // launching background thread
+            Thread udpListenerThread = new Thread(udpListener.listen);
+            udpListenerThread.IsBackground = true;
+            udpListenerThread.Start();
+
+            // initing user selection class
+            UsersSelection userseSelection = new UsersSelection();
         }
 
         /*
