@@ -23,7 +23,7 @@ namespace PDS_project_2017
         const string KeyName = "Lan_Sharing_Application";
 
         // context menu text
-        const string MenuText = "Share With...";
+        const string MenuText = "Send using Lan Sharing Application";
 
         private const string Unique = "Lan_Sharing_Application";
 
@@ -45,6 +45,11 @@ namespace PDS_project_2017
                     App.KeyName, App.MenuText,
                     menuCommand);
 
+                // register the context menu
+                FileShellExtension.Register("Directory",
+                    App.KeyName, App.MenuText,
+                    menuCommand);
+
                 application.InitializeComponent();
                 application.Run();
 
@@ -57,9 +62,25 @@ namespace PDS_project_2017
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             MainWindow m = new MainWindow();
+            if(e.Args.Length != 0)
+                ProcessCommand(e.Args[0]);
         }
 
         #region ISingleInstanceApp Members
+
+        static void ProcessCommand(string arg)
+        {
+
+            //if (args.Length == 0 || string.Compare(args[0], "-register", true) == 0)
+            //{
+
+            //}
+            MessageBox.Show(string.Format("File to send: {0}", arg));
+
+
+
+
+        }
 
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
@@ -76,7 +97,8 @@ namespace PDS_project_2017
             //MessageBox.Show(builder.ToString());
 
             //check if there are args
-            MessageBox.Show(string.Format("File to send: {0}", args[1]));
+            if (args.Count == 2)
+                ProcessCommand(args[1]);
 
             return true;
         }

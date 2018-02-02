@@ -15,17 +15,18 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
+using MahApps.Metro.Controls;
 
 namespace PDS_project_2017
 {
     /// <summary>
     /// Logica di interazione per MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         // https://stackoverflow.com/questions/1472633/wpf-application-that-only-has-a-tray-icon
         private System.Windows.Forms.NotifyIcon notifyIcon = null;
-        private Dictionary<string, System.Drawing.Icon> appIcons = null;
+        //private Dictionary<string, System.Drawing.Icon> appIcons = null;
 
 
         protected override void OnInitialized(EventArgs e)
@@ -36,14 +37,23 @@ namespace PDS_project_2017
             //Loaded += OnLoaded;
               
 
-            appIcons = new Dictionary<string, System.Drawing.Icon>();
-            appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\UI\images\LAN-Sharing.ico")));
+            //appIcons = new Dictionary<string, System.Drawing.Icon>();
+            //appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\UI\images\LAN-Sharing.ico")));
 
             notifyIcon = new System.Windows.Forms.NotifyIcon();
             notifyIcon.Click += notifyIcon_Click;
             //notifyIcon.DoubleClick += new EventHandler(notifyIcon_DoubleClick);
-            notifyIcon.Icon = appIcons["QuickLaunch"];
+            //notifyIcon.Icon = appIcons["QuickLaunch"];
+            notifyIcon.Icon = Properties.Resources.LAN_Sharing;
+
+            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            notifyIcon.BalloonTipText =
+              "The service has started, you can receive and send file from other users";
+            notifyIcon.BalloonTipTitle = "Lan Sharing Application started";
+            notifyIcon.Text = "Lan Sharing Application";
+
             notifyIcon.Visible = true;
+            notifyIcon.ShowBalloonTip(1000);
 
             this.startMinimized();
             

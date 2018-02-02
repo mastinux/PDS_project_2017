@@ -38,6 +38,7 @@ namespace SimpleContextMenu
                 using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(regPath))
                 {
                     key.SetValue(null, menuText);
+                    key.SetValue("Icon", string.Format(@"{0}",System.Reflection.Assembly.GetExecutingAssembly().Location));
                 }
 
                 // add command that is invoked to the registry
