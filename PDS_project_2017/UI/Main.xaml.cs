@@ -77,8 +77,8 @@ namespace PDS_project_2017
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
 
-            UdpRequester udpRequester = new UdpRequester();
-            udpRequester.request();
+            // initing user selection class
+            UsersSelection userseSelection = new UsersSelection();
         }
 
         /*

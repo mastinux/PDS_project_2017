@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -10,15 +12,22 @@ namespace PDS_project_2017.Core
 {
     class UdpListener
     {
-        private UdpClient listenerUdpClient;
+        private UdpClient udpServer;
+        private User me;
 
         public UdpListener()
         {
-            Console.WriteLine(this.GetType().Name + ": constructor");
-            // creating upd client
-            listenerUdpClient = new UdpClient(55555);
+            udpServer = new UdpClient(55555);
+
+            // initing current machine identity
+            me = new User
+            {
+                // TODO : set Name and Image as from local settings
+                Name = "Andrea",
+                Image = Image.FromFile(@"C:\Users\mastinux\Pictures\mastino.jpg")
+            };
         }
-        
+
         public void listen() {
             while (true)
             {
@@ -30,21 +39,24 @@ namespace PDS_project_2017.Core
                     IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
                     // blocked until a message is received
-                    byte[] recBytes = listenerUdpClient.Receive(ref remoteIpEndPoint);
+                    byte[] recBytes = udpServer.Receive(ref remoteIpEndPoint);
 
-                    string readData = Encoding.ASCII.GetString(recBytes);
+                    if ( !UdpUtils.isSelfUdpMessage(remoteIpEndPoint) )
+                    {
+                        // reading requester user
+                        string readData = Encoding.ASCII.GetString(recBytes);
 
-                    // TODO manage self message
+                        User requesterUser = JsonConvert.DeserializeObject<User>(readData);
+                        requesterUser.Id = remoteIpEndPoint.Address.ToString();
 
-                    Console.WriteLine(readData.ToString());
-                    Console.WriteLine(remoteIpEndPoint.Address.ToString());
-                    Console.WriteLine(remoteIpEndPoint.Port.ToString());
+                        Console.WriteLine(this.GetType().Name + ": received message from " + requesterUser.Name);
 
-                    User me = new User();
-                    me.Name = "mastinux";
-                    me.Image = "mastinux_image";
+                        // preparing response
+                        byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
 
-
+                        // sending response
+                        udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
+                    }
                 }
                 catch (Exception e)
                 {
