@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
 using MahApps.Metro.Controls;
+using PDS_project_2017.UI;
 
 namespace PDS_project_2017
 {
@@ -28,42 +29,28 @@ namespace PDS_project_2017
         private System.Windows.Forms.NotifyIcon notifyIcon = null;
         //private Dictionary<string, System.Drawing.Icon> appIcons = null;
 
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
 
         protected override void OnInitialized(EventArgs e)
         {
-            Trace.WriteLine("oninitialized");
-      
             StateChanged += OnStateChanged;
             //Loaded += OnLoaded;
-              
 
-            //appIcons = new Dictionary<string, System.Drawing.Icon>();
-            //appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\UI\images\LAN-Sharing.ico")));
-
-            notifyIcon = new System.Windows.Forms.NotifyIcon();
-            notifyIcon.Click += notifyIcon_Click;
-            //notifyIcon.DoubleClick += new EventHandler(notifyIcon_DoubleClick);
-            //notifyIcon.Icon = appIcons["QuickLaunch"];
-            notifyIcon.Icon = Properties.Resources.LAN_Sharing;
-
-            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-            notifyIcon.BalloonTipText =
-              "The service has started, you can receive and send file from other users";
-            notifyIcon.BalloonTipTitle = "Lan Sharing Application started";
-            notifyIcon.Text = "Lan Sharing Application";
-
-            notifyIcon.Visible = true;
-            notifyIcon.ShowBalloonTip(1000);
+            initializeNotifyIcon();
 
             this.startMinimized();
             
             base.OnInitialized(e);
         }
 
-        private void notifyIcon_Click(object sender, EventArgs e)
+        private void notifyIcon_Click(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            Trace.WriteLine("notifyicon_click");
-            this.ShowWindow();
+            if (e.Button == MouseButtons.Left)
+                this.ShowWindow();
 
         }
 
@@ -75,7 +62,60 @@ namespace PDS_project_2017
             this.ShowInTaskbar = false;
             notifyIcon.Visible = true;
         }
+        
+        private void initializeNotifyIcon()
+        {
+            //appIcons = new Dictionary<string, System.Drawing.Icon>();
+            //appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\UI\images\LAN-Sharing.ico")));
 
+            notifyIcon = new System.Windows.Forms.NotifyIcon();
+            notifyIcon.MouseClick += notifyIcon_Click;
+            notifyIcon.Icon = Properties.Resources.LAN_Sharing;
+
+            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            notifyIcon.BalloonTipText =
+              "The service has started, you can receive and send file from other users";
+            notifyIcon.BalloonTipTitle = "Lan Sharing Application started";
+            notifyIcon.Text = "Lan Sharing Application";
+
+            notifyIcon.Visible = true;
+            notifyIcon.ShowBalloonTip(1000);
+
+            System.Windows.Forms.MenuItem item1 = new System.Windows.Forms.MenuItem();
+            System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();
+            System.Windows.Forms.MenuItem item3 = new System.Windows.Forms.MenuItem();
+            
+     
+            System.Windows.Forms.ContextMenu cMenu = new System.Windows.Forms.ContextMenu();
+            cMenu.MenuItems.Add(item1);
+            cMenu.MenuItems.Add(item2);
+            cMenu.MenuItems.Add(item3);
+
+            notifyIcon.ContextMenu = cMenu;
+            item1.Text = "Settings";
+            item2.Text = "Private Mode";
+            item2.Checked = Properties.Settings.Default.PrivateMode;
+            item3.Text = "Exit";
+    
+            item1.Click += delegate { UserSettings us = new UserSettings(); us.Show();  };
+            item2.Click += delegate
+            {
+                if (Properties.Settings.Default.PrivateMode)
+                {
+                    Properties.Settings.Default.PrivateMode = false;
+                    item2.Checked = false;
+
+                }
+                else
+                {
+                    Properties.Settings.Default.PrivateMode = true;
+                    item2.Checked = true;
+                }
+                Properties.Settings.Default.Save();
+            };
+            item3.Click += delegate { App.Current.Shutdown(); };
+
+        }
 
         private void OnStateChanged(object sender, EventArgs e)
         {
@@ -104,38 +144,8 @@ namespace PDS_project_2017
             // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
 
-        public MainWindow()
-        {
-            Trace.WriteLine("constructor");
+  
 
-            InitializeComponent();
 
-            //notifyIcon.Visible = true;
-            /*
-            FilesAcceptance filesAcceptance = new FilesAcceptance();
-            filesAcceptance.Show();
-
-            UsersSelection usersSelection = new UsersSelection();
-            usersSelection.Show();
-
-            TransferProgress transferProgress = new TransferProgress();
-            transferProgress.Show();
-            */
-        }
-
-        /*
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (RadioButton1.IsChecked == true)
-            {
-                MessageBox.Show("Hello.");
-            }
-            else
-            {
-                RadioButton2.IsChecked = true;
-                MessageBox.Show("Goodbye.");
-            }
-        }
-        */
     }
 }

@@ -1,0 +1,28 @@
+﻿<Controls:MetroWindow x:Class="PDS_project_2017.UI.UserSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:PDS_project_2017.UI"
+        mc:Ignorable="d"
+        Title="User Settings" Height="300" Width="300">
+    <Grid>
+        <Label Content="Name:" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.671,0.763"/>
+        <Label Content="Image:" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top"/>
+        <Label Content="Private Mode:" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="Image_Button" Content="Choose" HorizontalAlignment="Left" Margin="58,66,0,0" VerticalAlignment="Top" Width="58" Height="26" RenderTransformOrigin="0.55,0.488"/>
+
+        <CheckBox x:Name="Private_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,101,0,0" VerticalAlignment="Top"/>
+        <Label Content="Auto Accept File:" HorizontalAlignment="Left" Margin="10,126,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.122,0.483"/>
+        <CheckBox x:Name="AutoAccept_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,131,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533"/>
+        <TextBox x:Name="Name_TextBox" HorizontalAlignment="Left" Height="23" Margin="59,33,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="Save_Button" Content="OK" HorizontalAlignment="Left" Margin="102,232,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label Content="Default Save Directory:" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="DefaultDir_Button" Content="..." HorizontalAlignment="Left" Margin="140,183,0,0" VerticalAlignment="Top" Width="24" Height="18"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="172,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="110"/>
+        <Label Content="Save in Default Dir:" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="DefaultDir_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,158,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533"/>
+
+    </Grid>
+</Controls:MetroWindow>

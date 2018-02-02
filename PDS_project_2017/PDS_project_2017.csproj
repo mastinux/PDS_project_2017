@@ -87,6 +87,9 @@
     <Compile Include="UI\TransferProgress.xaml.cs">
       <DependentUpon>TransferProgress.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\UserSettings.xaml.cs">
+      <DependentUpon>UserSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\UsersSelection.xaml.cs">
       <DependentUpon>UsersSelection.xaml</DependentUpon>
     </Compile>
@@ -107,6 +110,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\TransferProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\UserSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
