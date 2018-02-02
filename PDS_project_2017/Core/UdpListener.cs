@@ -24,7 +24,7 @@ namespace PDS_project_2017.Core
             {
                 // TODO : set Name and Image as from local settings
                 Name = "Andrea",
-                Image = Image.FromFile(@"C:\Users\mastinux\Pictures\mastino.jpg")
+                //Image = Image.FromFile(@"C:\Users\mastinux\Pictures\mastino.jpg")
             };
         }
 

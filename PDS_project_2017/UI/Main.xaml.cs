@@ -17,6 +17,9 @@ using System.Diagnostics;
 using System.Drawing;
 using MahApps.Metro.Controls;
 using PDS_project_2017.UI;
+using PDS_project_2017.Core;
+using System.Threading;
+using System.ComponentModel;
 
 namespace PDS_project_2017
 {
@@ -32,12 +35,30 @@ namespace PDS_project_2017
         public MainWindow()
         {
             InitializeComponent();
+
+            if (Properties.Settings.Default.Name.CompareTo("") == 0)
+            {
+                UserSettings us = new UserSettings();
+                us.Show();
+            }
+
+            // udp socket listening for request
+            UdpListener udpListener = new UdpListener();
+
+            // launching background thread
+            Thread udpListenerThread = new Thread(udpListener.listen);
+            udpListenerThread.IsBackground = true;
+            udpListenerThread.Start();
+
+            // initing user selection class
+            UsersSelection userseSelection = new UsersSelection();
         }
 
 
         protected override void OnInitialized(EventArgs e)
         {
             StateChanged += OnStateChanged;
+            Closing += MainWindow_Closing;
             //Loaded += OnLoaded;
 
             initializeNotifyIcon();
@@ -60,9 +81,15 @@ namespace PDS_project_2017
             this.WindowState = WindowState.Minimized;
             this.Show();
             this.ShowInTaskbar = false;
-            notifyIcon.Visible = true;
         }
-        
+
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            WindowState = WindowState.Minimized;
+            //Hide();
+        }
+
         private void initializeNotifyIcon()
         {
             //appIcons = new Dictionary<string, System.Drawing.Icon>();
@@ -97,7 +124,7 @@ namespace PDS_project_2017
             item2.Checked = Properties.Settings.Default.PrivateMode;
             item3.Text = "Exit";
     
-            item1.Click += delegate { UserSettings us = new UserSettings(); us.Show();  };
+            item1.Click += delegate { UserSettings us = new UserSettings();  us.Show();  };
             item2.Click += delegate
             {
                 if (Properties.Settings.Default.PrivateMode)
@@ -123,11 +150,9 @@ namespace PDS_project_2017
             {
                 this.Topmost = false;
                 this.ShowInTaskbar = false;
-                notifyIcon.Visible = true;
             }
             else
             {
-                notifyIcon.Visible = true;
                 this.ShowInTaskbar = true;
                 this.Topmost = true;
             }
