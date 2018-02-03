@@ -11,7 +11,7 @@
         <Label Content="Name:" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.671,0.763"/>
         <Label Content="Image:" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top"/>
         <Label Content="Private Mode:" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="Image_Button" Content="Choose" HorizontalAlignment="Left" Margin="58,66,0,0" VerticalAlignment="Top" Width="58" Height="26" RenderTransformOrigin="0.55,0.488"/>
+        <Button x:Name="Image_Button" Content="Choose" HorizontalAlignment="Left" Margin="58,66,0,0" VerticalAlignment="Top" Width="58" Height="26" RenderTransformOrigin="0.55,0.488" Click="Image_Button_Click"/>
 
         <CheckBox x:Name="Private_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,101,0,0" VerticalAlignment="Top"/>
         <Label Content="Auto Accept File:" HorizontalAlignment="Left" Margin="10,126,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.122,0.483"/>
@@ -23,6 +23,7 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="172,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="110"/>
         <Label Content="Save in Default Dir:" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="DefaultDir_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,158,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533"/>
+        <Image x:Name="Profile_Image" HorizontalAlignment="Left" Height="71" Margin="194,33,0,0" VerticalAlignment="Top" Width="80"/>
 
     </Grid>
 </Controls:MetroWindow>

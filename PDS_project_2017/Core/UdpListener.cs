@@ -1,12 +1,15 @@
 ﻿using Newtonsoft.Json;
+using PDS_project_2017.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace PDS_project_2017.Core
 {
@@ -25,6 +28,7 @@ namespace PDS_project_2017.Core
                 // TODO : set Name and Image as from local settings
                 Name = "Andrea",
                 //Image = Image.FromFile(@"C:\Users\mastinux\Pictures\mastino.jpg")
+                Image = BitmapImage2Bitmap(UserSettings.LoadImage())
             };
         }
 
@@ -62,6 +66,19 @@ namespace PDS_project_2017.Core
                 {
                     Console.WriteLine(e.ToString());
                 }
+            }
+        }
+
+        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
+        {
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new JpegBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                return new Bitmap(bitmap);
             }
         }
     }

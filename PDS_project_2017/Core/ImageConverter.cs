@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace PDS_project_2017.Core
 
             var memoryStream = new MemoryStream();
 
-            image.Save(memoryStream, image.RawFormat);
+            image.Save(memoryStream, ImageFormat.Jpeg);
 
             byte[] imageBytes = memoryStream.ToArray();
 

@@ -39,7 +39,7 @@ namespace PDS_project_2017
             if (Properties.Settings.Default.Name.CompareTo("") == 0)
             {
                 UserSettings us = new UserSettings();
-                us.Show();
+                us.ShowDialog(); //ShowDialog returns only when the window is closed
             }
 
             // udp socket listening for request
