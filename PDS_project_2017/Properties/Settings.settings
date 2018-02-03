@@ -11,14 +11,14 @@
     <Setting Name="PrivateMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="AutoAccept" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="AutoAccept" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="DefaultDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="UseDefaultDir" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="UseDefaultDir" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

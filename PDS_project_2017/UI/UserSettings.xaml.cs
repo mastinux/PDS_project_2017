@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+
 namespace PDS_project_2017.UI
 {
     /// <summary>
@@ -27,8 +29,12 @@ namespace PDS_project_2017.UI
         {
             InitializeComponent();
             Name_TextBox.Text = Properties.Settings.Default.Name;
+            Private_CheckBox.IsChecked = Properties.Settings.Default.PrivateMode;
+            AutoAccept_CheckBox.IsChecked = Properties.Settings.Default.AutoAccept;
+            DefaultDir_CheckBox.IsChecked = Properties.Settings.Default.UseDefaultDir;
+            DefaultDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
             Profile_Image.Source = LoadImage();
-
+            Profile_Image.Stretch = Stretch.UniformToFill;
         }
 
         private void Image_Button_Click(object sender, RoutedEventArgs e)
@@ -45,6 +51,7 @@ namespace PDS_project_2017.UI
                 Bitmap img = (Bitmap)System.Drawing.Image.FromFile(fileDialog.FileName);
                 SaveImage(img);
                 Profile_Image.Source = LoadImage();
+                Profile_Image.Stretch = Stretch.UniformToFill;
                 //Profile_Image.Stretch = Stretch.Fill;
             }
 
@@ -101,5 +108,66 @@ namespace PDS_project_2017.UI
             }
             return newImage;
         }
+
+        private void Name_TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as System.Windows.Controls.TextBox;
+            Properties.Settings.Default.Name = textBox.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void Private_CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PrivateMode = true;
+            Properties.Settings.Default.Save();
+        }
+
+        private void Private_CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.PrivateMode = false;
+            Properties.Settings.Default.Save();
+        }
+
+        private void AutoAccept_CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.AutoAccept = true;
+            Properties.Settings.Default.Save();
+        }
+
+        private void AutoAccept_CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.AutoAccept = false;
+            Properties.Settings.Default.Save();
+        }
+        private void DefaultDir_CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.UseDefaultDir = true;
+            Properties.Settings.Default.Save();
+        }
+
+        private void DefaultDir_CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.UseDefaultDir = false;
+            Properties.Settings.Default.Save();
+        }
+
+        private void DefaultDir_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            CommonFileDialogResult result = dialog.ShowDialog();
+            if (result.ToString() == "Ok")
+            {
+                DefaultDir_TextBox.Text = dialog.FileName;
+                Properties.Settings.Default.DefaultDir = dialog.FileName;
+            }
+        }
+
+        private void Save_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+            this.Close();
+        }
+
     }
 }

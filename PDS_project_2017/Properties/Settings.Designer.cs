@@ -61,10 +61,10 @@ namespace PDS_project_2017.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AutoAccept {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoAccept {
             get {
-                return ((string)(this["AutoAccept"]));
+                return ((bool)(this["AutoAccept"]));
             }
             set {
                 this["AutoAccept"] = value;
@@ -85,10 +85,10 @@ namespace PDS_project_2017.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string UseDefaultDir {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseDefaultDir {
             get {
-                return ((string)(this["UseDefaultDir"]));
+                return ((bool)(this["UseDefaultDir"]));
             }
             set {
                 this["UseDefaultDir"] = value;

@@ -6,24 +6,23 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PDS_project_2017.UI"
         mc:Ignorable="d"
-        Title="User Settings" Height="300" Width="300">
-    <Grid>
+        Title="User Settings" Height="300" Width="357.983" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,-19,0">
         <Label Content="Name:" HorizontalAlignment="Left" Margin="10,33,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.671,0.763"/>
-        <Label Content="Image:" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top"/>
-        <Label Content="Private Mode:" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="Image_Button" Content="Choose" HorizontalAlignment="Left" Margin="58,66,0,0" VerticalAlignment="Top" Width="58" Height="26" RenderTransformOrigin="0.55,0.488" Click="Image_Button_Click"/>
-
-        <CheckBox x:Name="Private_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,101,0,0" VerticalAlignment="Top"/>
-        <Label Content="Auto Accept File:" HorizontalAlignment="Left" Margin="10,126,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.122,0.483"/>
-        <CheckBox x:Name="AutoAccept_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,131,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533"/>
-        <TextBox x:Name="Name_TextBox" HorizontalAlignment="Left" Height="23" Margin="59,33,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="Save_Button" Content="OK" HorizontalAlignment="Left" Margin="102,232,0,0" VerticalAlignment="Top" Width="75"/>
-        <Label Content="Default Save Directory:" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="DefaultDir_Button" Content="..." HorizontalAlignment="Left" Margin="140,183,0,0" VerticalAlignment="Top" Width="24" Height="18"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="172,182,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="110"/>
-        <Label Content="Save in Default Dir:" HorizontalAlignment="Left" Margin="10,154,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="DefaultDir_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,158,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533"/>
-        <Image x:Name="Profile_Image" HorizontalAlignment="Left" Height="71" Margin="194,33,0,0" VerticalAlignment="Top" Width="80"/>
+        <Label Content="Profile Image" HorizontalAlignment="Left" Margin="217,17,0,0" VerticalAlignment="Top"/>
+        <Label Content="Private Mode:" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="Image_Button" Content="CHANGE" HorizontalAlignment="Left" Margin="229,127,0,0" VerticalAlignment="Top" Width="58" Height="26" RenderTransformOrigin="0.55,0.488" Click="Image_Button_Click"/>
+        <CheckBox x:Name="Private_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,81,0,0" VerticalAlignment="Top" Checked="Private_CheckBox_Checked" Unchecked="Private_CheckBox_Unchecked"/>
+        <Label Content="Auto Accept File:" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.122,0.483"/>
+        <CheckBox x:Name="AutoAccept_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,118,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533" Checked="AutoAccept_CheckBox_Checked" Unchecked="AutoAccept_CheckBox_Unchecked"/>
+        <TextBox x:Name="Name_TextBox" HorizontalAlignment="Left" Height="23" Margin="59,33,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" TextChanged="Name_TextBox_TextChanged"/>
+        <Button x:Name="Save_Button" Content="OK" HorizontalAlignment="Left" Margin="140,232,0,0" VerticalAlignment="Top" Width="75" Click="Save_Button_Click"/>
+        <Label Content="Default Save Directory:" HorizontalAlignment="Left" Margin="10,185,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="DefaultDir_Button" Content="..." HorizontalAlignment="Left" Margin="140,188,0,0" VerticalAlignment="Top" Width="24" Height="18" Click="DefaultDir_Button_Click"/>
+        <TextBox x:Name="DefaultDir_TextBox" HorizontalAlignment="Left" Height="23" Margin="181,187,0,0" VerticalAlignment="Top" Width="160" IsReadOnly="True" TextWrapping="WrapWithOverflow"/>
+        <Label Content="Save in Default Dir:" HorizontalAlignment="Left" Margin="10,148,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="DefaultDir_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,154,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533" Checked="DefaultDir_CheckBox_Checked" Unchecked="DefaultDir_CheckBox_Unchecked"/>
+        <Image x:Name="Profile_Image" HorizontalAlignment="Left" Height="71" Margin="217,44,0,0" VerticalAlignment="Top" Width="80"/>
 
     </Grid>
 </Controls:MetroWindow>
