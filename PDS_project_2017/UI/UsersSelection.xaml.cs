@@ -1,4 +1,5 @@
-﻿using PDS_project_2017.Core;
+﻿using MahApps.Metro.Controls;
+using PDS_project_2017.Core;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -21,17 +22,19 @@ namespace PDS_project_2017
     /// <summary>
     /// Logica di interazione per UsersSelection.xaml
     /// </summary>
-    public partial class UsersSelection : Window
+    public partial class UsersSelection : MetroWindow
     {
         private ObservableCollection<User> availableUsers;
         private UdpRequester udpRequester;
-        
+
+        public ObservableCollection<User> AvailableUsers { get => availableUsers; set => availableUsers = value; }
 
         public UsersSelection()
         {
             InitializeComponent();
 
-            availableUsers = new ObservableCollection<User>();
+            AvailableUsers = new ObservableCollection<User>();
+            DataContext = this;
             
             // udp socket requesting available users
             udpRequester = new UdpRequester();
@@ -47,7 +50,7 @@ namespace PDS_project_2017
             Console.WriteLine(this.GetType().Name + ": updating observable collection with user " + newAvailableUser.Name);
 
             // checking if user already exists in the observable collection
-            foreach (var user in availableUsers)
+            foreach (var user in AvailableUsers)
             {
                 if (user.Id.Equals(newAvailableUser.Id))
                 {
@@ -61,7 +64,11 @@ namespace PDS_project_2017
             }
 
             // adding new available user
-            availableUsers.Add(newAvailableUser);
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                AvailableUsers.Add(newAvailableUser);
+            }));
+            
 
             printAvailableUsers();
         }
@@ -71,7 +78,7 @@ namespace PDS_project_2017
             Console.WriteLine("=================================================================");
             Console.WriteLine("Current available users:");
 
-            foreach (var user in availableUsers)
+            foreach (var user in AvailableUsers)
             {
                 Console.WriteLine(" - " + user.Name + " on " + user.Id + " with " + user.Image);
             }

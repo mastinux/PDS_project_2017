@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,13 +15,14 @@ namespace PDS_project_2017.Core
     {
         private String _id;
         private String _name;
-        private Image _image;
+        private BitmapImage _image;
 
         public string Id { get => _id; set => _id = value; }
 
         public string Name { get => _name; set => _name = value; }
 
         [JsonConverter(typeof(ImageConverter))]
-        public Image Image { get => _image; set => _image = value; }
+        public BitmapImage Image { get => _image; set => _image = value; }
+
     }
 }

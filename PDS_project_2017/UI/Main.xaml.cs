@@ -50,8 +50,7 @@ namespace PDS_project_2017
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
 
-            // initing user selection class
-            UsersSelection usersSelection = new UsersSelection();
+            
         }
 
 
@@ -169,8 +168,12 @@ namespace PDS_project_2017
             // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
 
-  
-
-
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            // initing user selection class
+            UsersSelection usersSelection = new UsersSelection();
+            usersSelection.Show();
+        }
     }
 }

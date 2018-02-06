@@ -34,7 +34,8 @@ namespace PDS_project_2017.Core
                 // TODO : set Name and Image as from local settings
                 Name = "Andrea",
                 //Image = Image.FromFile(@"C:\Users\mastinux\Pictures\mastino.jpg")
-                Image = BitmapImage2Bitmap(UserSettings.LoadImage())
+                //Image = BitmapImage2Bitmap(UserSettings.LoadImage())
+                Image = UserSettings.LoadImage()
             };
         }
 
