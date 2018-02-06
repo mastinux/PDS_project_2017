@@ -18,9 +18,12 @@ namespace PDS_project_2017.Core
         private UdpClient udpClient;
         private IPEndPoint broadcastIp;
         private User me;
-        private UsersSelection.AddNewUserCallback callback;
 
-        public UdpRequester(UsersSelection.AddNewUserCallback cb)
+        public delegate void addAvailableUser(User newUser);
+        public event addAvailableUser userEvent;
+
+
+        public UdpRequester()
         {
             udpClient = new UdpClient();
 
@@ -33,10 +36,10 @@ namespace PDS_project_2017.Core
                 Name = "Andrea"
             };
 
-            callback = cb;
+            
         }
 
-        public void retrievaAvailableUsers()
+        public void retrieveAvailableUsers()
         {   
             // preparing request
             byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
@@ -65,7 +68,8 @@ namespace PDS_project_2017.Core
 
                     Console.WriteLine(this.GetType().Name + " : found " + availableUser.Id + " " + availableUser.Name + " " + availableUser.Image);
 
-                    callback(availableUser);
+                    // call the functions registered to the delegate, in particular in userSelection
+                    userEvent(availableUser);
                 }
             }
         }

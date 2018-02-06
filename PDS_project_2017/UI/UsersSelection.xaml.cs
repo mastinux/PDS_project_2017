@@ -25,7 +25,7 @@ namespace PDS_project_2017
     {
         private ObservableCollection<User> availableUsers;
         private UdpRequester udpRequester;
-        public delegate void AddNewUserCallback(User newAvailableUser);
+        
 
         public UsersSelection()
         {
@@ -34,15 +34,15 @@ namespace PDS_project_2017
             availableUsers = new ObservableCollection<User>();
             
             // udp socket requesting available users
-            udpRequester = new UdpRequester(new AddNewUserCallback(AddAvailableUserCallback));
-
+            udpRequester = new UdpRequester();
+            udpRequester.userEvent += AddAvailableUser;
             // launching background thread
-            Thread udpListenerThread = new Thread(udpRequester.retrievaAvailableUsers);
+            Thread udpListenerThread = new Thread(udpRequester.retrieveAvailableUsers);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
         }
 
-        public void AddAvailableUserCallback(User newAvailableUser)
+        public void AddAvailableUser(User newAvailableUser)
         {
             Console.WriteLine(this.GetType().Name + ": updating observable collection with user " + newAvailableUser.Name);
 

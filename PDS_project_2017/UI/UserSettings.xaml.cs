@@ -1,5 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using PDS_project_2017.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -120,12 +121,16 @@ namespace PDS_project_2017.UI
         {
             Properties.Settings.Default.PrivateMode = true;
             Properties.Settings.Default.Save();
+            //should stop announcing
+            UdpListener.statusAvailableEvent.Reset();
         }
 
         private void Private_CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.PrivateMode = false;
             Properties.Settings.Default.Save();
+            //should start announcing
+            UdpListener.statusAvailableEvent.Set();
         }
 
         private void AutoAccept_CheckBox_Checked(object sender, RoutedEventArgs e)

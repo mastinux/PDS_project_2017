@@ -8,19 +8,25 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace PDS_project_2017.Core
 {
+    /* This class listen to users requesting available users.
+     * It answers only if the current status is "available"
+     */
     class UdpListener
     {
         private UdpClient udpServer;
         private User me;
+        public static ManualResetEvent statusAvailableEvent;
 
         public UdpListener()
         {
             udpServer = new UdpClient(55555);
+            statusAvailableEvent = new ManualResetEvent(!Properties.Settings.Default.PrivateMode);
 
             // initing current machine identity
             me = new User
@@ -33,7 +39,7 @@ namespace PDS_project_2017.Core
         }
 
         public void listen() {
-            while (true)
+            while (statusAvailableEvent.WaitOne())
             {
                 try
                 {

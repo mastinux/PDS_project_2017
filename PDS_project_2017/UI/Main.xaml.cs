@@ -51,7 +51,7 @@ namespace PDS_project_2017
             udpListenerThread.Start();
 
             // initing user selection class
-            UsersSelection userseSelection = new UsersSelection();
+            UsersSelection usersSelection = new UsersSelection();
         }
 
 
