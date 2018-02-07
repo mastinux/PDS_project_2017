@@ -58,6 +58,11 @@ namespace PDS_project_2017.UI
 
         }
 
+        public static string LoadName()
+        {
+            return Properties.Settings.Default.Name;
+        }
+
         public static BitmapImage LoadImage()
         {
             if (Properties.Settings.Default.Image.Trim().Length > 0 && Properties.Settings.Default.Image.Trim() != ""

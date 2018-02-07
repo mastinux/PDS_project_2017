@@ -49,8 +49,6 @@ namespace PDS_project_2017
             Thread udpListenerThread = new Thread(udpListener.listen);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
-
-            
         }
 
 

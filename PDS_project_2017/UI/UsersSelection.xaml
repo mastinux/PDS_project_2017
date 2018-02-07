@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="LAN-Sharing - Users Selection" Height="300" Width="500">
     <Grid>
-        <ListView x:Name="listNeighborSelection" ItemsSource="{Binding AvailableUsers}" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+        <ListView x:Name="listNeighborSelection" ItemsSource="{Binding AvailableUsers}" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionMode="Multiple">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <UniformGrid Columns="5" HorizontalAlignment="Stretch" />
@@ -68,17 +68,17 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListViewItem">
                                         <Border
-                BorderThickness="{TemplateBinding Border.BorderThickness}"
-                Padding="{TemplateBinding Control.Padding}"
-                BorderBrush="{TemplateBinding Border.BorderBrush}"
-                Background="{TemplateBinding Panel.Background}"
-                SnapsToDevicePixels="True">
+                                            BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                            Padding="{TemplateBinding Control.Padding}"
+                                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                            Background="{TemplateBinding Panel.Background}"
+                                            SnapsToDevicePixels="True">
                                             <ContentPresenter
-                    Content="{TemplateBinding ContentControl.Content}"
-                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                                Content="{TemplateBinding ContentControl.Content}"
+                                                ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                         </Border>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -91,17 +91,17 @@
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListViewItem">
                                         <Border
-                BorderThickness="{TemplateBinding Border.BorderThickness}"
-                Padding="{TemplateBinding Control.Padding}"
-                BorderBrush="{TemplateBinding Border.BorderBrush}"
-                Background="{TemplateBinding Panel.Background}"
-                SnapsToDevicePixels="True">
+                                            BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                            Padding="{TemplateBinding Control.Padding}"
+                                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                            Background="{TemplateBinding Panel.Background}"
+                                            SnapsToDevicePixels="True">
                                             <ContentPresenter
-                    Content="{TemplateBinding ContentControl.Content}"
-                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                                Content="{TemplateBinding ContentControl.Content}"
+                                                ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                         </Border>
                                     </ControlTemplate>
                                 </Setter.Value>

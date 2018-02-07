@@ -14,7 +14,8 @@ using System.Windows.Media.Imaging;
 
 namespace PDS_project_2017.Core
 {
-    /* This class listen to users requesting available users.
+    /*
+     * This class listen to users requesting available users.
      * It answers only if the current status is "available"
      */
     class UdpListener
@@ -27,14 +28,11 @@ namespace PDS_project_2017.Core
         {
             udpServer = new UdpClient(55555);
             statusAvailableEvent = new ManualResetEvent(!Properties.Settings.Default.PrivateMode);
-
+            
             // initing current machine identity
             me = new User
             {
-                // TODO : set Name and Image as from local settings
-                Name = "Andrea",
-                //Image = Image.FromFile(@"C:\Users\mastinux\Pictures\mastino.jpg")
-                //Image = BitmapImage2Bitmap(UserSettings.LoadImage())
+                Name = UserSettings.LoadName(),
                 Image = UserSettings.LoadImage()
             };
         }
@@ -67,6 +65,10 @@ namespace PDS_project_2017.Core
 
                         // sending response
                         udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
+
+                        testSendMultipleUsers(remoteIpEndPoint, "Stefano");
+                        testSendMultipleUsers(remoteIpEndPoint, "Alessio");
+                        testSendMultipleUsers(remoteIpEndPoint, "Pasquale");
                     }
                 }
                 catch (Exception e)
@@ -74,6 +76,17 @@ namespace PDS_project_2017.Core
                     Console.WriteLine(e.ToString());
                 }
             }
+        }
+
+        private void testSendMultipleUsers(IPEndPoint remoteIpEndPoint, string name)
+        {
+            me.Name = name;
+
+            // preparing response
+            byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
+
+            // sending response
+            udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
         }
 
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)

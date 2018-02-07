@@ -39,6 +39,7 @@ namespace PDS_project_2017
             // udp socket requesting available users
             udpRequester = new UdpRequester();
             udpRequester.userEvent += AddAvailableUser;
+
             // launching background thread
             Thread udpListenerThread = new Thread(udpRequester.retrieveAvailableUsers);
             udpListenerThread.IsBackground = true;
@@ -50,6 +51,8 @@ namespace PDS_project_2017
             Console.WriteLine(this.GetType().Name + ": updating observable collection with user " + newAvailableUser.Name);
 
             // checking if user already exists in the observable collection
+            // TODO remove this comment
+            /*
             foreach (var user in AvailableUsers)
             {
                 if (user.Id.Equals(newAvailableUser.Id))
@@ -62,6 +65,7 @@ namespace PDS_project_2017
                     return;
                 }
             }
+            */
 
             // adding new available user
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -69,7 +73,6 @@ namespace PDS_project_2017
                 AvailableUsers.Add(newAvailableUser);
             }));
             
-
             printAvailableUsers();
         }
         
@@ -84,6 +87,13 @@ namespace PDS_project_2017
             }
 
             Console.WriteLine("=================================================================");
+        }
+
+        private void Select_User_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Selected " + sender);
+
+            // TODO trigger this method from UI
         }
     }
 }

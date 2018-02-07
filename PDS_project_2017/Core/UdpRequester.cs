@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using PDS_project_2017.UI;
 
 namespace PDS_project_2017.Core
 {
@@ -21,8 +22,7 @@ namespace PDS_project_2017.Core
 
         public delegate void addAvailableUser(User newUser);
         public event addAvailableUser userEvent;
-
-
+        
         public UdpRequester()
         {
             udpClient = new UdpClient();
@@ -32,11 +32,8 @@ namespace PDS_project_2017.Core
             // initing current user identity
             me = new User
             {
-                // TODO : set Name as from local settings
-                Name = "Andrea"
+                Name = UserSettings.LoadName()
             };
-
-            
         }
 
         public void retrieveAvailableUsers()
