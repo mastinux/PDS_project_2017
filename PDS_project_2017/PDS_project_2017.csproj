@@ -97,6 +97,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Core\ImageConverter.cs" />
+    <Compile Include="Core\TCPReceiver.cs" />
+    <Compile Include="Core\TCPSender.cs" />
     <Compile Include="Core\UdpListener.cs" />
     <Compile Include="Core\UdpRequester.cs" />
     <Compile Include="Core\UdpUtils.cs" />

@@ -128,12 +128,15 @@ namespace PDS_project_2017
                 {
                     Properties.Settings.Default.PrivateMode = false;
                     item2.Checked = false;
+                    UdpListener.statusAvailableEvent.Set();
 
                 }
                 else
                 {
                     Properties.Settings.Default.PrivateMode = true;
                     item2.Checked = true;
+                    UdpListener.statusAvailableEvent.Reset();
+
                 }
                 Properties.Settings.Default.Save();
             };
@@ -170,7 +173,7 @@ namespace PDS_project_2017
         {
             Hide();
             // initing user selection class
-            UsersSelection usersSelection = new UsersSelection();
+            UsersSelection usersSelection = new UsersSelection("Test");
             usersSelection.Show();
         }
     }

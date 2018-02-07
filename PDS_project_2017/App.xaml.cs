@@ -16,6 +16,8 @@ namespace PDS_project_2017
     /// </summary>
     public partial class App : Application, ISingleInstanceApp
     {
+        private MainWindow mainWindow;
+        private UsersSelection usersSelection;
         // file type to register
         const string FileType = "*";
 
@@ -62,22 +64,23 @@ namespace PDS_project_2017
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             
-            MainWindow m = new MainWindow();
+            mainWindow = new MainWindow();
             if(e.Args.Length != 0)
                 ProcessCommand(e.Args[0]);
         }
 
         #region ISingleInstanceApp Members
 
-        static void ProcessCommand(string arg)
+        private void ProcessCommand(string arg)
         {
 
             //if (args.Length == 0 || string.Compare(args[0], "-register", true) == 0)
             //{
 
             //}
-            MessageBox.Show(string.Format("File to send: {0}", arg));
-
+            //MessageBox.Show(string.Format("File to send: {0}", arg));
+            usersSelection = new UsersSelection(arg);
+            usersSelection.Show();
 
 
 

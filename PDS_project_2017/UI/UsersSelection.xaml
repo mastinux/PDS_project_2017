@@ -39,7 +39,7 @@
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5" ToolTip="{Binding Name}">
                         <Ellipse Height="64" Width="64">
                             <Ellipse.Fill>
-                                <ImageBrush  ImageSource="{Binding Image}"/>
+                                <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
                             </Ellipse.Fill>
 
                             <Ellipse.Style>
@@ -47,7 +47,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem }}, Path=IsSelected}" Value="true">
                                             <Setter Property="Stroke" Value="Blue"/>
-                                            <Setter Property="StrokeThickness" Value="3"/>
+                                            <Setter Property="StrokeThickness" Value="2"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -114,5 +114,6 @@
             </ListView.ItemContainerStyle>
 
         </ListView>
+        <Button x:Name="Share_Button"  Content="SHARE" HorizontalAlignment="Left" Margin="396,234,0,0" VerticalAlignment="Top" Width="75" Click="Share_Button_Click"/>
     </Grid>
 </Controls:MetroWindow>

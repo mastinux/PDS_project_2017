@@ -1,9 +1,11 @@
 ﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using PDS_project_2017.Core;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -26,13 +28,14 @@ namespace PDS_project_2017
     {
         private ObservableCollection<User> availableUsers;
         private UdpRequester udpRequester;
-
+        private string pathName;
+        private bool isDirectory;
         public ObservableCollection<User> AvailableUsers { get => availableUsers; set => availableUsers = value; }
 
-        public UsersSelection()
+        public UsersSelection(string path)
         {
             InitializeComponent();
-
+            ProcessFilePath(path);
             AvailableUsers = new ObservableCollection<User>();
             DataContext = this;
             
@@ -44,6 +47,23 @@ namespace PDS_project_2017
             Thread udpListenerThread = new Thread(udpRequester.retrieveAvailableUsers);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
+        }
+
+        private void ProcessFilePath(string path)
+        {
+            FileAttributes attr = File.GetAttributes(path);
+
+            if (attr.HasFlag(FileAttributes.Directory))
+            {
+                isDirectory = true;
+                pathName = new DirectoryInfo(path).Name;
+            }
+            else
+            {
+                isDirectory = false;
+                pathName = System.IO.Path.GetFileName(path);
+            }
+            Title = String.Format("Share \"{0}\" with:", pathName);
         }
 
         public void AddAvailableUser(User newAvailableUser)
@@ -94,6 +114,23 @@ namespace PDS_project_2017
             Console.WriteLine("Selected " + sender);
 
             // TODO trigger this method from UI
+        }
+
+        private void Share_Button_Click(object sender, RoutedEventArgs e)
+        {
+            List<User> selected = null;
+            //List<SendingFile> sendingFiles = null;
+            if (listNeighborSelection.SelectedItems.Count > 0)
+            {
+                selected = listNeighborSelection.SelectedItems.Cast<User>().ToList();
+                foreach( User u  in selected)
+                {
+                    Console.WriteLine("Sending to" + u.Name);
+                }
+                Hide();
+            }
+            else
+                this.ShowMessageAsync("Ops", "Choose at least one user");
         }
     }
 }

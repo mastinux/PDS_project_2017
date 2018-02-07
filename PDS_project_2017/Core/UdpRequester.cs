@@ -46,6 +46,7 @@ namespace PDS_project_2017.Core
 
             Console.WriteLine(this.GetType().Name + " : retrieving available users");
 
+            //TODO decide when to terminate thread
             while (true)
             {
                 // ip end point used to record address and port of sender
