@@ -11,10 +11,9 @@
         <ListView x:Name="listNeighborSelection" ItemsSource="{Binding AvailableUsers}" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionMode="Multiple">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <UniformGrid Columns="5" HorizontalAlignment="Stretch" />
+                    <UniformGrid Columns="3" HorizontalAlignment="Stretch" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-
 
             <ListView.Resources>
                 <Style TargetType="ListView">
@@ -37,6 +36,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5" ToolTip="{Binding Name}">
+                        <!--
                         <Ellipse Height="64" Width="64">
                             <Ellipse.Fill>
                                 <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
@@ -53,14 +53,35 @@
                                 </Style>
                             </Ellipse.Style>
                         </Ellipse>
+-->
+                        <Polygon Height="130" Width="130" Points="104, 30 52, 0 0, 30 0, 90 52, 120 104, 90">
+                            <Polygon.Fill>
+                                <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
+                            </Polygon.Fill>
 
-                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="16" VerticalAlignment="Bottom" MaxWidth="64" TextTrimming="CharacterEllipsis"/>
+                            <Polygon.Style>
+                                <Style TargetType="{x:Type Polygon}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem }}, Path=IsSelected}" Value="true">
+                                            <Setter Property="Stroke" Value="Blue"/>
+                                            <Setter Property="StrokeThickness" Value="5"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Polygon.Style>
+                        </Polygon>
+
+                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="16" VerticalAlignment="Bottom" MaxWidth="130" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
 
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
+
+                    <!--
+                    <EventSetter Event="MouseLeftButtonDown" Handler="Select_User_Click"/>
+                    -->
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="true" >

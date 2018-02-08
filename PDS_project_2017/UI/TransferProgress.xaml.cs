@@ -22,6 +22,9 @@ namespace PDS_project_2017
         public TransferProgress()
         {
             InitializeComponent();
+
+            // TODO read some matirial about uwp
+            // to be used in combination with wpf
         }
     }
 }

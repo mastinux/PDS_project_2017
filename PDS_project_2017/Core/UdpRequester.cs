@@ -16,16 +16,22 @@ namespace PDS_project_2017.Core
     {
         // https://msdn.microsoft.com/it-it/library/ts553s52(v=vs.110).aspx
 
+        public const int UPDATE_INTERVAL_SECONDS = 5;
+
         private UdpClient udpClient;
         private IPEndPoint broadcastIp;
         private User me;
 
         public delegate void addAvailableUser(User newUser);
-        public event addAvailableUser userEvent;
+        public event addAvailableUser addUserEvent;
+
+        public delegate void cleanAvailableUser();
+        public event cleanAvailableUser cleanUsersEvent;
         
         public UdpRequester()
         {
             udpClient = new UdpClient();
+            udpClient.Client.ReceiveTimeout = UPDATE_INTERVAL_SECONDS * 1000;
 
             broadcastIp = new IPEndPoint(IPAddress.Broadcast, 55555);
             
@@ -37,37 +43,59 @@ namespace PDS_project_2017.Core
         }
 
         public void retrieveAvailableUsers()
-        {   
+        {
+            //TODO decide when to terminate thread
+
             // preparing request
             byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
 
-            // sending request
-            udpClient.Send(byteToSend, byteToSend.Length, broadcastIp);
-
-            Console.WriteLine(this.GetType().Name + " : retrieving available users");
-
-            //TODO decide when to terminate thread
             while (true)
             {
+                Boolean timedOut = false;
+
+                Console.WriteLine(this.GetType().Name + " : retrieving available users");
+
+                // sending request
+                udpClient.Send(byteToSend, byteToSend.Length, broadcastIp);
+
                 // ip end point used to record address and port of sender
                 IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
-                // blocked until a message is received
-                byte[] recBytes = udpClient.Receive(ref remoteIpEndPoint);
-
-                if (!UdpUtils.isSelfUdpMessage(remoteIpEndPoint))
+                while (!timedOut)
                 {
-                    // reading response
-                    string readData = Encoding.ASCII.GetString(recBytes);
+                    byte[] recBytes = null;
 
-                    // parsing available user
-                    User availableUser = JsonConvert.DeserializeObject<User>(readData);
-                    availableUser.Id = remoteIpEndPoint.Address.ToString();
+                    try
+                    {
+                        // blocked until a message is received
+                        recBytes = udpClient.Receive(ref remoteIpEndPoint);
+                    }
+                    catch (SocketException e)
+                    {
+                        // TODO re launch exception if not equal to TimedOut
 
-                    Console.WriteLine(this.GetType().Name + " : found " + availableUser.Id + " " + availableUser.Name + " " + availableUser.Image);
+                        timedOut = true;
 
-                    // call the functions registered to the delegate, in particular in userSelection
-                    userEvent(availableUser);
+                        // managing timeout
+                        cleanUsersEvent();
+                    }
+
+                    if (!UdpUtils.isSelfUdpMessage(remoteIpEndPoint) && !timedOut)
+                    {
+                        // reading response
+                        string readData = Encoding.ASCII.GetString(recBytes);
+
+                        // parsing available user
+                        User availableUser = JsonConvert.DeserializeObject<User>(readData);
+                        availableUser.Id = remoteIpEndPoint.Address.ToString();
+                        availableUser.LastUpTime = DateTime.Now;
+
+                        Console.WriteLine(this.GetType().Name + " : found " + availableUser.Id + " " +
+                                            availableUser.Name + " " + availableUser.Image);
+
+                        // call the functions registered to the delegate, in particular in userSelection
+                        addUserEvent(availableUser);
+                    }
                 }
             }
         }

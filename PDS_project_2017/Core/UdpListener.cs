@@ -66,9 +66,7 @@ namespace PDS_project_2017.Core
                         // sending response
                         udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
 
-                        testSendMultipleUsers(remoteIpEndPoint, "Stefano");
-                        testSendMultipleUsers(remoteIpEndPoint, "Alessio");
-                        testSendMultipleUsers(remoteIpEndPoint, "Pasquale");
+                        testSendMultipleUsers(remoteIpEndPoint);
                     }
                 }
                 catch (Exception e)
@@ -78,7 +76,7 @@ namespace PDS_project_2017.Core
             }
         }
 
-        private void testSendMultipleUsers(IPEndPoint remoteIpEndPoint, string name)
+        private void testSendUser(IPEndPoint remoteIpEndPoint, string name)
         {
             me.Name = name;
 
@@ -87,6 +85,34 @@ namespace PDS_project_2017.Core
 
             // sending response
             udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
+        }
+
+        private void testSendMultipleUsers(IPEndPoint remoteIpEndPoint)
+        {
+            List<string> names = new List<string>();
+            names.Add("antonio");
+            names.Add("anna");
+            names.Add("vincenzo");
+            names.Add("michele");
+            names.Add("elia");
+            names.Add("michel");
+            names.Add("giuseppe");
+            names.Add("leandro");
+            names.Add("matteo");
+            names.Add("gianpiero");
+
+            Random random = new Random();
+
+            int totalResponses = random.Next(1, names.Count + 1);
+
+            for (int i = 0; i < totalResponses; i++)
+            {
+                int pos = random.Next(0, names.Count);
+
+                testSendUser(remoteIpEndPoint, names[pos]);
+
+                names.Remove(names[pos]);
+            }
         }
 
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)

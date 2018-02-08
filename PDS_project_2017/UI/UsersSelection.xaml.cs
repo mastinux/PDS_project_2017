@@ -26,10 +26,13 @@ namespace PDS_project_2017
     /// </summary>
     public partial class UsersSelection : MetroWindow
     {
+        // TODO fix share button position under all users images
+
         private ObservableCollection<User> availableUsers;
         private UdpRequester udpRequester;
         private string pathName;
         private bool isDirectory;
+
         public ObservableCollection<User> AvailableUsers { get => availableUsers; set => availableUsers = value; }
 
         public UsersSelection(string path)
@@ -41,7 +44,8 @@ namespace PDS_project_2017
             
             // udp socket requesting available users
             udpRequester = new UdpRequester();
-            udpRequester.userEvent += AddAvailableUser;
+            udpRequester.addUserEvent += AddAvailableAddUser;
+            udpRequester.cleanUsersEvent += cleanAvailableUsers;
 
             // launching background thread
             Thread udpListenerThread = new Thread(udpRequester.retrieveAvailableUsers);
@@ -66,16 +70,16 @@ namespace PDS_project_2017
             Title = String.Format("Share \"{0}\" with:", pathName);
         }
 
-        public void AddAvailableUser(User newAvailableUser)
+        public void AddAvailableAddUser(User newAvailableUser)
         {
             Console.WriteLine(this.GetType().Name + ": updating observable collection with user " + newAvailableUser.Name);
 
             // checking if user already exists in the observable collection
-            // TODO remove this comment
-            /*
             foreach (var user in AvailableUsers)
             {
-                if (user.Id.Equals(newAvailableUser.Id))
+                // TODO test purpose - use Id instead of Name
+                //if (user.Id.Equals(newAvailableUser.Id))
+                if (user.Name.Equals(newAvailableUser.Name))
                 {
                     user.Name = newAvailableUser.Name;
                     user.Image = newAvailableUser.Image;
@@ -85,7 +89,6 @@ namespace PDS_project_2017
                     return;
                 }
             }
-            */
 
             // adding new available user
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -94,6 +97,30 @@ namespace PDS_project_2017
             }));
             
             printAvailableUsers();
+        }
+
+        public void cleanAvailableUsers()
+        {
+            Console.WriteLine("Cleaning available users");
+
+            DateTime startTime = DateTime.Now;
+            
+            for (var i = availableUsers.Count - 1; i >= 0; i--)
+            {
+                var u = availableUsers[i];
+
+                if (startTime.Subtract(u.LastUpTime).Seconds >= UdpRequester.UPDATE_INTERVAL_SECONDS + 1)
+                {
+                    // removing expired user
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        availableUsers.Remove(u);
+                    }));
+                }
+                    
+            }
+
+            Console.WriteLine("Available users cleaned");
         }
         
         private void printAvailableUsers()
@@ -107,13 +134,6 @@ namespace PDS_project_2017
             }
 
             Console.WriteLine("=================================================================");
-        }
-
-        private void Select_User_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Selected " + sender);
-
-            // TODO trigger this method from UI
         }
 
         private void Share_Button_Click(object sender, RoutedEventArgs e)

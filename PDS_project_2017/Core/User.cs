@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Media.Imaging;
 
 namespace PDS_project_2017.Core
@@ -16,6 +17,7 @@ namespace PDS_project_2017.Core
         private String _id;
         private String _name;
         private BitmapImage _image;
+        private DateTime _lastUpTime;
 
         public string Id { get => _id; set => _id = value; }
 
@@ -24,5 +26,7 @@ namespace PDS_project_2017.Core
         [JsonConverter(typeof(ImageConverter))]
         public BitmapImage Image { get => _image; set => _image = value; }
 
+        [ScriptIgnore]
+        public DateTime LastUpTime { get => _lastUpTime; set => _lastUpTime = value; }
     }
 }

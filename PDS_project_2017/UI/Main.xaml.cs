@@ -129,15 +129,14 @@ namespace PDS_project_2017
                     Properties.Settings.Default.PrivateMode = false;
                     item2.Checked = false;
                     UdpListener.statusAvailableEvent.Set();
-
                 }
                 else
                 {
                     Properties.Settings.Default.PrivateMode = true;
                     item2.Checked = true;
                     UdpListener.statusAvailableEvent.Reset();
-
                 }
+
                 Properties.Settings.Default.Save();
             };
             item3.Click += delegate { App.Current.Shutdown(); };
