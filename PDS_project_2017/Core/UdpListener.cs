@@ -26,7 +26,7 @@ namespace PDS_project_2017.Core
 
         public UdpListener()
         {
-            udpServer = new UdpClient(55555);
+            udpServer = new UdpClient(Constants.UDP_PORT);
             statusAvailableEvent = new ManualResetEvent(!Properties.Settings.Default.PrivateMode);
             
             // initing current machine identity
@@ -42,8 +42,6 @@ namespace PDS_project_2017.Core
             {
                 try
                 {
-                    Console.WriteLine(this.GetType().Name + ": waiting for message");
-
                     // ip end point used to record address and port of sender
                     IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
@@ -57,8 +55,6 @@ namespace PDS_project_2017.Core
 
                         User requesterUser = JsonConvert.DeserializeObject<User>(readData);
                         requesterUser.Id = remoteIpEndPoint.Address.ToString();
-
-                        Console.WriteLine(this.GetType().Name + ": received message from " + requesterUser.Name);
 
                         // preparing response
                         byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
@@ -103,7 +99,7 @@ namespace PDS_project_2017.Core
 
             Random random = new Random();
 
-            int totalResponses = random.Next(1, names.Count + 1);
+            int totalResponses = random.Next(0, names.Count + 1);
 
             for (int i = 0; i < totalResponses; i++)
             {

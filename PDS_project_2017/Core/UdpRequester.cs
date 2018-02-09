@@ -7,7 +7,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using PDS_project_2017.UI;
 
 namespace PDS_project_2017.Core
@@ -15,9 +17,7 @@ namespace PDS_project_2017.Core
     class UdpRequester
     {
         // https://msdn.microsoft.com/it-it/library/ts553s52(v=vs.110).aspx
-
-        public const int UPDATE_INTERVAL_SECONDS = 5;
-
+        
         private UdpClient udpClient;
         private IPEndPoint broadcastIp;
         private User me;
@@ -27,13 +27,17 @@ namespace PDS_project_2017.Core
 
         public delegate void cleanAvailableUser();
         public event cleanAvailableUser cleanUsersEvent;
+
+        private volatile bool keepRequestingStatus;
         
         public UdpRequester()
         {
-            udpClient = new UdpClient();
-            udpClient.Client.ReceiveTimeout = UPDATE_INTERVAL_SECONDS * 1000;
+            keepRequestingStatus = true;
 
-            broadcastIp = new IPEndPoint(IPAddress.Broadcast, 55555);
+            udpClient = new UdpClient();
+            udpClient.Client.ReceiveTimeout = Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1000;
+
+            broadcastIp = new IPEndPoint(IPAddress.Broadcast, Constants.UDP_PORT);
             
             // initing current user identity
             me = new User
@@ -44,16 +48,12 @@ namespace PDS_project_2017.Core
 
         public void retrieveAvailableUsers()
         {
-            //TODO decide when to terminate thread
-
             // preparing request
             byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
 
-            while (true)
+            while (keepRequestingStatus) 
             {
-                Boolean timedOut = false;
-
-                Console.WriteLine(this.GetType().Name + " : retrieving available users");
+                bool timedOut = false;
 
                 // sending request
                 udpClient.Send(byteToSend, byteToSend.Length, broadcastIp);
@@ -73,6 +73,9 @@ namespace PDS_project_2017.Core
                     catch (SocketException e)
                     {
                         // TODO re launch exception if not equal to TimedOut
+                        
+                        if ( !e.SocketErrorCode.Equals(SocketError.TimedOut) )
+                            throw  new Exception("Unexpected exception", e);
 
                         timedOut = true;
 
@@ -90,14 +93,16 @@ namespace PDS_project_2017.Core
                         availableUser.Id = remoteIpEndPoint.Address.ToString();
                         availableUser.LastUpTime = DateTime.Now;
 
-                        Console.WriteLine(this.GetType().Name + " : found " + availableUser.Id + " " +
-                                            availableUser.Name + " " + availableUser.Image);
-
                         // call the functions registered to the delegate, in particular in userSelection
                         addUserEvent(availableUser);
                     }
                 }
             }
+        }
+
+        public void StopRequests()
+        {
+            keepRequestingStatus = false;
         }
     }
 }

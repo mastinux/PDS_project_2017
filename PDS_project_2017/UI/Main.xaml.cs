@@ -76,7 +76,10 @@ namespace PDS_project_2017
         {
             this.ShowInTaskbar = true;
             this.WindowState = WindowState.Minimized;
-            this.Show();
+
+            // not showing main window on startup
+            //this.Show();
+
             this.ShowInTaskbar = false;
         }
 

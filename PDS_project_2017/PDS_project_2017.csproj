@@ -96,6 +96,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Core\Constants.cs" />
     <Compile Include="Core\ImageConverter.cs" />
     <Compile Include="Core\TCPReceiver.cs" />
     <Compile Include="Core\TCPSender.cs" />

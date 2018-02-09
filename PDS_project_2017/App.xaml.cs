@@ -79,10 +79,12 @@ namespace PDS_project_2017
 
             //}
             //MessageBox.Show(string.Format("File to send: {0}", arg));
+
             usersSelection = new UsersSelection(arg);
+            // visualize window
             usersSelection.Show();
-
-
+            // put window in foreground
+            usersSelection.Activate();
 
         }
 

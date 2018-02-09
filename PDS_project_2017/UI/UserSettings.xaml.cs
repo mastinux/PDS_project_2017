@@ -28,6 +28,8 @@ namespace PDS_project_2017.UI
     {
         public UserSettings()
         {
+            // TODO bind "Private Mode" setting with tray option
+
             InitializeComponent();
             Name_TextBox.Text = Properties.Settings.Default.Name;
             Private_CheckBox.IsChecked = Properties.Settings.Default.PrivateMode;

@@ -8,133 +8,142 @@
         mc:Ignorable="d"
         Title="LAN-Sharing - Users Selection" Height="300" Width="500">
     <Grid>
-        <ListView x:Name="listNeighborSelection" ItemsSource="{Binding AvailableUsers}" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionMode="Multiple">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="3" HorizontalAlignment="Stretch" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
 
-            <ListView.Resources>
-                <Style TargetType="ListView">
-                    <Style.Triggers>
-                        <Trigger Property= "HasItems" Value="False">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListView">
-                                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="No users available..." FontSize="20" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                    <Setter Property="BorderThickness" Value="0" />
-                </Style>
+        <DockPanel LastChildFill="True">
 
-            </ListView.Resources>
+            <DockPanel DockPanel.Dock="Bottom">
+                <Button x:Name="Share_Button" Content="SHARE" Margin="10,10,10,10" Width="75" Click="Share_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding Items.Count, ElementName=listNeighborSelection}"/>
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5" ToolTip="{Binding Name}">
+                <Button x:Name="Cancel_Button" Content="CANCEL" Margin="10,10,10,10" Width="75" Click="Cancel_Button_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+            </DockPanel>
+
+            <ListView x:Name="listNeighborSelection" ItemsSource="{Binding AvailableUsers}" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionMode="Multiple">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3" HorizontalAlignment="Stretch" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+
+                <ListView.Resources>
+                    <Style TargetType="ListView">
+                        <Style.Triggers>
+                            <Trigger Property= "HasItems" Value="False">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListView">
+                                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="No users available..." FontSize="20" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+
+                </ListView.Resources>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5" ToolTip="{Binding Name}">
+                            <!--
+                            <Ellipse Height="64" Width="64">
+                                <Ellipse.Fill>
+                                    <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
+                                </Ellipse.Fill>
+
+                                <Ellipse.Style>
+                                    <Style TargetType="{x:Type Ellipse}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem }}, Path=IsSelected}" Value="true">
+                                                <Setter Property="Stroke" Value="Blue"/>
+                                                <Setter Property="StrokeThickness" Value="2"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+    -->
+                            <Polygon Height="130" Width="130" Points="104, 30 52, 0 0, 30 0, 90 52, 120 104, 90">
+                                <Polygon.Fill>
+                                    <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
+                                </Polygon.Fill>
+
+                                <Polygon.Style>
+                                    <Style TargetType="{x:Type Polygon}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem }}, Path=IsSelected}" Value="true">
+                                                <Setter Property="Stroke" Value="Blue"/>
+                                                <Setter Property="StrokeThickness" Value="5"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Polygon.Style>
+                            </Polygon>
+
+                            <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="16" VerticalAlignment="Bottom" MaxWidth="130" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+
                         <!--
-                        <Ellipse Height="64" Width="64">
-                            <Ellipse.Fill>
-                                <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
-                            </Ellipse.Fill>
+                        <EventSetter Event="MouseLeftButtonDown" Handler="Select_User_Click"/>
+                        -->
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="true" >
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border
+                                                BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                                Padding="{TemplateBinding Control.Padding}"
+                                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                                Background="{TemplateBinding Panel.Background}"
+                                                SnapsToDevicePixels="True">
+                                                <ContentPresenter
+                                                    Content="{TemplateBinding ContentControl.Content}"
+                                                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Background" Value="Transparent" />
+                            </Trigger>
 
-                            <Ellipse.Style>
-                                <Style TargetType="{x:Type Ellipse}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem }}, Path=IsSelected}" Value="true">
-                                            <Setter Property="Stroke" Value="Blue"/>
-                                            <Setter Property="StrokeThickness" Value="2"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Ellipse.Style>
-                        </Ellipse>
--->
-                        <Polygon Height="130" Width="130" Points="104, 30 52, 0 0, 30 0, 90 52, 120 104, 90">
-                            <Polygon.Fill>
-                                <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
-                            </Polygon.Fill>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListViewItem">
+                                            <Border
+                                                BorderThickness="{TemplateBinding Border.BorderThickness}"
+                                                Padding="{TemplateBinding Control.Padding}"
+                                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                                Background="{TemplateBinding Panel.Background}"
+                                                SnapsToDevicePixels="True">
+                                                <ContentPresenter
+                                                    Content="{TemplateBinding ContentControl.Content}"
+                                                    ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                    HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                                                    VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                                                    SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.ItemContainerStyle>
 
-                            <Polygon.Style>
-                                <Style TargetType="{x:Type Polygon}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem }}, Path=IsSelected}" Value="true">
-                                            <Setter Property="Stroke" Value="Blue"/>
-                                            <Setter Property="StrokeThickness" Value="5"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Polygon.Style>
-                        </Polygon>
-
-                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="16" VerticalAlignment="Bottom" MaxWidth="130" TextTrimming="CharacterEllipsis"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-
-                    <!--
-                    <EventSetter Event="MouseLeftButtonDown" Handler="Select_User_Click"/>
-                    -->
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="true" >
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <Border
-                                            BorderThickness="{TemplateBinding Border.BorderThickness}"
-                                            Padding="{TemplateBinding Control.Padding}"
-                                            BorderBrush="{TemplateBinding Border.BorderBrush}"
-                                            Background="{TemplateBinding Panel.Background}"
-                                            SnapsToDevicePixels="True">
-                                            <ContentPresenter
-                                                Content="{TemplateBinding ContentControl.Content}"
-                                                ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                                                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="Background" Value="Transparent" />
-                        </Trigger>
-
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListViewItem">
-                                        <Border
-                                            BorderThickness="{TemplateBinding Border.BorderThickness}"
-                                            Padding="{TemplateBinding Control.Padding}"
-                                            BorderBrush="{TemplateBinding Border.BorderBrush}"
-                                            Background="{TemplateBinding Panel.Background}"
-                                            SnapsToDevicePixels="True">
-                                            <ContentPresenter
-                                                Content="{TemplateBinding ContentControl.Content}"
-                                                ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                                                HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                                                VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                                                SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.ItemContainerStyle>
-
-        </ListView>
-        <Button x:Name="Share_Button"  Content="SHARE" HorizontalAlignment="Left" Margin="396,234,0,0" VerticalAlignment="Top" Width="75" Click="Share_Button_Click"/>
+            </ListView>
+        </DockPanel>
     </Grid>
 </Controls:MetroWindow>
