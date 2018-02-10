@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -39,9 +40,9 @@ namespace PDS_project_2017
 
             // TODO ordered user list by name
 
-            // TODO on window close kill requester thread
-
             InitializeComponent();
+            Closing += ClosingUserSelection;
+
             ProcessFilePath(path);
             AvailableUsers = new ObservableCollection<User>();
             DataContext = this;
@@ -55,6 +56,12 @@ namespace PDS_project_2017
             Thread udpListenerThread = new Thread(udpRequester.retrieveAvailableUsers);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
+        }
+
+        private void ClosingUserSelection(object sender, CancelEventArgs e)
+        {
+            // terminating thread loop
+            udpRequester.StopRequests();
         }
 
         private void ProcessFilePath(string path)
@@ -165,6 +172,5 @@ namespace PDS_project_2017
 
             this.Close();
         }
-        
     }
 }

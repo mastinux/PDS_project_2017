@@ -16,8 +16,9 @@
 
                 <Button x:Name="Cancel_Button" Content="CANCEL" Margin="10,10,10,10" Width="75" Click="Cancel_Button_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
-
+            
             <ListView x:Name="listNeighborSelection" ItemsSource="{Binding AvailableUsers}" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionMode="Multiple">
+
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="3" HorizontalAlignment="Stretch" />
@@ -87,10 +88,6 @@
 
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-
-                        <!--
-                        <EventSetter Event="MouseLeftButtonDown" Handler="Select_User_Click"/>
-                        -->
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="true" >
