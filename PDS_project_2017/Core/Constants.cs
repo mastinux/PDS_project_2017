@@ -9,6 +9,6 @@ namespace PDS_project_2017.Core
     static class Constants
     {
         public const int AVAILABLE_USERS_UPDATE_INTERVAL = 5;
-        public const int UDP_PORT = 55555;
+        public const int DISCOVERY_UDP_PORT = 55555;
     }
 }

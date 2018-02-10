@@ -20,25 +20,35 @@ namespace PDS_project_2017.Core
      */
     class UdpListener
     {
-        private UdpClient udpServer;
-        private User me;
-        public static ManualResetEvent statusAvailableEvent;
-
+        private UdpClient _udpServer;
+        private User _me;
+        private static ManualResetEvent _statusAvailableEvent;
+        
         public UdpListener()
         {
-            udpServer = new UdpClient(Constants.UDP_PORT);
-            statusAvailableEvent = new ManualResetEvent(!Properties.Settings.Default.PrivateMode);
+            _udpServer = new UdpClient(Constants.DISCOVERY_UDP_PORT);
+            _statusAvailableEvent = new ManualResetEvent(!Properties.Settings.Default.PrivateMode);
             
             // initing current machine identity
-            me = new User
+            _me = new User
             {
                 Name = UserSettings.LoadName(),
                 Image = UserSettings.LoadImage()
             };
         }
 
+        public static void SetStatusAvailableEvent()
+        {
+            _statusAvailableEvent.Set();
+        }
+
+        public static void ResetStatusAvailableEvent()
+        {
+            _statusAvailableEvent.Reset();
+        }
+
         public void listen() {
-            while (statusAvailableEvent.WaitOne())
+            while (_statusAvailableEvent.WaitOne())
             {
                 try
                 {
@@ -46,7 +56,7 @@ namespace PDS_project_2017.Core
                     IPEndPoint remoteIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
 
                     // blocked until a message is received
-                    byte[] recBytes = udpServer.Receive(ref remoteIpEndPoint);
+                    byte[] recBytes = _udpServer.Receive(ref remoteIpEndPoint);
 
                     if ( !UdpUtils.isSelfUdpMessage(remoteIpEndPoint) )
                     {
@@ -57,10 +67,10 @@ namespace PDS_project_2017.Core
                         requesterUser.Id = remoteIpEndPoint.Address.ToString();
 
                         // preparing response
-                        byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
+                        byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(_me));
 
                         // sending response
-                        udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
+                        _udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
 
                         testSendMultipleUsers(remoteIpEndPoint);
                     }
@@ -74,13 +84,13 @@ namespace PDS_project_2017.Core
 
         private void testSendUser(IPEndPoint remoteIpEndPoint, string name)
         {
-            me.Name = name;
+            _me.Name = name;
 
             // preparing response
-            byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(me));
+            byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(_me));
 
             // sending response
-            udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
+            _udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
         }
 
         private void testSendMultipleUsers(IPEndPoint remoteIpEndPoint)

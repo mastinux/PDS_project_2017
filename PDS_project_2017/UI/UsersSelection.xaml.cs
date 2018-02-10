@@ -2,6 +2,7 @@
 using MahApps.Metro.Controls.Dialogs;
 using PDS_project_2017.Core;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,68 +23,65 @@ using System.Windows.Shapes;
 
 namespace PDS_project_2017
 {
-    /// <summary>
-    /// Logica di interazione per UsersSelection.xaml
-    /// </summary>
     public partial class UsersSelection : MetroWindow
     {
-        private ObservableCollection<User> availableUsers;
-        private UdpRequester udpRequester;
-        private string pathName;
-        private bool isDirectory;
+        private ObservableCollection<User> _availableUsers;
+        private ICollectionView _availableUsersView;
+        private UdpRequester _udpRequester;
+        private string _pathName;
+        private bool _isDirectory;
         
-        public ObservableCollection<User> AvailableUsers { get => availableUsers; set => availableUsers = value; }
+        public ObservableCollection<User> AvailableUsers { get => _availableUsers; set => _availableUsers = value; }
 
         public UsersSelection(string path)
         {
-            // TODO maintain selection while cleaning available users
-
-            // TODO ordered user list by name
-
             InitializeComponent();
             Closing += ClosingUserSelection;
 
-            ProcessFilePath(path);
+            // parse path and set in window title
+            SetPathInTitle(path);
+
+            // user collection
             AvailableUsers = new ObservableCollection<User>();
+
+            // _availableUserView maintains _availableUsers ordered in UI
+            _availableUsersView = CollectionViewSource.GetDefaultView(_availableUsers);
+            _availableUsersView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+
             DataContext = this;
             
             // udp socket requesting available users
-            udpRequester = new UdpRequester();
-            udpRequester.addUserEvent += AddAvailableAddUser;
-            udpRequester.cleanUsersEvent += CleanAvailableUsers;
+            _udpRequester = new UdpRequester();
+            _udpRequester.AddUserEvent += AddAvailableAddUser;
+            _udpRequester.CleanUsersEvent += CleanAvailableUsers;
 
-            // launching background thread
-            Thread udpListenerThread = new Thread(udpRequester.retrieveAvailableUsers);
+            // background thread
+            Thread udpListenerThread = new Thread(_udpRequester.RetrieveAvailableUsers);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
         }
 
-        private void ClosingUserSelection(object sender, CancelEventArgs e)
-        {
-            // terminating thread loop
-            udpRequester.StopRequests();
-        }
-
-        private void ProcessFilePath(string path)
+        private void SetPathInTitle(string path)
         {
             FileAttributes attr = File.GetAttributes(path);
 
             if (attr.HasFlag(FileAttributes.Directory))
             {
-                isDirectory = true;
-                pathName = new DirectoryInfo(path).Name;
+                _isDirectory = true;
+                _pathName = new DirectoryInfo(path).Name;
             }
             else
             {
-                isDirectory = false;
-                pathName = System.IO.Path.GetFileName(path);
+                _isDirectory = false;
+                _pathName = System.IO.Path.GetFileName(path);
             }
-            Title = String.Format("Share \"{0}\" with:", pathName);
+
+            Title = String.Format("Share \"{0}\" with:", _pathName);
         }
 
         public void AddAvailableAddUser(User newAvailableUser)
         {
-            // checking if user already exists in the observable collection
+            // checking if user already exists
             foreach (var user in AvailableUsers)
             {
                 // TODO test purpose - use Id instead of Name
@@ -107,58 +105,40 @@ namespace PDS_project_2017
 
         public void CleanAvailableUsers()
         {
-            //Console.WriteLine("Cleaning available users");
-
-            Console.WriteLine("-------------------------------");
-
             DateTime startTime = DateTime.Now;
             
-            for (var i = availableUsers.Count - 1; i >= 0; i--)
+            for (var i = _availableUsers.Count - 1; i >= 0; i--)
             {
-                var u = availableUsers[i];
+                var u = _availableUsers[i];
 
-                if (startTime.Subtract(u.LastUpTime).Seconds >= Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1.5)
+                if (startTime.Subtract(u.LastUpTime).Seconds >= Constants.AVAILABLE_USERS_UPDATE_INTERVAL + 1)
                 {
-                    Console.WriteLine("removing " + u.Name);
-
                     // removing expired user
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        availableUsers.Remove(u);
+                        _availableUsers.Remove(u);
                     }));
                 }
-                    
             }
-
-            //Console.WriteLine("Available users cleaned");
         }
         
-        private void printAvailableUsers()
-        {
-            Console.WriteLine("=================================================================");
-            Console.WriteLine("Current available users:");
-
-            foreach (var user in AvailableUsers)
-            {
-                Console.WriteLine(" - " + user.Name + " on " + user.Id + " with " + user.Image);
-            }
-
-            Console.WriteLine("=================================================================");
-        }
-
         private void Share_Button_Click(object sender, RoutedEventArgs e)
         {
-            udpRequester.StopRequests();
+            // terminating thread loop
+            _udpRequester.StopRequesting();
 
             List<User> selected = null;
             //List<SendingFile> sendingFiles = null;
+
             if (listNeighborSelection.SelectedItems.Count > 0)
             {
                 selected = listNeighborSelection.SelectedItems.Cast<User>().ToList();
+
                 foreach( User u  in selected)
                 {
                     Console.WriteLine("Sending to" + u.Name);
                 }
+
                 Hide();
             }
             else
@@ -168,9 +148,15 @@ namespace PDS_project_2017
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
             // terminating thread loop
-            udpRequester.StopRequests();
+            _udpRequester.StopRequesting();
 
             this.Close();
+        }
+
+        private void ClosingUserSelection(object sender, CancelEventArgs e)
+        {
+            // terminating thread loop
+            _udpRequester.StopRequesting();
         }
     }
 }

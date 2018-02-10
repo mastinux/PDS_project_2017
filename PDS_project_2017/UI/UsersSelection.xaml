@@ -16,7 +16,7 @@
 
                 <Button x:Name="Cancel_Button" Content="CANCEL" Margin="10,10,10,10" Width="75" Click="Cancel_Button_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
-            
+
             <ListView x:Name="listNeighborSelection" ItemsSource="{Binding AvailableUsers}" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionMode="Multiple">
 
                 <ListView.ItemsPanel>
@@ -46,24 +46,6 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5" ToolTip="{Binding Name}">
-                            <!--
-                            <Ellipse Height="64" Width="64">
-                                <Ellipse.Fill>
-                                    <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>
-                                </Ellipse.Fill>
-
-                                <Ellipse.Style>
-                                    <Style TargetType="{x:Type Ellipse}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem }}, Path=IsSelected}" Value="true">
-                                                <Setter Property="Stroke" Value="Blue"/>
-                                                <Setter Property="StrokeThickness" Value="2"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Ellipse.Style>
-                            </Ellipse>
-    -->
                             <Polygon Height="130" Width="130" Points="104, 30 52, 0 0, 30 0, 90 52, 120 104, 90">
                                 <Polygon.Fill>
                                     <ImageBrush  ImageSource="{Binding Image}" Stretch="UniformToFill"/>

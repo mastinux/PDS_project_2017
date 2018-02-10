@@ -31,7 +31,7 @@ namespace PDS_project_2017
         // https://stackoverflow.com/questions/1472633/wpf-application-that-only-has-a-tray-icon
         private System.Windows.Forms.NotifyIcon notifyIcon = null;
         //private Dictionary<string, System.Drawing.Icon> appIcons = null;
-
+        
         public MainWindow()
         {
             // TODO update notify icon menu for private mode when usersettings are changed
@@ -133,13 +133,13 @@ namespace PDS_project_2017
                 {
                     Properties.Settings.Default.PrivateMode = false;
                     item2.Checked = false;
-                    UdpListener.statusAvailableEvent.Set();
+                    UdpListener.SetStatusAvailableEvent();
                 }
                 else
                 {
                     Properties.Settings.Default.PrivateMode = true;
                     item2.Checked = true;
-                    UdpListener.statusAvailableEvent.Reset();   
+                    UdpListener.ResetStatusAvailableEvent();
                 }
 
                 Properties.Settings.Default.Save();

@@ -21,9 +21,6 @@ using System.Windows.Shapes;
 
 namespace PDS_project_2017.UI
 {
-    /// <summary>
-    /// Interaction logic for UserSettings.xaml
-    /// </summary>
     public partial class UserSettings : MetroWindow
     {
         public UserSettings()
@@ -127,7 +124,9 @@ namespace PDS_project_2017.UI
             Properties.Settings.Default.PrivateMode = true;
             Properties.Settings.Default.Save();
             //should stop announcing
-            UdpListener.statusAvailableEvent.Reset();
+            UdpListener.ResetStatusAvailableEvent();
+
+            updateNotifyIcon();
         }
 
         private void Private_CheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -135,7 +134,16 @@ namespace PDS_project_2017.UI
             Properties.Settings.Default.PrivateMode = false;
             Properties.Settings.Default.Save();
             //should start announcing
-            UdpListener.statusAvailableEvent.Set();
+            UdpListener.SetStatusAvailableEvent();
+
+            updateNotifyIcon();
+        }
+
+        private void updateNotifyIcon()
+        {
+            // TODO retrieve item from main.xaml.cs and update it
+            // or find a smarter way
+
         }
 
         private void AutoAccept_CheckBox_Checked(object sender, RoutedEventArgs e)
@@ -149,6 +157,7 @@ namespace PDS_project_2017.UI
             Properties.Settings.Default.AutoAccept = false;
             Properties.Settings.Default.Save();
         }
+
         private void DefaultDir_CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.UseDefaultDir = true;
@@ -165,7 +174,9 @@ namespace PDS_project_2017.UI
         {
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
+
             CommonFileDialogResult result = dialog.ShowDialog();
+
             if (result.ToString() == "Ok")
             {
                 DefaultDir_TextBox.Text = dialog.FileName;
@@ -178,6 +189,5 @@ namespace PDS_project_2017.UI
             Properties.Settings.Default.Save();
             this.Close();
         }
-
     }
 }
