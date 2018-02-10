@@ -34,6 +34,8 @@ namespace PDS_project_2017
 
         public MainWindow()
         {
+            // TODO update notify icon menu for private mode when usersettings are changed
+
             InitializeComponent();
 
             if (Properties.Settings.Default.Name.CompareTo("") == 0)
@@ -69,7 +71,6 @@ namespace PDS_project_2017
         {
             if (e.Button == MouseButtons.Left)
                 this.ShowWindow();
-
         }
 
         private void startMinimized()
@@ -111,7 +112,6 @@ namespace PDS_project_2017
             System.Windows.Forms.MenuItem item1 = new System.Windows.Forms.MenuItem();
             System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();
             System.Windows.Forms.MenuItem item3 = new System.Windows.Forms.MenuItem();
-            
      
             System.Windows.Forms.ContextMenu cMenu = new System.Windows.Forms.ContextMenu();
             cMenu.MenuItems.Add(item1);
@@ -127,6 +127,8 @@ namespace PDS_project_2017
             item1.Click += delegate { UserSettings us = new UserSettings();  us.Show();  };
             item2.Click += delegate
             {
+                Console.WriteLine("changing private mode " + Properties.Settings.Default.PrivateMode);
+
                 if (Properties.Settings.Default.PrivateMode)
                 {
                     Properties.Settings.Default.PrivateMode = false;
@@ -137,7 +139,7 @@ namespace PDS_project_2017
                 {
                     Properties.Settings.Default.PrivateMode = true;
                     item2.Checked = true;
-                    UdpListener.statusAvailableEvent.Reset();
+                    UdpListener.statusAvailableEvent.Reset();   
                 }
 
                 Properties.Settings.Default.Save();
