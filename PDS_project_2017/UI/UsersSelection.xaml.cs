@@ -37,6 +37,10 @@ namespace PDS_project_2017
         {
             // TODO maintain selection while cleaning available users
 
+            // TODO ordered user list by name
+
+            // TODO on window close kill requester thread
+
             InitializeComponent();
             ProcessFilePath(path);
             AvailableUsers = new ObservableCollection<User>();
@@ -81,6 +85,7 @@ namespace PDS_project_2017
                 {
                     user.Name = newAvailableUser.Name;
                     user.Image = newAvailableUser.Image;
+                    user.LastUpTime = DateTime.Now;
 
                     return;
                 }
@@ -97,14 +102,18 @@ namespace PDS_project_2017
         {
             //Console.WriteLine("Cleaning available users");
 
+            Console.WriteLine("-------------------------------");
+
             DateTime startTime = DateTime.Now;
             
             for (var i = availableUsers.Count - 1; i >= 0; i--)
             {
                 var u = availableUsers[i];
 
-                if (startTime.Subtract(u.LastUpTime).Seconds >= Constants.AVAILABLE_USERS_UPDATE_INTERVAL + 1)
+                if (startTime.Subtract(u.LastUpTime).Seconds >= Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1.5)
                 {
+                    Console.WriteLine("removing " + u.Name);
+
                     // removing expired user
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
@@ -156,5 +165,6 @@ namespace PDS_project_2017
 
             this.Close();
         }
+        
     }
 }

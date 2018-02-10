@@ -89,13 +89,13 @@ namespace PDS_project_2017.Core
             names.Add("antonio");
             names.Add("anna");
             names.Add("vincenzo");
-            names.Add("michele");
-            names.Add("elia");
-            names.Add("michel");
-            names.Add("giuseppe");
-            names.Add("leandro");
-            names.Add("matteo");
-            names.Add("gianpiero");
+            //names.Add("michele");
+            //names.Add("elia");
+            //names.Add("michel");
+            //names.Add("giuseppe");
+            //names.Add("leandro");
+            //names.Add("matteo");
+            //names.Add("gianpiero");
 
             Random random = new Random();
 
@@ -109,6 +109,8 @@ namespace PDS_project_2017.Core
 
                 names.Remove(names[pos]);
             }
+
+            //testSendUser(remoteIpEndPoint, "PAUL");
         }
 
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)

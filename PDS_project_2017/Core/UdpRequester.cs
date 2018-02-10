@@ -72,8 +72,6 @@ namespace PDS_project_2017.Core
                     }
                     catch (SocketException e)
                     {
-                        // TODO re launch exception if not equal to TimedOut
-                        
                         if ( !e.SocketErrorCode.Equals(SocketError.TimedOut) )
                             throw  new Exception("Unexpected exception", e);
 
