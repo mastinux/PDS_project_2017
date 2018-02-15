@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Channels.Tcp;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ namespace PDS_project_2017
         private ObservableCollection<User> _availableUsers;
         private ICollectionView _availableUsersView;
         private UdpRequester _udpRequester;
+        private string _path;
         private string _pathName;
         private bool _isDirectory;
         
@@ -38,8 +40,10 @@ namespace PDS_project_2017
             InitializeComponent();
             Closing += ClosingUserSelection;
 
+            _path = path;
+
             // parse path and set in window title
-            SetPathInTitle(path);
+            SetPathInTitle();
 
             // user collection
             AvailableUsers = new ObservableCollection<User>();
@@ -61,19 +65,19 @@ namespace PDS_project_2017
             udpListenerThread.Start();
         }
 
-        private void SetPathInTitle(string path)
+        private void SetPathInTitle()
         {
-            FileAttributes attr = File.GetAttributes(path);
+            FileAttributes attr = File.GetAttributes(_path);
 
             if (attr.HasFlag(FileAttributes.Directory))
             {
                 _isDirectory = true;
-                _pathName = new DirectoryInfo(path).Name;
+                _pathName = new DirectoryInfo(_path).Name;
             }
             else
             {
                 _isDirectory = false;
-                _pathName = System.IO.Path.GetFileName(path);
+                _pathName = System.IO.Path.GetFileName(_path);
             }
 
             Title = String.Format("Share \"{0}\" with:", _pathName);
@@ -84,7 +88,7 @@ namespace PDS_project_2017
             // checking if user already exists
             foreach (var user in AvailableUsers)
             {
-                // TODO test purpose - use Id instead of Name
+                // TODO test purpose - on production environment use Id instead of Name
                 //if (user.Id.Equals(newAvailableUser.Id))
                 if (user.Name.Equals(newAvailableUser.Name))
                 {
@@ -136,7 +140,18 @@ namespace PDS_project_2017
 
                 foreach( User u  in selected)
                 {
-                    Console.WriteLine("Sending to" + u.Name);
+                    Console.WriteLine("Sending " + _path + " to " + u.Name);
+
+                    if (_isDirectory)
+                    {
+                        // directory
+                    }
+                    else
+                    {
+                        // single file
+                        TCPSender tcpSender = new TCPSender(u.Id);
+                        tcpSender.SendFile(_path);
+                    }
                 }
 
                 Hide();

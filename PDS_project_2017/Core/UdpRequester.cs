@@ -80,7 +80,7 @@ namespace PDS_project_2017.Core
                         CleanUsersEvent();
                     }
 
-                    if (!UdpUtils.isSelfUdpMessage(remoteIpEndPoint) && !timedOut)
+                    if (!IpUtils.isSelfMessage(remoteIpEndPoint) && !timedOut)
                     {
                         // reading response
                         string readData = Encoding.ASCII.GetString(recBytes);

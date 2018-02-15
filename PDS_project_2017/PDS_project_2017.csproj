@@ -102,7 +102,7 @@
     <Compile Include="Core\TCPSender.cs" />
     <Compile Include="Core\UdpListener.cs" />
     <Compile Include="Core\UdpRequester.cs" />
-    <Compile Include="Core\UdpUtils.cs" />
+    <Compile Include="Core\IpUtils.cs" />
     <Compile Include="Core\User.cs" />
     <Compile Include="FileShellExtension.cs" />
     <Compile Include="SingleInstance.cs" />
@@ -165,6 +165,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Core\file_transfer_protocol.md" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

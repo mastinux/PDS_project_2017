@@ -20,6 +20,7 @@ using PDS_project_2017.UI;
 using PDS_project_2017.Core;
 using System.Threading;
 using System.ComponentModel;
+using MouseEventHandler = System.Windows.Forms.MouseEventHandler;
 
 namespace PDS_project_2017
 {
@@ -51,13 +52,21 @@ namespace PDS_project_2017
             Thread udpListenerThread = new Thread(udpListener.listen);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
+
+            // TODO check me
+            TCPReceiver tcpReceiver = new TCPReceiver();
+
+            // TODO check me
+            Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
+            tcpReceiverThread.IsBackground = true;
+            tcpReceiverThread.Start();
         }
 
 
         protected override void OnInitialized(EventArgs e)
         {
             StateChanged += OnStateChanged;
-            Closing += MainWindow_Closing;
+            Closing += OnClosing;
             //Loaded += OnLoaded;
 
             initializeNotifyIcon();
@@ -65,12 +74,6 @@ namespace PDS_project_2017
             this.startMinimized();
             
             base.OnInitialized(e);
-        }
-
-        private void notifyIcon_Click(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-                this.ShowWindow();
         }
 
         private void startMinimized()
@@ -84,7 +87,7 @@ namespace PDS_project_2017
             this.ShowInTaskbar = false;
         }
 
-        private void MainWindow_Closing(object sender, CancelEventArgs e)
+        private void OnClosing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             WindowState = WindowState.Minimized;
@@ -97,7 +100,7 @@ namespace PDS_project_2017
             //appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\UI\images\LAN-Sharing.ico")));
 
             notifyIcon = new System.Windows.Forms.NotifyIcon();
-            notifyIcon.MouseClick += notifyIcon_Click;
+            notifyIcon.MouseClick += notifyIcon_OnMouseClick;
             notifyIcon.Icon = Properties.Resources.LAN_Sharing;
 
             notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
@@ -127,8 +130,6 @@ namespace PDS_project_2017
             item1.Click += delegate { UserSettings us = new UserSettings();  us.Show();  };
             item2.Click += delegate
             {
-                Console.WriteLine("changing private mode " + Properties.Settings.Default.PrivateMode);
-
                 if (Properties.Settings.Default.PrivateMode)
                 {
                     Properties.Settings.Default.PrivateMode = false;
@@ -146,6 +147,19 @@ namespace PDS_project_2017
             };
             item3.Click += delegate { App.Current.Shutdown(); };
 
+        }
+
+        private EventHandler foo()
+        {
+            Console.WriteLine("poped up");
+
+            return null;
+        }
+
+        private void notifyIcon_OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                this.ShowWindow();
         }
 
         private void OnStateChanged(object sender, EventArgs e)

@@ -58,7 +58,7 @@ namespace PDS_project_2017.Core
                     // blocked until a message is received
                     byte[] recBytes = _udpServer.Receive(ref remoteIpEndPoint);
 
-                    if ( !UdpUtils.isSelfUdpMessage(remoteIpEndPoint) )
+                    if ( !IpUtils.isSelfMessage(remoteIpEndPoint) )
                     {
                         // reading requester user
                         string readData = Encoding.ASCII.GetString(recBytes);

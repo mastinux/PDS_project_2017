@@ -8,28 +8,35 @@ using System.Threading.Tasks;
 
 namespace PDS_project_2017.Core
 {
-    static class UdpUtils
+    static class IpUtils
     {
         // this function checks if remoteIpEndPoint address equals current machine IP address
-        public static bool isSelfUdpMessage(IPEndPoint remoteIpEndPoint)
+        public static bool isSelfMessage(IPEndPoint remoteIpEndPoint)
         {
             // managing only IPv4 addresses
 
             // TODO test purpose : remove on production environment
             return false;
 
+            if (GetLocalIPAddress().Equals(remoteIpEndPoint.Address))
+                return true;
+            else
+                return false;
+        }
+
+        public static IPAddress GetLocalIPAddress()
+        {
             var host = Dns.GetHostEntry(Dns.GetHostName());
 
             foreach (var ip in host.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {   
-                    if (ip.Equals(remoteIpEndPoint.Address))
-                        return true;
+                {
+                    return ip;
                 }
             }
 
-            return false;
+            throw new Exception("No network adapters with an IPv4 address in the system!");
         }
     }
 }

@@ -23,9 +23,11 @@ namespace PDS_project_2017.UI
 {
     public partial class UserSettings : MetroWindow
     {
+        
         public UserSettings()
         {
             InitializeComponent();
+
             Name_TextBox.Text = Properties.Settings.Default.Name;
             Private_CheckBox.IsChecked = Properties.Settings.Default.PrivateMode;
             AutoAccept_CheckBox.IsChecked = Properties.Settings.Default.AutoAccept;
@@ -125,8 +127,6 @@ namespace PDS_project_2017.UI
             Properties.Settings.Default.Save();
             //should stop announcing
             UdpListener.ResetStatusAvailableEvent();
-
-            updateNotifyIcon();
         }
 
         private void Private_CheckBox_Unchecked(object sender, RoutedEventArgs e)
@@ -135,15 +135,6 @@ namespace PDS_project_2017.UI
             Properties.Settings.Default.Save();
             //should start announcing
             UdpListener.SetStatusAvailableEvent();
-
-            updateNotifyIcon();
-        }
-
-        private void updateNotifyIcon()
-        {
-            // TODO retrieve item from main.xaml.cs and update it
-            // or find a smarter way
-
         }
 
         private void AutoAccept_CheckBox_Checked(object sender, RoutedEventArgs e)
