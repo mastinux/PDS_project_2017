@@ -46,14 +46,17 @@ namespace PDS_project_2017.Core
 
             Byte[] fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
+            // TODO understand why sender continue sending while receiver has not accepted file yet
+
             // FILE CONTENT
-            // TODO continue developing
             while (fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length) > 0)
             {
                 networkStream.Write(fileContentBuffer, 0, fileContentBuffer.Length);
 
                 fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
             }
+
+            //Console.WriteLine("transfer completed");
         }
     }
 }

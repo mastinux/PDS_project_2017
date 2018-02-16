@@ -104,6 +104,7 @@
     <Compile Include="Core\UdpRequester.cs" />
     <Compile Include="Core\IpUtils.cs" />
     <Compile Include="Core\User.cs" />
+    <Compile Include="UI\utils\UserUtils.cs" />
     <Compile Include="FileShellExtension.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="UI\FilesAcceptance.xaml.cs">

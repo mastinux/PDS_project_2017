@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PDS_project_2017"
         mc:Ignorable="d"
-        Title="LAN-Sharing - Files Acceptance" Height="300" Width="300">
+        Title="LAN-Sharing - Files Acceptance" Height="150" Width="300">
     <Grid>
-        
+        <DockPanel LastChildFill="True">
+
+            <DockPanel DockPanel.Dock="Bottom">
+                <Button x:Name="Accept_Button" Content="ACCEPT" Margin="10,10,10,10" Width="75" Click="Accept_Button_Click" DockPanel.Dock="Right"/>
+                <Button x:Name="Refuse_Button" Content="REFUSE" Margin="10,10,10,10" Width="75" Click="Refuse_Button_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+            </DockPanel>
+
+            <DockPanel Margin="5,5,5,5">
+
+                <Label Content="Destination Directory:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBox x:Name="DestinationDir_TextBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0,5,0" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
+                <Button x:Name="DestinationDir_Button" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="24" Click="DestinationDir_Button_Click"/>
+
+            </DockPanel>
+        </DockPanel>
     </Grid>
 </Window>

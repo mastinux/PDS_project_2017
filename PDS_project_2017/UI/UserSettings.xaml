@@ -20,7 +20,7 @@
 
         <Label Content="Default Save Directory:" HorizontalAlignment="Left" Margin="11,186,0,0" VerticalAlignment="Top" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
         <Button x:Name="DefaultDir_Button" Content="..." HorizontalAlignment="Left" Margin="140,188,0,0" VerticalAlignment="Top" Width="24" Height="18" Click="DefaultDir_Button_Click" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
-        <TextBox x:Name="DefaultDir_TextBox" HorizontalAlignment="Left" Height="23" Margin="181,187,0,0" VerticalAlignment="Top" Width="160" IsReadOnly="True" TextWrapping="WrapWithOverflow" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
+        <TextBox x:Name="DefaultDir_TextBox" HorizontalAlignment="Left" Height="23" Margin="181,187,0,0" VerticalAlignment="Top" Width="160" TextWrapping="WrapWithOverflow" IsReadOnly="True" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
 
         <Label Content="Save in Default Dir:" HorizontalAlignment="Left" Margin="10,148,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="DefaultDir_CheckBox" Content="" HorizontalAlignment="Left" Margin="143,154,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.469,0.533" Checked="DefaultDir_CheckBox_Checked" Unchecked="DefaultDir_CheckBox_Unchecked"/>

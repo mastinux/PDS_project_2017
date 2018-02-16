@@ -31,6 +31,11 @@ namespace PDS_project_2017.UI
             Name_TextBox.Text = Properties.Settings.Default.Name;
             Private_CheckBox.IsChecked = Properties.Settings.Default.PrivateMode;
             AutoAccept_CheckBox.IsChecked = Properties.Settings.Default.AutoAccept;
+
+            // TODO apply this constraint
+            // if auto accept is true
+            // then default dir must be set
+
             DefaultDir_CheckBox.IsChecked = Properties.Settings.Default.UseDefaultDir;
             DefaultDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
             Profile_Image.Source = LoadImage();
@@ -163,6 +168,7 @@ namespace PDS_project_2017.UI
 
         private void DefaultDir_Button_Click(object sender, RoutedEventArgs e)
         {
+            /*
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
 
@@ -173,6 +179,12 @@ namespace PDS_project_2017.UI
                 DefaultDir_TextBox.Text = dialog.FileName;
                 Properties.Settings.Default.DefaultDir = dialog.FileName;
             }
+            */
+
+            string defaultDir = UserUtils.RetrieveDirectoryLocation();
+
+            DefaultDir_TextBox.Text = defaultDir;
+            Properties.Settings.Default.DefaultDir = defaultDir;
         }
 
         private void Save_Button_Click(object sender, RoutedEventArgs e)

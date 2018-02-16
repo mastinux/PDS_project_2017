@@ -53,11 +53,13 @@ namespace PDS_project_2017
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
 
-            // TODO check me
-            TCPReceiver tcpReceiver = new TCPReceiver();
+            // tcp socket listening for file transfer
+            TcpReceiver tcpReceiver = new TcpReceiver();
 
-            // TODO check me
+            // launching background thread
             Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
+            // https://stackoverflow.com/questions/2329978/the-calling-thread-must-be-sta-because-many-ui-components-require-this
+            tcpReceiverThread.SetApartmentState(ApartmentState.STA);
             tcpReceiverThread.IsBackground = true;
             tcpReceiverThread.Start();
         }
