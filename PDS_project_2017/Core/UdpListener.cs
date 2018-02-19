@@ -45,6 +45,8 @@ namespace PDS_project_2017.Core
         public static void ResetStatusAvailableEvent()
         {
             _statusAvailableEvent.Reset();
+            
+            // TODO if event is reset and then set the thread does not respond
         }
 
         public void listen() {

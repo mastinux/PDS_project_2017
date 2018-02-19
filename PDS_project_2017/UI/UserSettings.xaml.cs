@@ -31,11 +31,6 @@ namespace PDS_project_2017.UI
             Name_TextBox.Text = Properties.Settings.Default.Name;
             Private_CheckBox.IsChecked = Properties.Settings.Default.PrivateMode;
             AutoAccept_CheckBox.IsChecked = Properties.Settings.Default.AutoAccept;
-
-            // TODO apply this constraint
-            // if auto accept is true
-            // then default dir must be set
-
             DefaultDir_CheckBox.IsChecked = Properties.Settings.Default.UseDefaultDir;
             DefaultDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
             Profile_Image.Source = LoadImage();
@@ -45,8 +40,7 @@ namespace PDS_project_2017.UI
         private void Image_Button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter =
-            "Image files|*.bmp;*.jpg;*.gif;*.png;*.tif|All files|*.*";
+            fileDialog.Filter = "Image files|*.bmp;*.jpg;*.gif;*.png;*.tif|All files|*.*";
             fileDialog.FilterIndex = 1;
 
             fileDialog.ShowDialog();
@@ -56,10 +50,11 @@ namespace PDS_project_2017.UI
                 Bitmap img = (Bitmap)System.Drawing.Image.FromFile(fileDialog.FileName);
                 SaveImage(img);
                 Profile_Image.Source = LoadImage();
-                Profile_Image.Stretch = Stretch.UniformToFill;
+                //Profile_Image.Stretch = Stretch.UniformToFill;
                 //Profile_Image.Stretch = Stretch.Fill;
             }
 
+            Properties.Settings.Default.Save();
         }
 
         public static string LoadName()
@@ -122,6 +117,7 @@ namespace PDS_project_2017.UI
         private void Name_TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var textBox = sender as System.Windows.Controls.TextBox;
+
             Properties.Settings.Default.Name = textBox.Text;
             Properties.Settings.Default.Save();
         }
@@ -130,6 +126,7 @@ namespace PDS_project_2017.UI
         {
             Properties.Settings.Default.PrivateMode = true;
             Properties.Settings.Default.Save();
+
             //should stop announcing
             UdpListener.ResetStatusAvailableEvent();
         }
@@ -138,6 +135,7 @@ namespace PDS_project_2017.UI
         {
             Properties.Settings.Default.PrivateMode = false;
             Properties.Settings.Default.Save();
+
             //should start announcing
             UdpListener.SetStatusAvailableEvent();
         }
@@ -158,38 +156,31 @@ namespace PDS_project_2017.UI
         {
             Properties.Settings.Default.UseDefaultDir = true;
             Properties.Settings.Default.Save();
+
+            if (Properties.Settings.Default.DefaultDir == null)
+                DefaultDir_Button_Click(sender, e);
         }
 
         private void DefaultDir_CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.UseDefaultDir = false;
             Properties.Settings.Default.Save();
+
+            AutoAccept_CheckBox.IsChecked = false;
         }
 
         private void DefaultDir_Button_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-
-            CommonFileDialogResult result = dialog.ShowDialog();
-
-            if (result.ToString() == "Ok")
-            {
-                DefaultDir_TextBox.Text = dialog.FileName;
-                Properties.Settings.Default.DefaultDir = dialog.FileName;
-            }
-            */
-
             string defaultDir = UserUtils.RetrieveDirectoryLocation();
 
-            DefaultDir_TextBox.Text = defaultDir;
             Properties.Settings.Default.DefaultDir = defaultDir;
+            Properties.Settings.Default.Save();
+
+            DefaultDir_TextBox.Text = defaultDir;
         }
 
         private void Save_Button_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.Save();
             this.Close();
         }
     }

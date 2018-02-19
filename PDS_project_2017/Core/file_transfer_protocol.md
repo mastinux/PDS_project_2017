@@ -6,5 +6,8 @@ Single file transfer using TCP connection
 |-|:-:|-:|
 || --- file name lenght (int) ---> ||
 || --- file name (String) ---> ||
-|| --- file content length (long) ---> ||
-|| --- file content (byte[]) ---> ||
+|| <-- "ok " -- ||
+||or||
+|| <-- "no " -- ||
+|| [ --- file content length (long) ---> ] ||
+|| [ --- file content (byte[]) ---> ] ||

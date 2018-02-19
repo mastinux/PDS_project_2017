@@ -30,28 +30,25 @@ namespace PDS_project_2017.Core
 
             SendFileName(filePath);
 
-            ReceiveAcceptanceResponse();
+            if (!ReceiveAcceptanceResponse())
+                return;
 
             SendFileContent(filePath);
         }
 
-        private void ReceiveAcceptanceResponse()
+        private bool ReceiveAcceptanceResponse()
         {
-            Byte[] data = new Byte[1];
+            Byte[] data = new Byte[Constants.TRANSFER_TCP_COMMAND_LEN];
 
-            Console.WriteLine("A: reading from socket");
-            int n = _tcpClient.GetStream().Read(data, 0, 1);
-            Console.WriteLine("A: read " + n + " bytes from socket");
+            int n = _tcpClient.GetStream().Read(data, 0, Constants.TRANSFER_TCP_COMMAND_LEN);
 
             String response = Encoding.UTF8.GetString(data);
 
-            Console.WriteLine(response);
+            return response.Equals(Constants.TRANSFER_TCP_ACCEPT);
         }
 
         private void SendFileContent(string filePath)
         {
-            Console.WriteLine("Sending file content");
-
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             NetworkStream networkStream = _tcpClient.GetStream();
 
@@ -70,16 +67,14 @@ namespace PDS_project_2017.Core
                 networkStream.Write(fileContentBuffer, 0, bytesRead);
             }
 
-            Console.WriteLine("file content sent");
+            fileStream.Close();
         }
 
         private void SendFileName(string filePath)
         {
-            Console.WriteLine("Sending file name");
-
             String fileName = Path.GetFileName(filePath);
 
-            Byte[] fileNameLengthData = new Byte[1];
+            Byte[] fileNameLengthData = new Byte[Constants.TRANSFER_TCP_FILE_NAME_LEN];
             Byte[] fileNameData = System.Text.Encoding.UTF8.GetBytes(fileName);
             
             NetworkStream networkStream = _tcpClient.GetStream();
@@ -90,8 +85,6 @@ namespace PDS_project_2017.Core
 
             // FILE NAME
             networkStream.Write(fileNameData, 0, fileNameData.Length);
-            
-            Console.WriteLine("file name sent");
         }
     }
 }
