@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TreeView = System.Windows.Forms.TreeView;
 
 namespace PDS_project_2017
 {
@@ -140,17 +141,18 @@ namespace PDS_project_2017
 
                 foreach( User u  in selected)
                 {
-                    Console.WriteLine("Sending " + _path + " to " + u.Name);
-
                     if (_isDirectory)
                     {
                         // directory
+                        TCPSender tcpSender = new TCPSender(u.Id, _path);
+
+                        Thread tcpSenderThread = new Thread(tcpSender.SendDirectory);
+                        tcpSenderThread.IsBackground = true;
+                        tcpSenderThread.Start();
                     }
                     else
                     {
                         // single file
-                        //TCPSender tcpSender = new TCPSender(u.Id);
-                        //tcpSender.SendFile(_path);
                         TCPSender tcpSender = new TCPSender(u.Id, _path);
 
                         Thread tcpSenderThread = new Thread(tcpSender.SendFile);

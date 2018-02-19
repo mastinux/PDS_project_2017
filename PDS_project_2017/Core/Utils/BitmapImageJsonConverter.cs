@@ -13,7 +13,7 @@ namespace PDS_project_2017.Core
 {
     // https://stackoverflow.com/questions/44370046/how-do-i-serialize-object-to-json-using-json-net-which-contains-an-image-propert
 
-    class ImageConverter : JsonConverter
+    class BitmapImageJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

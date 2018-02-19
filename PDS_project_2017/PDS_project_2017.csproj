@@ -97,14 +97,16 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Core\Constants.cs" />
-    <Compile Include="Core\ImageConverter.cs" />
+    <Compile Include="Core\DirectoryNode.cs" />
+    <Compile Include="Core\Utils\FilesUtils.cs" />
+    <Compile Include="Core\Utils\BitmapImageJsonConverter.cs" />
     <Compile Include="Core\TCPReceiver.cs" />
     <Compile Include="Core\TCPSender.cs" />
     <Compile Include="Core\UdpListener.cs" />
     <Compile Include="Core\UdpRequester.cs" />
-    <Compile Include="Core\IpUtils.cs" />
+    <Compile Include="Core\Utils\IpUtils.cs" />
     <Compile Include="Core\User.cs" />
-    <Compile Include="UI\utils\UserUtils.cs" />
+    <Compile Include="UI\Utils\UserUtils.cs" />
     <Compile Include="FileShellExtension.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="UI\FilesAcceptance.xaml.cs">
@@ -179,7 +181,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\images\LAN-Sharing.ico" />
+    <Resource Include="UI\Images\LAN-Sharing.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\LAN-Sharing.ico" />

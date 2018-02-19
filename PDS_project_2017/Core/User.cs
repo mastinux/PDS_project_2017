@@ -23,7 +23,7 @@ namespace PDS_project_2017.Core
 
         public string Name { get => _name; set => _name = value; }
 
-        [JsonConverter(typeof(ImageConverter))]
+        [JsonConverter(typeof(BitmapImageJsonConverter))]
         public BitmapImage Image { get => _image; set => _image = value; }
 
         [ScriptIgnore]

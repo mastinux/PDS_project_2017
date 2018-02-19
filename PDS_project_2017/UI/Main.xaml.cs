@@ -151,13 +151,6 @@ namespace PDS_project_2017
 
         }
 
-        private EventHandler foo()
-        {
-            Console.WriteLine("poped up");
-
-            return null;
-        }
-
         private void notifyIcon_OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)

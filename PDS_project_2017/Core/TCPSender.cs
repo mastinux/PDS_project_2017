@@ -7,6 +7,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace PDS_project_2017.Core
 {
@@ -15,25 +17,28 @@ namespace PDS_project_2017.Core
         // client class
 
         private TcpClient _tcpClient;
-        private String _filePath;
+        private String _path;
 
-        public TCPSender(String server, String filePath)
+        public TCPSender(String server, String path)
         {
             _tcpClient = new TcpClient(server, Constants.TRANSFER_TCP_PORT);
 
-            _filePath = filePath;
+            _path = path;
         }
 
         public void SendFile()
         {
-            String filePath = _filePath;
+            InternalSendFile(_path);
+        }
 
-            SendFileName(filePath);
+        private void InternalSendFile(string fileName)
+        {
+            SendFileName(fileName);
 
             if (!ReceiveAcceptanceResponse())
                 return;
 
-            SendFileContent(filePath);
+            SendFileContent(fileName);
         }
 
         private bool ReceiveAcceptanceResponse()
@@ -85,6 +90,23 @@ namespace PDS_project_2017.Core
 
             // FILE NAME
             networkStream.Write(fileNameData, 0, fileNameData.Length);
+        }
+
+        public void SendDirectory()
+        {
+            //TreeView treeView = FilesUtils.ListDirectory(_path);
+            DirectoryNode directoryNode = FilesUtils.ListDirectoryNode(_path);
+            directoryNode.Print();
+
+            string jsonDirectoryNode = JsonConvert.SerializeObject(directoryNode);
+
+            // TODO send json then wait confirmation for whole hieracy and send all
+
+            //Console.WriteLine(jsonDirectoryNode);
+            Console.WriteLine("----------------------------------------------");
+
+            DirectoryNode reverseDirectoryNode = JsonConvert.DeserializeObject<DirectoryNode>(jsonDirectoryNode);
+            reverseDirectoryNode.Print();
         }
     }
 }
