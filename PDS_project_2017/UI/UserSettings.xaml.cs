@@ -34,7 +34,6 @@ namespace PDS_project_2017.UI
             DefaultDir_CheckBox.IsChecked = Properties.Settings.Default.UseDefaultDir;
             DefaultDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
             Profile_Image.Source = LoadImage();
-            Profile_Image.Stretch = Stretch.UniformToFill;
         }
 
         private void Image_Button_Click(object sender, RoutedEventArgs e)
@@ -164,8 +163,10 @@ namespace PDS_project_2017.UI
         private void DefaultDir_CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.UseDefaultDir = false;
+            Properties.Settings.Default.DefaultDir = null;
             Properties.Settings.Default.Save();
 
+            DefaultDir_TextBox.Text = null;
             AutoAccept_CheckBox.IsChecked = false;
         }
 

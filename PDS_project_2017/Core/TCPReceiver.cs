@@ -61,12 +61,12 @@ namespace PDS_project_2017.Core
                 // blocking call until window is closed
                 fileAcceptanceWindow.ShowDialog();
 
-                destinationDir = fileAcceptanceWindow.DestinationDir;
-
-                if (destinationDir != null)
+                if (fileAcceptanceWindow.AreFilesAccepted)
                 {
                     // file accepted
                     SendAcceptanceResponse(client);
+
+                    destinationDir = fileAcceptanceWindow.DestinationDir;
                 }
                 else
                 {

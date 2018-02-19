@@ -34,7 +34,7 @@
 
         <DockPanel Grid.Column="1" Grid.Row="3">
             <Button x:Name="DefaultDir_Button" Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Width="24" Height="18" Click="DefaultDir_Button_Click" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
-            <TextBox x:Name="DefaultDir_TextBox" HorizontalAlignment="Center" Height="23" VerticalAlignment="Center" Width="160" TextWrapping="WrapWithOverflow" IsReadOnly="True" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+            <TextBox x:Name="DefaultDir_TextBox" HorizontalAlignment="Center" Height="23" VerticalAlignment="Center" Width="160"  IsReadOnly="True" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
         </DockPanel>
 
         <DockPanel Grid.Column="0" Grid.Row="4">
