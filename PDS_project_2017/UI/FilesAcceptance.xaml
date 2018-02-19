@@ -17,8 +17,8 @@
             <DockPanel Margin="5,5,5,5">
 
                 <Label Content="Destination Directory:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <TextBox x:Name="DestinationDir_TextBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0,5,0" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
                 <Button x:Name="DestinationDir_Button" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="24" Click="DestinationDir_Button_Click"/>
+                <TextBox x:Name="DestinationDir_TextBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0,5,0" IsReadOnly="True" TextWrapping="WrapWithOverflow" />
 
             </DockPanel>
         </DockPanel>

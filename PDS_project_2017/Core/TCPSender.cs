@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PDS_project_2017.Core
@@ -14,30 +15,45 @@ namespace PDS_project_2017.Core
         // client class
 
         private TcpClient _tcpClient;
+        private String _filePath;
 
-        public TCPSender(String server)
+        public TCPSender(String server, String filePath)
         {
             _tcpClient = new TcpClient(server, Constants.TRANSFER_TCP_PORT);
+
+            _filePath = filePath;
         }
 
-        public void SendFile(String filePath)
+        public void SendFile()
         {
-            String fileName = Path.GetFileName(filePath);
+            String filePath = _filePath;
+
+            SendFileName(filePath);
+
+            ReceiveAcceptanceResponse();
+
+            SendFileContent(filePath);
+        }
+
+        private void ReceiveAcceptanceResponse()
+        {
+            Byte[] data = new Byte[1];
+
+            Console.WriteLine("A: reading from socket");
+            int n = _tcpClient.GetStream().Read(data, 0, 1);
+            Console.WriteLine("A: read " + n + " bytes from socket");
+
+            String response = Encoding.UTF8.GetString(data);
+
+            Console.WriteLine(response);
+        }
+
+        private void SendFileContent(string filePath)
+        {
+            Console.WriteLine("Sending file content");
+
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-            long fileLenght = fileStream.Length;
-
             NetworkStream networkStream = _tcpClient.GetStream();
-
-            Byte[] fileNameLengthData = new Byte[1];
-
-            Byte[] fileNameData = System.Text.Encoding.UTF8.GetBytes(fileName);
-
-            // FILE NAME LENGTH
-            fileNameLengthData[0] = Convert.ToByte(fileNameData.Length);
-            networkStream.Write(fileNameLengthData, 0, 1);
-
-            // FILE NAME
-            networkStream.Write(fileNameData, 0, fileNameData.Length);
 
             // FILE CONTENT LENGHT
             long fileContentLenght = new FileInfo(filePath).Length;
@@ -46,17 +62,36 @@ namespace PDS_project_2017.Core
 
             Byte[] fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
-            // TODO understand why sender continue sending while receiver has not accepted file yet
+            int bytesRead;
 
             // FILE CONTENT
-            while (fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length) > 0)
+            while ((bytesRead = fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length)) > 0)
             {
-                networkStream.Write(fileContentBuffer, 0, fileContentBuffer.Length);
-
-                fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
+                networkStream.Write(fileContentBuffer, 0, bytesRead);
             }
 
-            //Console.WriteLine("transfer completed");
+            Console.WriteLine("file content sent");
+        }
+
+        private void SendFileName(string filePath)
+        {
+            Console.WriteLine("Sending file name");
+
+            String fileName = Path.GetFileName(filePath);
+
+            Byte[] fileNameLengthData = new Byte[1];
+            Byte[] fileNameData = System.Text.Encoding.UTF8.GetBytes(fileName);
+            
+            NetworkStream networkStream = _tcpClient.GetStream();
+
+            // FILE NAME LENGTH
+            fileNameLengthData[0] = Convert.ToByte(fileNameData.Length);
+            networkStream.Write(fileNameLengthData, 0, 1);
+
+            // FILE NAME
+            networkStream.Write(fileNameData, 0, fileNameData.Length);
+            
+            Console.WriteLine("file name sent");
         }
     }
 }

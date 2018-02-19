@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using System.Windows.Media.Animation;
@@ -51,6 +52,8 @@ namespace PDS_project_2017.Core
             {
                 Console.WriteLine("auto accepting file");
 
+                //SendAcceptanceResponse(client);
+
                 // retrieving default dir
                 destinationDir = Properties.Settings.Default.DefaultDir;
             }
@@ -65,9 +68,16 @@ namespace PDS_project_2017.Core
 
                 destinationDir = fileAcceptanceWindow.DestinationDir;
 
-                if (destinationDir == null)
+                if (destinationDir != null)
+                {
+                    // file accepted
+                    SendAcceptanceResponse(client);
+                }
+                else
+                {
                     // file not accepted or window closed
                     return;
+                }
             }
             
             String filePath = destinationDir + "\\" + fileName;
@@ -78,9 +88,19 @@ namespace PDS_project_2017.Core
             ReceiveFileContent(client.GetStream(), filePath);
         }
 
+        private void SendAcceptanceResponse(TcpClient client)
+        {
+            Byte[] data = new Byte[1];
+            data[0] = Encoding.UTF8.GetBytes("ok")[0];
+
+            Console.WriteLine("B: writing on socket");
+            client.GetStream().Write(data, 0, data.Length);
+            client.GetStream().Flush();
+            Console.WriteLine("B: wrote on socket");
+        }
+
         private string ReceiveFileName(NetworkStream networkStream)
         {
-
             Byte[] data = new Byte[1];
 
             // FILE NAME LENGHT
@@ -104,22 +124,21 @@ namespace PDS_project_2017.Core
             long fileContentLenght = BitConverter.ToInt64(data, 0);
 
             long fileContentLenghtReceived = 0;
+            int bytesRead;
 
             Byte[] buffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
-
-            //Console.WriteLine("saving file in " + filePath);
 
             BinaryWriter fileWriter = new BinaryWriter(File.Open(filePath, FileMode.Create));
 
             // FILE CONTENT
             while (fileContentLenghtReceived < fileContentLenght)
             {
-                fileContentLenghtReceived += networkStream.Read(buffer, 0, buffer.Length);
+                bytesRead = networkStream.Read(buffer, 0, buffer.Length);
 
-                fileWriter.Write(buffer, 0, buffer.Length);
+                fileWriter.Write(buffer, 0, bytesRead);
+
+                fileContentLenght += bytesRead;
             }
-
-            //Console.WriteLine("file received");
         }
     }
 }

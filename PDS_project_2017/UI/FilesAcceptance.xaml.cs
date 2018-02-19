@@ -47,29 +47,8 @@ namespace PDS_project_2017
         }
 
         private void DestinationDir_Button_Click(object sender, RoutedEventArgs e)
-        {
-            //_destinationDir = UserUtils.RetrieveDirectoryLocation();
-
+        { 
             Application.Current.Dispatcher.Invoke(() => { _destinationDir = UserUtils.RetrieveDirectoryLocation(); });
-
-            Console.WriteLine(_destinationDir);
-            
-            /*
-            var dialog = new CommonOpenFileDialog();
-            dialog.IsFolderPicker = true;
-
-            CommonFileDialogResult result;
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                result = dialog.ShowDialog();
-
-                if (result.ToString() == "Ok")
-                {
-                    _destinationDir = dialog.FileName;
-                }
-            });
-            */
         }
     }
 }

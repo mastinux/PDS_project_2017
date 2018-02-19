@@ -149,12 +149,17 @@ namespace PDS_project_2017
                     else
                     {
                         // single file
-                        TCPSender tcpSender = new TCPSender(u.Id);
-                        tcpSender.SendFile(_path);
+                        //TCPSender tcpSender = new TCPSender(u.Id);
+                        //tcpSender.SendFile(_path);
+                        TCPSender tcpSender = new TCPSender(u.Id, _path);
+
+                        Thread tcpSenderThread = new Thread(tcpSender.SendFile);
+                        tcpSenderThread.IsBackground = true;
+                        tcpSenderThread.Start();
                     }
                 }
 
-                Hide();
+                Close();
             }
             else
                 this.ShowMessageAsync("Ops", "Choose at least one user");
