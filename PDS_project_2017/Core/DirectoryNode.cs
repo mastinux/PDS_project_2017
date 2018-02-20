@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PDS_project_2017.Core
 {
-    class DirectoryNode
+    public class DirectoryNode
     {
         private String _directoryName;
         private List<String> _fileNameNodes;

@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using System.Windows.Media.Animation;
+using Newtonsoft.Json;
+using PDS_project_2017.Core.Utils;
 
 namespace PDS_project_2017.Core
 {
@@ -37,14 +39,23 @@ namespace PDS_project_2017.Core
                 // blocking call
                 TcpClient client = _tcpServer.AcceptTcpClient();
 
-                ReceiveFile(client);
+                String command = TcpUtils.ReceiveCommand(client, Constants.TRANSFER_TCP_FILE.Length);
+
+                if (command.Equals(Constants.TRANSFER_TCP_FILE))
+                {
+                    ReceiveFile(client);
+                }
+                else
+                {
+                    ReceiveDirectory(client);
+                }
             }
         }
 
         private void ReceiveFile(TcpClient client)
         {
             // receive file name
-            String fileName = ReceiveFileName(client);
+            String fileName = TcpUtils.ReceiveDescription(client);
             String destinationDir = null;
 
             if (Properties.Settings.Default.AutoAccept)
@@ -76,52 +87,100 @@ namespace PDS_project_2017.Core
                     return;
                 }
             }
-            
-            String filePath = destinationDir + "\\" + fileName;
 
-            // receive file content
-            ReceiveFileContent(client.GetStream(), filePath);
+            string filePath = destinationDir + "\\" + fileName;
+
+            ReceiveFileContent(client, filePath);
+        }
+
+        private void ReceiveDirectory(TcpClient client)
+        {
+            string directoryDescription = TcpUtils.ReceiveDescription(client);
+            
+            DirectoryNode directoryNode = JsonConvert.DeserializeObject<DirectoryNode>(directoryDescription);
+
+            String destinationDir = null;
+
+            if (Properties.Settings.Default.AutoAccept)
+            {
+                SendAcceptanceResponse(client);
+
+                // retrieving default dir
+                destinationDir = Properties.Settings.Default.DefaultDir;
+            }
+            else
+            {
+                // asking user for file acceptance
+                FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(directoryNode);
+                // TODO create viewTree in window
+
+                // blocking call until window is closed
+                fileAcceptanceWindow.ShowDialog();
+
+                if (fileAcceptanceWindow.AreFilesAccepted)
+                {
+                    // file accepted
+                    SendAcceptanceResponse(client);
+
+                    destinationDir = fileAcceptanceWindow.DestinationDir;
+                }
+                else
+                {
+                    // file not accepted or window closed
+                    SendRefuseResponse(client);
+
+                    return;
+                }
+            }
+
+            PopulateDirectory(client, directoryNode, destinationDir);
+        }
+
+        private void PopulateDirectory(TcpClient tcpClient, DirectoryNode directoryNode, string destinationDir)
+        {
+            string directoryPath = destinationDir + "\\" + directoryNode.DirectoryName;
+            
+            Directory.CreateDirectory(directoryPath);
+
+            foreach (var fileName in directoryNode.FileNameNodes)
+            {
+                // TODO manage unordered file receivements
+
+                string filePath = directoryPath + "\\" + fileName;
+                ReceiveDirectoryFile(tcpClient, filePath);
+            }
+
+            foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
+            {
+                PopulateDirectory(tcpClient, innerDirectoryNode, directoryPath);
+            }
+        }
+
+        private void ReceiveDirectoryFile(TcpClient tcpClient, string filePath)
+        {
+            TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_FILE.Length);
+
+            String fileName = TcpUtils.ReceiveDescription(tcpClient);
+
+            SendAcceptanceResponse(tcpClient);
+
+            ReceiveFileContent(tcpClient, filePath);
         }
 
         private void SendRefuseResponse(TcpClient client)
         {
-            SendResponse(client, Constants.TRANSFER_TCP_REFUSE);
+            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_REFUSE);
         }
 
         private void SendAcceptanceResponse(TcpClient client)
         {
-            SendResponse(client, Constants.TRANSFER_TCP_ACCEPT);
+            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_ACCEPT);
         }
-
-        private void SendResponse(TcpClient client, String command)
+        
+        private void ReceiveFileContent(TcpClient tcpClient, String filePath)
         {
-            Byte[] data = new Byte[Constants.TRANSFER_TCP_COMMAND_LEN];
-            data = Encoding.UTF8.GetBytes(command);
+            NetworkStream networkStream = tcpClient.GetStream();
 
-            client.GetStream().Write(data, 0, data.Length);
-        }
-
-        private string ReceiveFileName(TcpClient client)
-        {
-            NetworkStream networkStream = client.GetStream();
-
-            Byte[] data = new Byte[Constants.TRANSFER_TCP_FILE_NAME_LEN];
-
-            // FILE NAME LENGHT
-            networkStream.Read(data, 0, Constants.TRANSFER_TCP_FILE_NAME_LEN);
-            int fileNameDataLenght = Convert.ToInt32(data[0]);
-
-            data = new byte[fileNameDataLenght];
-
-            // FILE NAME
-            networkStream.Read(data, 0, fileNameDataLenght);
-            String fileName = System.Text.Encoding.UTF8.GetString(data);
-
-            return fileName;
-        }
-
-        private void ReceiveFileContent(NetworkStream networkStream, String filePath)
-        {
             // FILE CONTENT LENGHT
             Byte[] data = new Byte[Constants.TRANSFER_TCP_FILE_CONTENT_LEN];
             networkStream.Read(data, 0, Constants.TRANSFER_TCP_FILE_CONTENT_LEN);

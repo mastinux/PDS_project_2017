@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using PDS_project_2017.Core.Utils;
 
 namespace PDS_project_2017.Core
 {
@@ -28,28 +29,21 @@ namespace PDS_project_2017.Core
 
         public void SendFile()
         {
-            InternalSendFile(_path);
+            SendDirectoryFile(_path);
         }
 
-        private void InternalSendFile(string fileName)
+        private void SendDirectoryFile(string fileName)
         {
+            TcpUtils.SendCommand(_tcpClient, Constants.TRANSFER_TCP_FILE);
+
             SendFileName(fileName);
 
-            if (!ReceiveAcceptanceResponse())
+            string response = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
+
+            if (!response.Equals(Constants.TRANSFER_TCP_ACCEPT))
                 return;
 
             SendFileContent(fileName);
-        }
-
-        private bool ReceiveAcceptanceResponse()
-        {
-            Byte[] data = new Byte[Constants.TRANSFER_TCP_COMMAND_LEN];
-
-            int n = _tcpClient.GetStream().Read(data, 0, Constants.TRANSFER_TCP_COMMAND_LEN);
-
-            String response = Encoding.UTF8.GetString(data);
-
-            return response.Equals(Constants.TRANSFER_TCP_ACCEPT);
         }
 
         private void SendFileContent(string filePath)
@@ -79,34 +73,38 @@ namespace PDS_project_2017.Core
         {
             String fileName = Path.GetFileName(filePath);
 
-            Byte[] fileNameLengthData = new Byte[Constants.TRANSFER_TCP_FILE_NAME_LEN];
-            Byte[] fileNameData = System.Text.Encoding.UTF8.GetBytes(fileName);
-            
-            NetworkStream networkStream = _tcpClient.GetStream();
-
-            // FILE NAME LENGTH
-            fileNameLengthData[0] = Convert.ToByte(fileNameData.Length);
-            networkStream.Write(fileNameLengthData, 0, 1);
-
-            // FILE NAME
-            networkStream.Write(fileNameData, 0, fileNameData.Length);
+            TcpUtils.SendDescription(_tcpClient, fileName);
         }
-
+        
         public void SendDirectory()
         {
-            //TreeView treeView = FilesUtils.ListDirectory(_path);
-            DirectoryNode directoryNode = FilesUtils.ListDirectoryNode(_path);
-            directoryNode.Print();
+            TcpUtils.SendCommand(_tcpClient, Constants.TRANSFER_TCP_DIRECTORY);
 
+            DirectoryNode directoryNode = FilesUtils.ListDirectoryNode(_path);
             string jsonDirectoryNode = JsonConvert.SerializeObject(directoryNode);
 
-            // TODO send json then wait confirmation for whole hieracy and send all
+            TcpUtils.SendDescription(_tcpClient, jsonDirectoryNode);
 
-            //Console.WriteLine(jsonDirectoryNode);
-            Console.WriteLine("----------------------------------------------");
+            string response = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
 
-            DirectoryNode reverseDirectoryNode = JsonConvert.DeserializeObject<DirectoryNode>(jsonDirectoryNode);
-            reverseDirectoryNode.Print();
+            if (!response.Equals(Constants.TRANSFER_TCP_ACCEPT))
+                return;
+
+            SendDirectoryContent(directoryNode, _path);
+        }
+
+        private void SendDirectoryContent(DirectoryNode directoryNode, string directoryPath)
+        {
+            foreach (var fileName in directoryNode.FileNameNodes)
+            {
+                string filePath = directoryPath + "\\" + fileName;
+                SendDirectoryFile(filePath);
+            }
+
+            foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
+            {
+                SendDirectoryContent(innerDirectoryNode, directoryPath + "\\" + innerDirectoryNode.DirectoryName);
+            }
         }
     }
 }

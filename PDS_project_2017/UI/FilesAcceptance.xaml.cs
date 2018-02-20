@@ -23,18 +23,16 @@ namespace PDS_project_2017
     /// </summary>
     public partial class FilesAcceptance : MetroWindow
     {
-        private string _fileName;
         private string _destinationDir;
         private bool _filesAccepted;
         
         public string DestinationDir { get => _destinationDir; }
         public bool AreFilesAccepted { get => _filesAccepted; }
 
-        public FilesAcceptance(string fileName)
+        private void BaseConstructor()
         {
             InitializeComponent();
 
-            _fileName = fileName;
             _destinationDir = null;
             _filesAccepted = false;
 
@@ -43,8 +41,23 @@ namespace PDS_project_2017
                 DestinationDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
                 _destinationDir = Properties.Settings.Default.DefaultDir;
             }
+        }
 
-            Title = String.Format("Accept \"{0}\"", fileName);
+        public FilesAcceptance(string fileName)
+        {
+            BaseConstructor();
+            SetTitle(fileName);
+        }
+
+        private void SetTitle(string title)
+        {
+            Title = String.Format("Accept \"{0}\"", title);
+        }
+
+        public FilesAcceptance(DirectoryNode directoryNode)
+        {
+            BaseConstructor();
+            SetTitle(directoryNode.DirectoryName);
         }
 
         private void Accept_Button_Click(object sender, RoutedEventArgs e)

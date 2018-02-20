@@ -2,12 +2,15 @@
 
 Single file transfer using TCP connection
 
-|Sender||Receiver|
-|-|:-:|-:|
-|| --- file name lenght (int) ---> ||
-|| --- file name (String) ---> ||
-|| <-- "ok " -- ||
-||or||
-|| <-- "no " -- ||
-|| [ --- file content length (long) ---> ] ||
-|| [ --- file content (byte[]) ---> ] ||
+|Sender||Receiver||
+|-|:-:|-:||
+|| --- "FIL" ---> ||single file|
+|| or |||
+|| --- "DIR" ---> ||directory structure|
+|| --- description lenght (int) ---> |||
+|| --- description (String) ---> |||
+|| <-- "OK " -- |||
+||or|||
+|| <-- "NO " -- |||
+|| [ --- content length (long) ---> ] |||
+|| [ --- content (byte[]) ---> ] |||
