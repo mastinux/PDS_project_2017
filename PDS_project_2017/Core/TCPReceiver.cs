@@ -140,6 +140,9 @@ namespace PDS_project_2017.Core
         private void PopulateDirectory(TcpClient tcpClient, DirectoryNode directoryNode, string destinationDir)
         {
             string directoryPath = destinationDir + "\\" + directoryNode.DirectoryName;
+
+            directoryPath = FilesUtils.CheckDirectoryExistance(directoryPath);
+
             Directory.CreateDirectory(directoryPath);
 
             foreach (var fileNode in directoryNode.FileNodes)
@@ -174,7 +177,10 @@ namespace PDS_project_2017.Core
 
             Byte[] buffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
-            BinaryWriter fileWriter = new BinaryWriter(File.Open(filePath, FileMode.Create));
+            filePath = FilesUtils.CheckFileExistance(filePath);
+
+            FileStream file = File.Open(filePath, FileMode.Create);
+            BinaryWriter fileWriter = new BinaryWriter(file);
 
             // FILE CONTENT
             while (fileContentLenghtReceived < fileNode.Dimension)

@@ -71,5 +71,41 @@ namespace PDS_project_2017.Core
                 PrintTreeView(node, level + 1);
             }
         }
+
+        public static string CheckFileExistance(string filePath)
+        {
+            int count = 1;
+
+            string fileDirectory = Path.GetDirectoryName(filePath);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+            string fileExtension = Path.GetExtension(filePath);
+
+            string fileNameFormat = fileDirectory + "\\" + fileNameWithoutExtension + " ({0})" + fileExtension;
+
+            while (File.Exists(filePath))
+            {
+                filePath = string.Format(fileNameFormat, count);
+
+                count++;
+            }
+
+            return filePath;
+        }
+
+        public static string CheckDirectoryExistance(string directoryPath)
+        {
+            int count = 1;
+
+            string directoryNameFormat = directoryPath + " ({0})";
+
+            while (Directory.Exists(directoryPath))
+            {
+                directoryPath = string.Format(directoryNameFormat, count);
+
+                count++;
+            }
+
+            return directoryPath;
+        }
     }
 }
