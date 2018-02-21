@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Markup;
 using System.Windows.Media.Animation;
 using Newtonsoft.Json;
+using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
 
 namespace PDS_project_2017.Core
@@ -28,7 +29,6 @@ namespace PDS_project_2017.Core
             IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIPAddress().ToString());
 
             _tcpServer = new TcpListener(localAddr, Constants.TRANSFER_TCP_PORT);
-
             _tcpServer.Start();
         }
 
@@ -55,55 +55,56 @@ namespace PDS_project_2017.Core
         private void ReceiveFile(TcpClient client)
         {
             // receive file name
-            String fileName = TcpUtils.ReceiveDescription(client);
+            String jsonFileNode = TcpUtils.ReceiveDescription(client);
+            FileNode fileNode = JsonConvert.DeserializeObject<FileNode>(jsonFileNode);
+
             String destinationDir = null;
 
+            // retrieveing destination dir
             if (Properties.Settings.Default.AutoAccept)
             {
-                SendAcceptanceResponse(client);
+                TcpUtils.SendAcceptanceResponse(client);
 
-                // retrieving default dir
+                // default dir
                 destinationDir = Properties.Settings.Default.DefaultDir;
             }
             else
             {
                 // asking user for file acceptance
-                FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(fileName);
+                FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(fileNode);
                 // blocking call until window is closed
                 fileAcceptanceWindow.ShowDialog();
 
                 if (fileAcceptanceWindow.AreFilesAccepted)
                 {
                     // file accepted
-                    SendAcceptanceResponse(client);
+                    TcpUtils.SendAcceptanceResponse(client);
 
                     destinationDir = fileAcceptanceWindow.DestinationDir;
                 }
                 else
                 {
                     // file not accepted or window closed
-                    SendRefuseResponse(client);
+                    TcpUtils.SendRefuseResponse(client);
 
                     return;
                 }
             }
 
-            string filePath = destinationDir + "\\" + fileName;
-
-            ReceiveFileContent(client, filePath);
+            ReceiveFileContent(client, fileNode, destinationDir);
         }
-
+        
         private void ReceiveDirectory(TcpClient client)
         {
-            string directoryDescription = TcpUtils.ReceiveDescription(client);
-            
-            DirectoryNode directoryNode = JsonConvert.DeserializeObject<DirectoryNode>(directoryDescription);
+            string jsonDirectoryNodeDescription = TcpUtils.ReceiveDescription(client);
+            DirectoryNode directoryNode = JsonConvert.DeserializeObject<DirectoryNode>(jsonDirectoryNodeDescription);
 
             String destinationDir = null;
 
+            // retrieving destination dir
             if (Properties.Settings.Default.AutoAccept)
             {
-                SendAcceptanceResponse(client);
+                TcpUtils.SendAcceptanceResponse(client);
 
                 // retrieving default dir
                 destinationDir = Properties.Settings.Default.DefaultDir;
@@ -120,14 +121,14 @@ namespace PDS_project_2017.Core
                 if (fileAcceptanceWindow.AreFilesAccepted)
                 {
                     // file accepted
-                    SendAcceptanceResponse(client);
+                    TcpUtils.SendAcceptanceResponse(client);
 
                     destinationDir = fileAcceptanceWindow.DestinationDir;
                 }
                 else
                 {
                     // file not accepted or window closed
-                    SendRefuseResponse(client);
+                    TcpUtils.SendRefuseResponse(client);
 
                     return;
                 }
@@ -135,19 +136,15 @@ namespace PDS_project_2017.Core
 
             PopulateDirectory(client, directoryNode, destinationDir);
         }
-
+        
         private void PopulateDirectory(TcpClient tcpClient, DirectoryNode directoryNode, string destinationDir)
         {
             string directoryPath = destinationDir + "\\" + directoryNode.DirectoryName;
-            
             Directory.CreateDirectory(directoryPath);
 
-            foreach (var fileName in directoryNode.FileNameNodes)
+            foreach (var fileNode in directoryNode.FileNodes)
             {
-                // TODO manage unordered file receivements
-
-                string filePath = directoryPath + "\\" + fileName;
-                ReceiveDirectoryFile(tcpClient, filePath);
+                ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
             }
 
             foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
@@ -156,36 +153,23 @@ namespace PDS_project_2017.Core
             }
         }
 
-        private void ReceiveDirectoryFile(TcpClient tcpClient, string filePath)
+        private void ReceiveDirectoryFile(TcpClient tcpClient, FileNode fileNode, string destinationDir)
         {
             TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_FILE.Length);
 
-            String fileName = TcpUtils.ReceiveDescription(tcpClient);
+            String jsonFileNodeDescription = TcpUtils.ReceiveDescription(tcpClient);
 
-            SendAcceptanceResponse(tcpClient);
+            TcpUtils.SendAcceptanceResponse(tcpClient);
 
-            ReceiveFileContent(tcpClient, filePath);
-        }
-
-        private void SendRefuseResponse(TcpClient client)
-        {
-            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_REFUSE);
-        }
-
-        private void SendAcceptanceResponse(TcpClient client)
-        {
-            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_ACCEPT);
+            ReceiveFileContent(tcpClient, fileNode, destinationDir);
         }
         
-        private void ReceiveFileContent(TcpClient tcpClient, String filePath)
+        private void ReceiveFileContent(TcpClient tcpClient, FileNode fileNode, string destinationDir)
         {
+            string filePath = destinationDir + "\\" + fileNode.Name;
+
             NetworkStream networkStream = tcpClient.GetStream();
-
-            // FILE CONTENT LENGHT
-            Byte[] data = new Byte[Constants.TRANSFER_TCP_FILE_CONTENT_LEN];
-            networkStream.Read(data, 0, Constants.TRANSFER_TCP_FILE_CONTENT_LEN);
-            long fileContentLenght = BitConverter.ToInt64(data, 0);
-
+            
             long fileContentLenghtReceived = 0;
 
             Byte[] buffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
@@ -193,7 +177,7 @@ namespace PDS_project_2017.Core
             BinaryWriter fileWriter = new BinaryWriter(File.Open(filePath, FileMode.Create));
 
             // FILE CONTENT
-            while (fileContentLenghtReceived < fileContentLenght)
+            while (fileContentLenghtReceived < fileNode.Dimension)
             {
                 var bytesRead = networkStream.Read(buffer, 0, buffer.Length);
 

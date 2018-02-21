@@ -2,15 +2,17 @@
 
 Single file transfer using TCP connection
 
-|Sender||Receiver||
+**S** sender  
+**R** receiver
+
+|S||R||
 |-|:-:|-:||
-|| --- "FIL" ---> ||single file|
+|| --- "FIL" ---> |||
 || or |||
-|| --- "DIR" ---> ||directory structure|
+|| --- "DIR" ---> |||
 || --- description lenght (int) ---> |||
-|| --- description (String) ---> |||
+|| --- description (String) ---> || FileNode or DirectoryNode|
 || <-- "OK " -- |||
 ||or|||
 || <-- "NO " -- |||
-|| [ --- content length (long) ---> ] |||
 || [ --- content (byte[]) ---> ] |||

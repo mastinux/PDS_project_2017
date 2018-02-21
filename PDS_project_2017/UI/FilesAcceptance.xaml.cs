@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PDS_project_2017.Core;
+using PDS_project_2017.Core.Entities;
 
 namespace PDS_project_2017
 {
@@ -43,10 +44,10 @@ namespace PDS_project_2017
             }
         }
 
-        public FilesAcceptance(string fileName)
+        public FilesAcceptance(FileNode fileNode)
         {
             BaseConstructor();
-            SetTitle(fileName);
+            SetTitle(fileNode.Name);
         }
 
         private void SetTitle(string title)

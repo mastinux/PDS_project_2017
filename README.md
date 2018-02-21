@@ -1,9 +1,9 @@
 ﻿# TODOs
 
 - [x] impostazioni utente : guarda .NET Application Settings
-	- [ ] in ricezione conferma esplicita o automatica
-	- [ ] specifica percorso o percorso di default
-	- [ ] identità utente con nome e immagine
+	- [x] in ricezione conferma esplicita o automatica
+	- [x] specifica percorso o percorso di default
+	- [x] identità utente con nome e immagine
 
 - [x] menu contestuale (tasto destro) : per condivisione file/cartella
 

@@ -9,7 +9,7 @@ namespace PDS_project_2017.Core.Utils
 {
     class TcpUtils
     {
-        public static void SendCommand(TcpClient tcpClient, String command)
+        private static void SendCommand(TcpClient tcpClient, String command)
         {
             Byte[] data = new Byte[command.Length];
 
@@ -26,6 +26,27 @@ namespace PDS_project_2017.Core.Utils
 
             return Encoding.UTF8.GetString(data);
         }
+        
+        public static void SendRefuseResponse(TcpClient client)
+        {
+            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_REFUSE);
+        }
+
+        public static void SendAcceptanceResponse(TcpClient client)
+        {
+            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_ACCEPT);
+        }
+
+        public static void SendFileRequest(TcpClient client)
+        {
+            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_FILE);
+        }
+
+        public static void SendDirectoryRequest(TcpClient client)
+        {
+            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_DIRECTORY);
+        }
+
 
         public static void SendDescription(TcpClient tcpClient, string description)
         {

@@ -11,13 +11,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MahApps.Metro.Controls;
 
 namespace PDS_project_2017
 {
     /// <summary>
     /// Logica di interazione per TransferProgress.xaml
     /// </summary>
-    public partial class TransferProgress : Window
+    public partial class TransferProgress : MetroWindow
     {
         public TransferProgress()
         {

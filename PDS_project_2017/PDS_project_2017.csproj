@@ -97,7 +97,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Core\Constants.cs" />
-    <Compile Include="Core\DirectoryNode.cs" />
+    <Compile Include="Core\Entities\DirectoryNode.cs" />
+    <Compile Include="Core\Entities\FileNode.cs" />
     <Compile Include="Core\Utils\FilesUtils.cs" />
     <Compile Include="Core\Utils\BitmapImageJsonConverter.cs" />
     <Compile Include="Core\TCPReceiver.cs" />
@@ -105,7 +106,7 @@
     <Compile Include="Core\UdpListener.cs" />
     <Compile Include="Core\UdpRequester.cs" />
     <Compile Include="Core\Utils\IpUtils.cs" />
-    <Compile Include="Core\User.cs" />
+    <Compile Include="Core\Entities\User.cs" />
     <Compile Include="Core\Utils\TcpUtils.cs" />
     <Compile Include="UI\Utils\UserUtils.cs" />
     <Compile Include="FileShellExtension.cs" />
@@ -193,5 +194,6 @@
   <ItemGroup>
     <None Include="Resources\Icon1.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

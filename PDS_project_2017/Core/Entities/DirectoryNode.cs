@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PDS_project_2017.Core.Entities;
 
 namespace PDS_project_2017.Core
 {
     public class DirectoryNode
     {
         private String _directoryName;
-        private List<String> _fileNameNodes;
+        private List<FileNode> _fileNodes;
         private List<DirectoryNode> _directoryNodes;
 
         public String DirectoryName { get => _directoryName; }
-        public List<String> FileNameNodes { get => _fileNameNodes; }
+        public List<FileNode> FileNodes { get => _fileNodes; }
         public List<DirectoryNode> DirectoryNodes { get => _directoryNodes; }
 
         public DirectoryNode(String directoryName)
@@ -21,7 +22,7 @@ namespace PDS_project_2017.Core
             _directoryName = directoryName;
 
             _directoryNodes = new List<DirectoryNode>();
-            _fileNameNodes = new List<string>();
+            _fileNodes = new List<FileNode>();
         }
 
         public void AddChildDirectory(DirectoryNode directoryNode)
@@ -29,9 +30,9 @@ namespace PDS_project_2017.Core
             _directoryNodes.Add(directoryNode);
         }
 
-        public void AddChildFile(String fileName)
+        public void AddChildFile(FileNode fileNode)
         {
-            _fileNameNodes.Add(fileName);
+            _fileNodes.Add(fileNode);
         }
 
         public void Print()
@@ -49,10 +50,10 @@ namespace PDS_project_2017.Core
                 PrintDirectoryNode(dn, level + 1);
             }
 
-            foreach (var fn in directoryNode.FileNameNodes)
+            foreach (var fn in directoryNode.FileNodes)
             {
                 PrintIndentation(level + 1);
-                Console.WriteLine(fn);
+                Console.WriteLine(fn.Name + " " + fn.Dimension);
             }
         }
 

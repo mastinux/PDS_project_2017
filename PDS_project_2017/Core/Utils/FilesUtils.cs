@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using PDS_project_2017.Core.Entities;
 
 namespace PDS_project_2017.Core
 {
     class FilesUtils
     {
-        public static DirectoryNode ListDirectoryNode(string path)
+        public static DirectoryNode BuildDirectoryNode(string path)
         {
             var rootDirectoryInfo = new DirectoryInfo(path);
 
@@ -21,7 +22,13 @@ namespace PDS_project_2017.Core
                 directoryNode.AddChildDirectory(CreateDirectoryNode(directory));
 
             foreach (var file in directoryInfo.GetFiles())
-                directoryNode.AddChildFile(file.Name);
+            {
+                FileNode fileNode = new FileNode();
+                fileNode.Name = file.Name;
+                fileNode.Dimension = file.Length;
+
+                directoryNode.AddChildFile(fileNode);
+            }
 
             return directoryNode;
         }

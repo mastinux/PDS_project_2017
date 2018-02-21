@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
 
 namespace PDS_project_2017.Core
@@ -32,30 +33,25 @@ namespace PDS_project_2017.Core
             SendDirectoryFile(_path);
         }
 
-        private void SendDirectoryFile(string fileName)
+        private void SendDirectoryFile(string filePath)
         {
-            TcpUtils.SendCommand(_tcpClient, Constants.TRANSFER_TCP_FILE);
+            TcpUtils.SendFileRequest(_tcpClient);
 
-            SendFileName(fileName);
+            SendFileNodeDescription(filePath);
 
-            string response = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
+            string responseCommand = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
 
-            if (!response.Equals(Constants.TRANSFER_TCP_ACCEPT))
+            if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
                 return;
 
-            SendFileContent(fileName);
+            SendFileContent(filePath);
         }
 
         private void SendFileContent(string filePath)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             NetworkStream networkStream = _tcpClient.GetStream();
-
-            // FILE CONTENT LENGHT
-            long fileContentLenght = new FileInfo(filePath).Length;
-            Byte[] fileContentLenghtData = BitConverter.GetBytes(fileContentLenght);
-            networkStream.Write(fileContentLenghtData, 0, fileContentLenghtData.Length);
-
+            
             Byte[] fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
             int bytesRead;
@@ -69,25 +65,34 @@ namespace PDS_project_2017.Core
             fileStream.Close();
         }
 
-        private void SendFileName(string filePath)
+        private void SendFileNodeDescription(string filePath)
         {
+            // FILE NAME
             String fileName = Path.GetFileName(filePath);
+            // FILE DIMENSION
+            long dimension = new FileInfo(filePath).Length;
 
-            TcpUtils.SendDescription(_tcpClient, fileName);
+            FileNode fileNode = new FileNode();
+            fileNode.Name = fileName;
+            fileNode.Dimension = dimension;
+
+            string jsonFileNodeDescription = JsonConvert.SerializeObject(fileNode);
+
+            TcpUtils.SendDescription(_tcpClient, jsonFileNodeDescription);
         }
         
         public void SendDirectory()
         {
-            TcpUtils.SendCommand(_tcpClient, Constants.TRANSFER_TCP_DIRECTORY);
+            TcpUtils.SendDirectoryRequest(_tcpClient);
 
-            DirectoryNode directoryNode = FilesUtils.ListDirectoryNode(_path);
-            string jsonDirectoryNode = JsonConvert.SerializeObject(directoryNode);
+            DirectoryNode directoryNode = FilesUtils.BuildDirectoryNode(_path);
+            string jsonDirectoryNodeDescription = JsonConvert.SerializeObject(directoryNode);
 
-            TcpUtils.SendDescription(_tcpClient, jsonDirectoryNode);
+            TcpUtils.SendDescription(_tcpClient, jsonDirectoryNodeDescription);
 
-            string response = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
+            string responseCommand = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
 
-            if (!response.Equals(Constants.TRANSFER_TCP_ACCEPT))
+            if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
                 return;
 
             SendDirectoryContent(directoryNode, _path);
@@ -95,9 +100,9 @@ namespace PDS_project_2017.Core
 
         private void SendDirectoryContent(DirectoryNode directoryNode, string directoryPath)
         {
-            foreach (var fileName in directoryNode.FileNameNodes)
+            foreach (var fileNode in directoryNode.FileNodes)
             {
-                string filePath = directoryPath + "\\" + fileName;
+                string filePath = directoryPath + "\\" + fileNode.Name;
                 SendDirectoryFile(filePath);
             }
 
