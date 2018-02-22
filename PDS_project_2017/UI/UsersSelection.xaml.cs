@@ -41,6 +41,8 @@ namespace PDS_project_2017
             InitializeComponent();
             Closing += ClosingUserSelection;
 
+            DataContext = this;
+
             _path = path;
 
             // parse path and set in window title
@@ -52,8 +54,6 @@ namespace PDS_project_2017
             // _availableUserView maintains _availableUsers ordered in UI
             _availableUsersView = CollectionViewSource.GetDefaultView(_availableUsers);
             _availableUsersView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
-
-            DataContext = this;
             
             // udp socket requesting available users
             _udpRequester = new UdpRequester();
@@ -144,18 +144,20 @@ namespace PDS_project_2017
                     if (_isDirectory)
                     {
                         // directory
-                        TCPSender tcpSender = new TCPSender(u.Id, _path);
+                        TCPSender tcpSender = new TCPSender(u.Id, u.Name, _path);
 
                         Thread tcpSenderThread = new Thread(tcpSender.SendDirectory);
+                        tcpSenderThread.SetApartmentState(ApartmentState.STA);
                         tcpSenderThread.IsBackground = true;
                         tcpSenderThread.Start();
                     }
                     else
                     {
                         // single file
-                        TCPSender tcpSender = new TCPSender(u.Id, _path);
+                        TCPSender tcpSender = new TCPSender(u.Id, u.Name, _path);
 
                         Thread tcpSenderThread = new Thread(tcpSender.SendFile);
+                        tcpSenderThread.SetApartmentState(ApartmentState.STA);
                         tcpSenderThread.IsBackground = true;
                         tcpSenderThread.Start();
                     }

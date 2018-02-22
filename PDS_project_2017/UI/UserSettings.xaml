@@ -6,7 +6,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PDS_project_2017.UI"
         mc:Ignorable="d"
-        Title="User Settings" Height="300" Width="400" WindowStartupLocation="CenterScreen" MinHeight="300" MinWidth="400">
+        Title="User Settings" WindowStartupLocation="CenterScreen" Height="300" MinHeight="300" Width="400" MinWidth="400">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
+using PDS_project_2017.UI;
 
 namespace PDS_project_2017.Core
 {
@@ -20,11 +21,13 @@ namespace PDS_project_2017.Core
 
         private TcpClient _tcpClient;
         private String _path;
+        private string _userName;
 
-        public TCPSender(String server, String path)
+        public TCPSender(String server, string userName, String path)
         {
             _tcpClient = new TcpClient(server, Constants.TRANSFER_TCP_PORT);
 
+            _userName = userName;
             _path = path;
         }
 
@@ -42,27 +45,56 @@ namespace PDS_project_2017.Core
             string responseCommand = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
 
             if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
+            {
+                Console.WriteLine("file refused");
                 return;
+            }
 
             SendFileContent(filePath);
         }
 
         private void SendFileContent(string filePath)
         {
+            // TRANSFER PROGRESS
+            TransferProgress transferProgressWindow = null;
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                transferProgressWindow = new TransferProgress(_userName, Path.GetFileName(filePath));
+
+                transferProgressWindow.Show();
+            }));
+
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             NetworkStream networkStream = _tcpClient.GetStream();
             
             Byte[] fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
             int bytesRead;
+            int totalBytesRead = 0;
+
+            DateTime start = DateTime.Now;
 
             // FILE CONTENT
             while ((bytesRead = fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length)) > 0)
             {
                 networkStream.Write(fileContentBuffer, 0, bytesRead);
+                totalBytesRead += bytesRead;
+
+                Console.WriteLine((float)totalBytesRead / (float)fileStream.Length);
+
+                Thread.Sleep(250);
             }
 
             fileStream.Close();
+
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                transferProgressWindow.Close();
+            }));
+            
+            DateTime end = DateTime.Now;
+
+            Console.WriteLine("file sent in " + (end - start).Seconds + " milliseconds");
         }
 
         private void SendFileNodeDescription(string filePath)

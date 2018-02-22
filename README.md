@@ -9,12 +9,12 @@
 
 - [x] socket udp in ascolto per richiesta invio file : host che vuole inviare manda più udp multicast finchè non sceglie i destinatari (risposta con nome e immagine)
 
-- [ ] protocollo invio e ricezione file/cartella : simile a DP1
+- [x] protocollo invio e ricezione file/cartella : simile a DP1
 
-- [ ] ricezione file con lo stesso nome
+- [x] ricezione file con lo stesso nome
 
 - [x] modalità privata: non risponde ma può inviare
 
 - [ ] in invio : barra avanzamento, tempo necessario e tasto Annulla
 
-- [ ] invio a più utenti lo stesso file/cartella contemporaneamente
+- [x] invio a più utenti lo stesso file/cartella contemporaneamente

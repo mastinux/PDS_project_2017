@@ -64,7 +64,6 @@ namespace PDS_project_2017
             tcpReceiverThread.Start();
         }
 
-
         protected override void OnInitialized(EventArgs e)
         {
             StateChanged += OnStateChanged;
@@ -181,7 +180,7 @@ namespace PDS_project_2017
             // TODO need hwnd
             // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
-
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Hide();

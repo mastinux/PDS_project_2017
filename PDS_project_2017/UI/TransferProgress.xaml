@@ -6,8 +6,29 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PDS_project_2017.UI"
         mc:Ignorable="d"
-        Title="LAN-Sharing - Transfer Progress" Height="300" Width="300">
+        Title="LAN-Sharing - Transfer Progress" Height="100" MinHeight="100" Width="700" MinWidth="700">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
+            <TextBlock Text="Destination User: "/>
+            <TextBlock x:Name="DestinationUser" Text=""/>
+        </DockPanel>
+
+        <DockPanel Grid.Row="1" Grid.Column="0">
+            <TextBlock Text="File Name: " VerticalAlignment="Center"/>
+            <TextBlock x:Name="FileName" Text="" VerticalAlignment="Center"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="1">
+            <ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="0" Margin="5,0,5,0"/>
+        </DockPanel>
+
     </Grid>
 </Controls:MetroWindow>

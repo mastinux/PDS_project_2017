@@ -6,7 +6,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PDS_project_2017.UI"
         mc:Ignorable="d"
-        Title="LAN-Sharing - Files Acceptance" Height="125" Width="300" WindowStartupLocation="CenterScreen" MinHeight="125" MinWidth="300">
+        Title="LAN-Sharing - Files Acceptance" WindowStartupLocation="CenterScreen" Height="200" MinHeight="200" Width="300" MinWidth="300">
     <Grid>
         <DockPanel LastChildFill="True">
 

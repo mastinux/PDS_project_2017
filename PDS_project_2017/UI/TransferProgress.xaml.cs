@@ -20,12 +20,20 @@ namespace PDS_project_2017
     /// </summary>
     public partial class TransferProgress : MetroWindow
     {
-        public TransferProgress()
+        public TransferProgress(string userName, string fileName)
         {
+            // TODO read some material about uwp
+            // to be used in combination with wpf
+
             InitializeComponent();
 
-            // TODO read some matirial about uwp
-            // to be used in combination with wpf
+            DataContext = this;
+
+            DestinationUser.Text = userName;
+            FileName.Text = fileName;
+            ProgressBar.Value = 0;
         }
+
+        // TODO update progress bar value
     }
 }

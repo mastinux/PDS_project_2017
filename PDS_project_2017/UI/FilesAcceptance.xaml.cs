@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PDS_project_2017.Core;
 using PDS_project_2017.Core.Entities;
@@ -63,6 +64,12 @@ namespace PDS_project_2017
 
         private void Accept_Button_Click(object sender, RoutedEventArgs e)
         {
+            if (_destinationDir == null)
+            {
+                this.ShowMessageAsync("Ops", "Choose destination directory");
+                return;
+            }
+
             _filesAccepted = true;
 
             this.Close();
