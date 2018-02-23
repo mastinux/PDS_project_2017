@@ -43,6 +43,9 @@ namespace PDS_project_2017
                 DestinationDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
                 _destinationDir = Properties.Settings.Default.DefaultDir;
             }
+
+            Top = Constants.RECEIVER_WINDOW_TOP;
+            Left = Constants.RECEIVER_WINDOW_LEFT;
         }
 
         public FilesAcceptance(FileNode fileNode)

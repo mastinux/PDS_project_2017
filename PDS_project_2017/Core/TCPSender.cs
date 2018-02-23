@@ -23,6 +23,14 @@ namespace PDS_project_2017.Core
         private String _path;
         private string _userName;
 
+        private bool _continueTransferProcess;
+
+        public delegate void UpdateProgressBarValue(int value);
+        public static event UpdateProgressBarValue UpdateProgressBarEvent;
+
+        public delegate void UpdateRemainingTimeValue(TimeSpan timeSpan);
+        public static event UpdateRemainingTimeValue UpdateRemainingTimeEvent;
+
         public TCPSender(String server, string userName, String path)
         {
             _tcpClient = new TcpClient(server, Constants.TRANSFER_TCP_PORT);
@@ -56,45 +64,68 @@ namespace PDS_project_2017.Core
         private void SendFileContent(string filePath)
         {
             // TRANSFER PROGRESS
-            TransferProgress transferProgressWindow = null;
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                transferProgressWindow = new TransferProgress(_userName, Path.GetFileName(filePath));
-
-                transferProgressWindow.Show();
-            }));
+            TransferProgress transferProgressWindow = InitTransferProgressWindow(filePath);
 
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            long fileDimension = fileStream.Length;
             NetworkStream networkStream = _tcpClient.GetStream();
             
             Byte[] fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
             int bytesRead;
             int totalBytesRead = 0;
+            _continueTransferProcess = true;
 
-            DateTime start = DateTime.Now;
+            DateTime baseDateTime = DateTime.Now;
 
             // FILE CONTENT
-            while ((bytesRead = fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length)) > 0)
+            while ((bytesRead = fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length)) > 0 && _continueTransferProcess)
             {
                 networkStream.Write(fileContentBuffer, 0, bytesRead);
                 totalBytesRead += bytesRead;
-
-                Console.WriteLine((float)totalBytesRead / (float)fileStream.Length);
-
+                UpdateProgressBarEvent((int)(((float) totalBytesRead / (float) fileStream.Length) * 100));
                 Thread.Sleep(250);
+
+                DateTime currentDateTime = DateTime.Now;
+                TimeSpan timeSpanDifference = currentDateTime - baseDateTime;
+                double transmissionSpeed = (double)bytesRead / timeSpanDifference.TotalSeconds;
+                long remainingFileDimension = fileDimension - (long)totalBytesRead;
+                double remainingTime = (double)remainingFileDimension / transmissionSpeed;
+                TimeSpan remainingTimeSpan = TimeSpan.FromSeconds(remainingTime);
+                UpdateRemainingTimeEvent(remainingTimeSpan);
+                
+                baseDateTime = currentDateTime;
+            }
+
+            if (_continueTransferProcess == false)
+            {
+                Console.WriteLine("transfer process cancelled");
             }
 
             fileStream.Close();
 
+            CloseTransferProgressWindow(transferProgressWindow);
+        }
+
+        private void CloseTransferProgressWindow(TransferProgress transferProgressWindow)
+        {
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
             {
                 transferProgressWindow.Close();
             }));
-            
-            DateTime end = DateTime.Now;
+        }
 
-            Console.WriteLine("file sent in " + (end - start).Seconds + " milliseconds");
+        private TransferProgress InitTransferProgressWindow(string filePath)
+        {
+            TransferProgress transferProgressWindow = null;
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                transferProgressWindow = new TransferProgress(_userName, Path.GetFileName(filePath));
+                transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
+                transferProgressWindow.Show();
+            }));
+
+            return transferProgressWindow;
         }
 
         private void SendFileNodeDescription(string filePath)

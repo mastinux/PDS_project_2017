@@ -6,28 +6,37 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PDS_project_2017.UI"
         mc:Ignorable="d"
-        Title="LAN-Sharing - Transfer Progress" Height="100" MinHeight="100" Width="700" MinWidth="700">
+        Title="LAN-Sharing - Transfer Progress" Height="100" MinHeight="100" Width="600" MinWidth="600" WindowStartupLocation="Manual">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
-            <TextBlock Text="Destination User: "/>
-            <TextBlock x:Name="DestinationUser" Text=""/>
+        <DockPanel Grid.Row="0" Grid.ColumnSpan="3">
+            <TextBlock Text="Destination user:" Margin="0,0,5,0"/>
+            <TextBlock x:Name="UserName" Text=""/>
         </DockPanel>
 
         <DockPanel Grid.Row="1" Grid.Column="0">
-            <TextBlock Text="File Name: " VerticalAlignment="Center"/>
-            <TextBlock x:Name="FileName" Text="" VerticalAlignment="Center"/>
+            <TextBlock Text="File Name:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <TextBlock x:Name="FileName" Text="" VerticalAlignment="Center" Margin="0,0,5,0"/>
         </DockPanel>
         <DockPanel Grid.Row="1" Grid.Column="1">
-            <ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="0" Margin="5,0,5,0"/>
+            <ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="0" Margin="0,0,5,0"/>
+        </DockPanel>
+        <DockPanel Grid.Row="1" Grid.Column="2">
+            <Button x:Name="CancelButton" VerticalAlignment="Center" Content="X" IsCancel="True" ToolTip="Cancel" Click="CancelButton_OnClick" Margin="0,0,5,0"/>
+        </DockPanel>
+        <DockPanel Grid.Row="2" Grid.Column="1">
+            <TextBlock Text="Remaining time:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+            <TextBlock x:Name="RemainingTime" Text="" VerticalAlignment="Center"/>
         </DockPanel>
 
     </Grid>

@@ -23,5 +23,13 @@ namespace PDS_project_2017.Core
         public const string TRANSFER_TCP_DIRECTORY = "DIR";
         public const string TRANSFER_TCP_ACCEPT = "OK ";
         public const string TRANSFER_TCP_REFUSE = "NO ";
+        public static int TRANSFER_TCP_READ_TIMEOUT = 10;
+        
+        // windows positions
+        private static double offset = 70;
+        public static double SENDER_WINDOW_TOP = offset;
+        public static double SENDER_WINDOW_LEFT = offset;
+        public static double RECEIVER_WINDOW_TOP = offset;
+        public static double RECEIVER_WINDOW_LEFT = System.Windows.SystemParameters.WorkArea.Width / 2 + offset;
     }
 }

@@ -64,6 +64,9 @@ namespace PDS_project_2017
             Thread udpListenerThread = new Thread(_udpRequester.RetrieveAvailableUsers);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
+
+            Top = Constants.SENDER_WINDOW_TOP;
+            Left = Constants.SENDER_WINDOW_LEFT;
         }
 
         private void SetPathInTitle()
@@ -181,6 +184,11 @@ namespace PDS_project_2017
         {
             // terminating thread loop
             _udpRequester.StopRequesting();
+        }
+
+        private void SelectAll_Button_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

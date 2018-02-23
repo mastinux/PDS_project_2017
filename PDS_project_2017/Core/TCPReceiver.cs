@@ -172,6 +172,7 @@ namespace PDS_project_2017.Core
             string filePath = destinationDir + "\\" + fileNode.Name;
 
             NetworkStream networkStream = tcpClient.GetStream();
+            networkStream.ReadTimeout = Constants.TRANSFER_TCP_READ_TIMEOUT * 1000;
             
             long fileContentLenghtReceived = 0;
 
@@ -185,7 +186,18 @@ namespace PDS_project_2017.Core
             // FILE CONTENT
             while (fileContentLenghtReceived < fileNode.Dimension)
             {
-                var bytesRead = networkStream.Read(buffer, 0, buffer.Length);
+                int bytesRead = 0;
+
+                try
+                {
+                    bytesRead = networkStream.Read(buffer, 0, buffer.Length);
+                }
+                catch (IOException ioe)
+                {
+                    // sender closed connection
+                    fileWriter.Close();
+                    return;
+                }
 
                 fileWriter.Write(buffer, 0, bytesRead);
 
