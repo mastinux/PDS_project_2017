@@ -119,7 +119,9 @@ namespace PDS_project_2017
      
             System.Windows.Forms.ContextMenu cMenu = new System.Windows.Forms.ContextMenu();
             cMenu.MenuItems.Add(item1);
-            cMenu.MenuItems.Add(item2);
+            // TODO temporary disabled
+            // use Settings to enable/disable private mode
+            //cMenu.MenuItems.Add(item2);
             cMenu.MenuItems.Add(item3);
 
             notifyIcon.ContextMenu = cMenu;

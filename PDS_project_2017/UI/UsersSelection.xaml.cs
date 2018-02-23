@@ -163,6 +163,8 @@ namespace PDS_project_2017
                         tcpSenderThread.SetApartmentState(ApartmentState.STA);
                         tcpSenderThread.IsBackground = true;
                         tcpSenderThread.Start();
+
+                        // TODO understand why launched thread are not executed in parallel
                     }
                 }
 
