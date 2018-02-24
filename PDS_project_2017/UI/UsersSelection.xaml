@@ -14,6 +14,7 @@
             <DockPanel DockPanel.Dock="Bottom">
                 <Button x:Name="Share_Button" Content="SHARE" Margin="10,10,10,10" Width="75" Click="Share_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding Items.Count, ElementName=listNeighborSelection}"/>
                 <Button x:Name="SelectAll_Button" Content="SELECT ALL" Margin="10,10,10,10" Width="75" Click="SelectAll_Button_Click" DockPanel.Dock="Left" IsEnabled="{Binding Items.Count, ElementName=listNeighborSelection}"/>
+                <Button x:Name="DeselectAll_Button" Content="DESELECT ALL" Margin="10,10,10,10" Width="75" Click="DeselectAll_Button_Click" DockPanel.Dock="Left" IsEnabled="{Binding Items.Count, ElementName=listNeighborSelection}"/>
                 <Button x:Name="Cancel_Button" Content="CANCEL" Margin="10,10,10,10" Width="75" Click="Cancel_Button_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
 

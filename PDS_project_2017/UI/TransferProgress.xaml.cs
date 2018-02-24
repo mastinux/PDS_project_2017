@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using PDS_project_2017.Core;
 
@@ -24,7 +13,7 @@ namespace PDS_project_2017
         public delegate void CancelTransferProcess();
         public CancelTransferProcess CancelTransferProcessEvent;
         
-        public TransferProgress(string userName, string fileName)
+        public TransferProgress(string userName, string fileName, TCPSender tcpSender)
         {
             // TODO read some material about uwp
             // to be used in combination with wpf
@@ -37,11 +26,16 @@ namespace PDS_project_2017
             FileName.Text = fileName;
             ProgressBar.Value = 0;
 
-            TCPSender.UpdateProgressBarEvent += SetProgressBarValue;
-            TCPSender.UpdateRemainingTimeEvent += SetRemainingTimeValue;
+            tcpSender.UpdateProgressBarEvent += SetProgressBarValue;
+            tcpSender.UpdateRemainingTimeEvent += SetRemainingTimeValue;
 
             Top = Constants.SENDER_WINDOW_TOP;
             Left = Constants.SENDER_WINDOW_LEFT;
+        }
+
+        public void SetIndex(int index)
+        {
+            Top = Top + index * Height + Constants.SENDER_WINDOW_OFFSET * index;
         }
 
         private void SetProgressBarValue(int value)

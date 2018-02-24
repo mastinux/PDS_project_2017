@@ -1,26 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Forms;
-using System.Diagnostics;
-using System.Drawing;
 using MahApps.Metro.Controls;
 using PDS_project_2017.UI;
 using PDS_project_2017.Core;
 using System.Threading;
 using System.ComponentModel;
-using MouseEventHandler = System.Windows.Forms.MouseEventHandler;
 
 namespace PDS_project_2017
 {
@@ -54,14 +39,22 @@ namespace PDS_project_2017
             udpListenerThread.Start();
 
             // tcp socket listening for file transfer
-            TcpReceiver tcpReceiver = new TcpReceiver();
+            TcpReceiver tcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_PORT);
 
             // launching background thread
             Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
-            // https://stackoverflow.com/questions/2329978/the-calling-thread-must-be-sta-because-many-ui-components-require-this
             tcpReceiverThread.SetApartmentState(ApartmentState.STA);
             tcpReceiverThread.IsBackground = true;
             tcpReceiverThread.Start();
+
+            // test tcp socket listening for file transfer
+            TcpReceiver testTcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_TEST_PORT);
+
+            // launching background test thread
+            Thread testTcpReceiverThread = new Thread(testTcpReceiver.Receive);
+            testTcpReceiverThread.SetApartmentState(ApartmentState.STA);
+            testTcpReceiverThread.IsBackground = true;
+            testTcpReceiverThread.Start();
         }
 
         protected override void OnInitialized(EventArgs e)

@@ -2,26 +2,14 @@
 using MahApps.Metro.Controls.Dialogs;
 using PDS_project_2017.Core;
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Channels.Tcp;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using TreeView = System.Windows.Forms.TreeView;
 
 namespace PDS_project_2017
 {
@@ -142,12 +130,14 @@ namespace PDS_project_2017
             {
                 selected = listNeighborSelection.SelectedItems.Cast<User>().ToList();
 
+                int i = 0;
+
                 foreach( User u  in selected)
                 {
                     if (_isDirectory)
                     {
                         // directory
-                        TCPSender tcpSender = new TCPSender(u.Id, u.Name, _path);
+                        TCPSender tcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_PORT, u.Name, _path);
 
                         Thread tcpSenderThread = new Thread(tcpSender.SendDirectory);
                         tcpSenderThread.SetApartmentState(ApartmentState.STA);
@@ -157,15 +147,26 @@ namespace PDS_project_2017
                     else
                     {
                         // single file
-                        TCPSender tcpSender = new TCPSender(u.Id, u.Name, _path);
+                        TCPSender tcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_PORT, u.Name, _path);
+                        tcpSender.SetIndex(i + 1);
 
                         Thread tcpSenderThread = new Thread(tcpSender.SendFile);
                         tcpSenderThread.SetApartmentState(ApartmentState.STA);
                         tcpSenderThread.IsBackground = true;
                         tcpSenderThread.Start();
 
-                        // TODO understand why launched thread are not executed in parallel
+
+                        // test single file
+                        TCPSender testTcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_TEST_PORT, u.Name, _path);
+                        tcpSender.SetIndex(i * 2 + 1);
+
+                        Thread testTcpSenderThread = new Thread(testTcpSender.SendFile);
+                        testTcpSenderThread.SetApartmentState(ApartmentState.STA);
+                        testTcpSenderThread.IsBackground = true;
+                        testTcpSenderThread.Start();
                     }
+
+                    i++;
                 }
 
                 Close();
@@ -190,7 +191,12 @@ namespace PDS_project_2017
 
         private void SelectAll_Button_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            listNeighborSelection.SelectAll();
+        }
+
+        private void DeselectAll_Button_Click(object sender, RoutedEventArgs e)
+        {
+            listNeighborSelection.UnselectAll();
         }
     }
 }

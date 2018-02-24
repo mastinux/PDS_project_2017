@@ -15,25 +15,26 @@ using PDS_project_2017.UI;
 
 namespace PDS_project_2017.Core
 {
-    class TCPSender
+    public class TCPSender
     {
         // client class
 
         private TcpClient _tcpClient;
         private String _path;
         private string _userName;
+        private int _index;
 
         private bool _continueTransferProcess;
 
         public delegate void UpdateProgressBarValue(int value);
-        public static event UpdateProgressBarValue UpdateProgressBarEvent;
+        public event UpdateProgressBarValue UpdateProgressBarEvent;
 
         public delegate void UpdateRemainingTimeValue(TimeSpan timeSpan);
-        public static event UpdateRemainingTimeValue UpdateRemainingTimeEvent;
+        public event UpdateRemainingTimeValue UpdateRemainingTimeEvent;
 
-        public TCPSender(String server, string userName, String path)
+        public TCPSender(String server, int port, string userName, String path)
         {
-            _tcpClient = new TcpClient(server, Constants.TRANSFER_TCP_PORT);
+            _tcpClient = new TcpClient(server, port);
 
             _userName = userName;
             _path = path;
@@ -66,7 +67,7 @@ namespace PDS_project_2017.Core
             // TRANSFER PROGRESS
             TransferProgress transferProgressWindow = InitTransferProgressWindow(filePath);
 
-            FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileDimension = fileStream.Length;
             NetworkStream networkStream = _tcpClient.GetStream();
             
@@ -84,7 +85,7 @@ namespace PDS_project_2017.Core
                 networkStream.Write(fileContentBuffer, 0, bytesRead);
                 totalBytesRead += bytesRead;
                 UpdateProgressBarEvent((int)(((float) totalBytesRead / (float) fileStream.Length) * 100));
-                Thread.Sleep(250);
+                Thread.Sleep(150 * _index);
 
                 DateTime currentDateTime = DateTime.Now;
                 TimeSpan timeSpanDifference = currentDateTime - baseDateTime;
@@ -120,7 +121,8 @@ namespace PDS_project_2017.Core
             TransferProgress transferProgressWindow = null;
             System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                transferProgressWindow = new TransferProgress(_userName, Path.GetFileName(filePath));
+                transferProgressWindow = new TransferProgress(_userName, Path.GetFileName(filePath), this);
+                transferProgressWindow.SetIndex(_index);
                 transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
                 transferProgressWindow.Show();
             }));
@@ -173,6 +175,11 @@ namespace PDS_project_2017.Core
             {
                 SendDirectoryContent(innerDirectoryNode, directoryPath + "\\" + innerDirectoryNode.DirectoryName);
             }
+        }
+
+        public void SetIndex(int i)
+        {
+            _index = i;
         }
     }
 }

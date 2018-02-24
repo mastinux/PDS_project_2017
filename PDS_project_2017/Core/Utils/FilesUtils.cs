@@ -7,6 +7,8 @@ namespace PDS_project_2017.Core
 {
     class FilesUtils
     {
+        private static object _lock = new object();
+
         public static DirectoryNode BuildDirectoryNode(string path)
         {
             var rootDirectoryInfo = new DirectoryInfo(path);
@@ -72,7 +74,7 @@ namespace PDS_project_2017.Core
             }
         }
 
-        public static string CheckFileExistance(string filePath)
+        public static FileStream CreateUniqueFile(string filePath)
         {
             int count = 1;
 
@@ -82,14 +84,21 @@ namespace PDS_project_2017.Core
 
             string fileNameFormat = fileDirectory + "\\" + fileNameWithoutExtension + " ({0})" + fileExtension;
 
-            while (File.Exists(filePath))
-            {
-                filePath = string.Format(fileNameFormat, count);
+            // TODO understand why first progress bar is closed
 
-                count++;
+            lock (_lock)
+            {
+                Console.WriteLine("entering shared area");
+                while (File.Exists(filePath))
+                {
+                    filePath = string.Format(fileNameFormat, count);
+
+                    count++;
+                }
+                Console.WriteLine("exiting shared area");
             }
 
-            return filePath;
+            return File.Open(filePath, FileMode.Create);
         }
 
         public static string CheckDirectoryExistance(string directoryPath)

@@ -15,6 +15,7 @@ namespace PDS_project_2017.Core
 
         // tcp file transfer
         public const int TRANSFER_TCP_PORT = 55556;
+        public const int TRANSFER_TCP_TEST_PORT = 55557;
         public const int TRANSFER_TCP_BUFFER = 1024;
         public const int TRANSFER_TCP_FILE_CONTENT_LEN = 8;
         public const int TRANSFER_TCP_INT_LEN = 4;
@@ -31,5 +32,6 @@ namespace PDS_project_2017.Core
         public static double SENDER_WINDOW_LEFT = offset;
         public static double RECEIVER_WINDOW_TOP = offset;
         public static double RECEIVER_WINDOW_LEFT = System.Windows.SystemParameters.WorkArea.Width / 2 + offset;
+        public static int SENDER_WINDOW_OFFSET = 10;
     }
 }

@@ -24,11 +24,11 @@ namespace PDS_project_2017.Core
 
         private TcpListener _tcpServer;
 
-        public TcpReceiver()
+        public TcpReceiver(int port)
         {
             IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIPAddress().ToString());
 
-            _tcpServer = new TcpListener(localAddr, Constants.TRANSFER_TCP_PORT);
+            _tcpServer = new TcpListener(localAddr, port);
             _tcpServer.Start();
         }
 
@@ -178,9 +178,8 @@ namespace PDS_project_2017.Core
 
             Byte[] buffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
-            filePath = FilesUtils.CheckFileExistance(filePath);
+            FileStream file = FilesUtils.CreateUniqueFile(filePath);
 
-            FileStream file = File.Open(filePath, FileMode.Create);
             BinaryWriter fileWriter = new BinaryWriter(file);
 
             // FILE CONTENT
