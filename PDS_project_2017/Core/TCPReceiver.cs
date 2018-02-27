@@ -39,16 +39,23 @@ namespace PDS_project_2017.Core
                 // blocking call
                 TcpClient client = _tcpServer.AcceptTcpClient();
 
-                String command = TcpUtils.ReceiveCommand(client, Constants.TRANSFER_TCP_FILE.Length);
+                Thread clientThread = new Thread(() =>
+                {
+                    String command = TcpUtils.ReceiveCommand(client, Constants.TRANSFER_TCP_FILE.Length);
 
-                if (command.Equals(Constants.TRANSFER_TCP_FILE))
-                {
-                    ReceiveFile(client);
-                }
-                else
-                {
-                    ReceiveDirectory(client);
-                }
+                    if (command.Equals(Constants.TRANSFER_TCP_FILE))
+                    {
+                        ReceiveFile(client);
+                    }
+                    else
+                    {
+                        ReceiveDirectory(client);
+                    }
+                });
+
+                clientThread.IsBackground = true;
+                clientThread.SetApartmentState(ApartmentState.STA);
+                clientThread.Start();
             }
         }
 

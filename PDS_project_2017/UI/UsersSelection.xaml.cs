@@ -41,7 +41,7 @@ namespace PDS_project_2017
 
             // _availableUserView maintains _availableUsers ordered in UI
             _availableUsersView = CollectionViewSource.GetDefaultView(_availableUsers);
-            _availableUsersView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+            _availableUsersView.SortDescriptions.Add(new SortDescription("LastUpTime", ListSortDirection.Ascending));
             
             // udp socket requesting available users
             _udpRequester = new UdpRequester();
@@ -107,7 +107,7 @@ namespace PDS_project_2017
             {
                 var u = _availableUsers[i];
 
-                if (startTime.Subtract(u.LastUpTime).Seconds >= Constants.AVAILABLE_USERS_UPDATE_INTERVAL + 1)
+                if (startTime.Subtract(u.LastUpTime).Seconds >= Constants.AVAILABLE_USERS_UPDATE_INTERVAL + 3)
                 {
                     // removing expired user
                     Application.Current.Dispatcher.Invoke(new Action(() =>
