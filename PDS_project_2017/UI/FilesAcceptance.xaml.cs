@@ -52,6 +52,10 @@ namespace PDS_project_2017
         {
             BaseConstructor();
             SetTitle(fileNode.Name);
+
+            Filename_Label.Content = fileNode.Name;
+            Size_Label.Content = fileNode.Dimension;
+            Filetype_Label.Content = "TODO";
         }
 
         private void SetTitle(string title)
@@ -63,6 +67,35 @@ namespace PDS_project_2017
         {
             BaseConstructor();
             SetTitle(directoryNode.DirectoryName);
+
+            TreeView tv = new TreeView();
+            PopulateTreeView(tv, directoryNode);
+            dp.Children.Clear();
+            dp.Children.Add(tv);
+        }
+
+        private void PopulateTreeView(TreeView tv, DirectoryNode dn)
+        {
+            tv.Items.Add(CreateTreeViewItem(dn));
+            TreeViewItem tvi = (TreeViewItem)tv.Items.GetItemAt(0);
+            tvi.IsExpanded = true;
+        }
+
+        private TreeViewItem CreateTreeViewItem(DirectoryNode dn)
+        {
+            TreeViewItem tvItem = new TreeViewItem() { Header = dn.DirectoryName };
+
+            foreach(var directory in dn.DirectoryNodes)
+            {
+                tvItem.Items.Add(CreateTreeViewItem(directory));
+            }
+
+            foreach(var file in dn.FileNodes)
+            {
+                tvItem.Items.Add(new TreeViewItem() { Header = file.Name });
+            }
+
+            return tvItem;
         }
 
         private void Accept_Button_Click(object sender, RoutedEventArgs e)
