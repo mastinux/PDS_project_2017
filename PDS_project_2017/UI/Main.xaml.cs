@@ -46,21 +46,23 @@ namespace PDS_project_2017
 
             // tcp socket listening for file transfer
             TcpReceiver tcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_PORT);
-
+            
             // launching background thread
             Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
             tcpReceiverThread.SetApartmentState(ApartmentState.STA);
             tcpReceiverThread.IsBackground = true;
             tcpReceiverThread.Start();
 
+            /*
             // test tcp socket listening for file transfer
             TcpReceiver testTcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_TEST_PORT);
-
+            
             // launching background test thread
             Thread testTcpReceiverThread = new Thread(testTcpReceiver.Receive);
             testTcpReceiverThread.SetApartmentState(ApartmentState.STA);
             testTcpReceiverThread.IsBackground = true;
             testTcpReceiverThread.Start();
+            */
         }
 
         protected override void OnInitialized(EventArgs e)

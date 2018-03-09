@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Web;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
-using PDS_project_2017.UI;
 
 namespace PDS_project_2017.Core
 {
@@ -140,6 +134,7 @@ namespace PDS_project_2017.Core
             FileNode fileNode = new FileNode();
             fileNode.Name = fileName;
             fileNode.Dimension = dimension;
+            fileNode.MimeType = MimeMapping.GetMimeMapping(fileName);
 
             string jsonFileNodeDescription = JsonConvert.SerializeObject(fileNode);
 

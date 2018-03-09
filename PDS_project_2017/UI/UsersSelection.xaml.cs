@@ -155,8 +155,7 @@ namespace PDS_project_2017
                         tcpSenderThread.IsBackground = true;
                         tcpSenderThread.Start();
 
-
-                        // test single file
+                        /*
                         TCPSender testTcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_TEST_PORT, u.Name, _path);
                         tcpSender.SetIndex(i * 2 + 1);
 
@@ -164,6 +163,7 @@ namespace PDS_project_2017
                         testTcpSenderThread.SetApartmentState(ApartmentState.STA);
                         testTcpSenderThread.IsBackground = true;
                         testTcpSenderThread.Start();
+                        */
                     }
 
                     i++;

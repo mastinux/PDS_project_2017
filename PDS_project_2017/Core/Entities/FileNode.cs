@@ -10,6 +10,7 @@ namespace PDS_project_2017.Core.Entities
     {
         private string _name;
         private long _dimension;
+        private string _mimeType;
 
         public string Name
         {
@@ -21,6 +22,12 @@ namespace PDS_project_2017.Core.Entities
         {
             get => _dimension;
             set => _dimension = value;
+        }
+
+        public string MimeType
+        {
+            get => _mimeType;
+            set => _mimeType = value;
         }
     }
 }

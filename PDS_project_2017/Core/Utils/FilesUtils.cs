@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Web;
 using System.Windows.Forms;
 using PDS_project_2017.Core.Entities;
 
@@ -28,6 +29,7 @@ namespace PDS_project_2017.Core
                 FileNode fileNode = new FileNode();
                 fileNode.Name = file.Name;
                 fileNode.Dimension = file.Length;
+                fileNode.MimeType = MimeMapping.GetMimeMapping(file.Name);
 
                 directoryNode.AddChildFile(fileNode);
             }

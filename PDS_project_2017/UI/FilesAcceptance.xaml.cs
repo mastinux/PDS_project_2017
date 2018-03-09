@@ -1,20 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using PDS_project_2017.Core;
 using PDS_project_2017.Core.Entities;
 
@@ -55,7 +43,7 @@ namespace PDS_project_2017
 
             Filename_Label.Content = fileNode.Name;
             Size_Label.Content = fileNode.Dimension;
-            Filetype_Label.Content = "TODO";
+            Filetype_Label.Content = fileNode.MimeType;
         }
 
         private void SetTitle(string title)
@@ -92,10 +80,28 @@ namespace PDS_project_2017
 
             foreach(var file in dn.FileNodes)
             {
-                tvItem.Items.Add(new TreeViewItem() { Header = file.Name });
+                tvItem.Items.Add(new TreeViewItem()
+                {
+                    Header = file.Name + " (" + ConvertToHumanReadableSize(file.Dimension) + ")"
+                });
             }
 
             return tvItem;
+        }
+
+        private string ConvertToHumanReadableSize(long fileDimension)
+        {
+            string[] suffixes = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+
+            int index = 0;
+
+            while (fileDimension >= 1024)
+            {
+                index++;
+                fileDimension /= 1024;
+            }
+
+            return String.Format("{0} {1}", fileDimension, suffixes[index]);
         }
 
         private void Accept_Button_Click(object sender, RoutedEventArgs e)
