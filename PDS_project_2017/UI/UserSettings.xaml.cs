@@ -125,18 +125,32 @@ namespace PDS_project_2017.UI
         {
             Properties.Settings.Default.PrivateMode = true;
             Properties.Settings.Default.Save();
-
-            //should stop announcing
-            UdpListener.ResetStatusAvailableEvent();
+            UpdateTrayandAnnouncing(true);
         }
 
         private void Private_CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.PrivateMode = false;
             Properties.Settings.Default.Save();
+            UpdateTrayandAnnouncing(false);
+        }
 
-            //should start announcing
-            UdpListener.SetStatusAvailableEvent();
+        private void UpdateTrayandAnnouncing(bool priv)
+        {
+            //Update only if it's not the first time launch
+            MainWindow mw = null;
+            mw = System.Windows.Application.Current.Windows.OfType<MainWindow>().SingleOrDefault(w => w.IsInitialized);
+            if(mw != null)
+            {
+                mw.TrayPrivateFlag.Checked = priv;
+                if (mw.UdpListener != null)
+                {
+                    if (priv)
+                        UdpListener.ResetStatusAvailableEvent(); //should stop announcing
+                    else
+                        UdpListener.SetStatusAvailableEvent(); //should start announcing
+                }
+            }
         }
 
         private void AutoAccept_CheckBox_Checked(object sender, RoutedEventArgs e)

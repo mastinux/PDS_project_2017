@@ -17,7 +17,13 @@ namespace PDS_project_2017
         // https://stackoverflow.com/questions/1472633/wpf-application-that-only-has-a-tray-icon
         private System.Windows.Forms.NotifyIcon notifyIcon = null;
         //private Dictionary<string, System.Drawing.Icon> appIcons = null;
-        
+        private System.Windows.Forms.MenuItem trayPrivateFlag = new System.Windows.Forms.MenuItem();
+
+        private UdpListener udpListener;
+
+        public MenuItem TrayPrivateFlag { get => trayPrivateFlag; set => trayPrivateFlag = value; }
+        internal UdpListener UdpListener { get => udpListener; set => udpListener = value; }
+
         public MainWindow()
         {
             // TODO update notify icon menu for private mode when usersettings are changed
@@ -31,10 +37,10 @@ namespace PDS_project_2017
             }
 
             // udp socket listening for request
-            UdpListener udpListener = new UdpListener();
+            udpListener = new UdpListener();
 
             // launching background thread
-            Thread udpListenerThread = new Thread(udpListener.listen);
+            Thread udpListenerThread = new Thread(UdpListener.listen);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
 
@@ -107,35 +113,35 @@ namespace PDS_project_2017
             notifyIcon.ShowBalloonTip(1000);
 
             System.Windows.Forms.MenuItem item1 = new System.Windows.Forms.MenuItem();
-            System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();
+            //System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();
             System.Windows.Forms.MenuItem item3 = new System.Windows.Forms.MenuItem();
      
             System.Windows.Forms.ContextMenu cMenu = new System.Windows.Forms.ContextMenu();
             cMenu.MenuItems.Add(item1);
             // TODO temporary disabled
             // use Settings to enable/disable private mode
-            //cMenu.MenuItems.Add(item2);
+            cMenu.MenuItems.Add(TrayPrivateFlag);
             cMenu.MenuItems.Add(item3);
 
             notifyIcon.ContextMenu = cMenu;
             item1.Text = "Settings";
-            item2.Text = "Private Mode";
-            item2.Checked = Properties.Settings.Default.PrivateMode;
+            TrayPrivateFlag.Text = "Private Mode";
+            TrayPrivateFlag.Checked = Properties.Settings.Default.PrivateMode;
             item3.Text = "Exit";
     
             item1.Click += delegate { UserSettings us = new UserSettings();  us.Show();  };
-            item2.Click += delegate
+            TrayPrivateFlag.Click += delegate
             {
                 if (Properties.Settings.Default.PrivateMode)
                 {
                     Properties.Settings.Default.PrivateMode = false;
-                    item2.Checked = false;
+                    TrayPrivateFlag.Checked = false;
                     UdpListener.SetStatusAvailableEvent();
                 }
                 else
                 {
                     Properties.Settings.Default.PrivateMode = true;
-                    item2.Checked = true;
+                    TrayPrivateFlag.Checked = true;
                     UdpListener.ResetStatusAvailableEvent();
                 }
 
