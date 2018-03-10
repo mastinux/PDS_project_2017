@@ -18,15 +18,30 @@ namespace PDS_project_2017
     {
         // https://stackoverflow.com/questions/1472633/wpf-application-that-only-has-a-tray-icon
         private System.Windows.Forms.NotifyIcon notifyIcon = null;
+
         //private Dictionary<string, System.Drawing.Icon> appIcons = null;
         private System.Windows.Forms.MenuItem trayPrivateFlag = new System.Windows.Forms.MenuItem();
 
         private UdpListener udpListener;
         private ObservableCollection<FileTransfer> sendingTransferList;
 
-        public MenuItem TrayPrivateFlag { get => trayPrivateFlag; set => trayPrivateFlag = value; }
-        public UdpListener UdpListener { get => udpListener; set => udpListener = value; }
-        public ObservableCollection<FileTransfer> SendingTransferList { get => sendingTransferList; set => sendingTransferList = value; }
+        public MenuItem TrayPrivateFlag
+        {
+            get => trayPrivateFlag;
+            set => trayPrivateFlag = value;
+        }
+
+        public UdpListener UdpListener
+        {
+            get => udpListener;
+            set => udpListener = value;
+        }
+
+        public ObservableCollection<FileTransfer> SendingTransferList
+        {
+            get => sendingTransferList;
+            set => sendingTransferList = value;
+        }
 
         public MainWindow()
         {
@@ -44,8 +59,6 @@ namespace PDS_project_2017
 
             sendingTransferList = new ObservableCollection<FileTransfer>();
             TCPSender.NewTransferEvent += AddNewSendingTransfer;
-            TCPSender.UpdateProgressBarEvent += UpdateSendingProgress;
-            TCPSender.UpdateRemainingTimeEvent += UpdateRemTimeSending;
 
             // udp socket listening for request
             udpListener = new UdpListener();
@@ -57,7 +70,7 @@ namespace PDS_project_2017
 
             // tcp socket listening for file transfer
             TcpReceiver tcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_PORT);
-            
+
             // launching background thread
             Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
             tcpReceiverThread.SetApartmentState(ApartmentState.STA);
@@ -78,20 +91,18 @@ namespace PDS_project_2017
 
         private void UpdateRemTimeSending(FileTransfer transfer)
         {
-            
+
         }
 
         private void UpdateSendingProgress(FileTransfer transfer)
         {
-            
+
         }
 
         private void AddNewSendingTransfer(FileTransfer transfer)
         {
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                sendingTransferList.Add(transfer);
-            }));
+            System.Windows.Application.Current.Dispatcher.Invoke(
+                new Action(() => { sendingTransferList.Add(transfer); }));
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -103,7 +114,7 @@ namespace PDS_project_2017
             initializeNotifyIcon();
 
             this.startMinimized();
-            
+
             base.OnInitialized(e);
         }
 
@@ -136,7 +147,7 @@ namespace PDS_project_2017
 
             notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
             notifyIcon.BalloonTipText =
-              "The service has started, you can receive and send file from other users";
+                "The service has started, you can receive and send file from other users";
             notifyIcon.BalloonTipTitle = "Lan Sharing Application started";
             notifyIcon.Text = "Lan Sharing Application";
 
@@ -146,7 +157,7 @@ namespace PDS_project_2017
             System.Windows.Forms.MenuItem item1 = new System.Windows.Forms.MenuItem();
             //System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();
             System.Windows.Forms.MenuItem item3 = new System.Windows.Forms.MenuItem();
-     
+
             System.Windows.Forms.ContextMenu cMenu = new System.Windows.Forms.ContextMenu();
             cMenu.MenuItems.Add(item1);
             // TODO temporary disabled
@@ -159,8 +170,12 @@ namespace PDS_project_2017
             TrayPrivateFlag.Text = "Private Mode";
             TrayPrivateFlag.Checked = Properties.Settings.Default.PrivateMode;
             item3.Text = "Exit";
-    
-            item1.Click += delegate { UserSettings us = new UserSettings();  us.Show();  };
+
+            item1.Click += delegate
+            {
+                UserSettings us = new UserSettings();
+                us.Show();
+            };
             TrayPrivateFlag.Click += delegate
             {
                 if (Properties.Settings.Default.PrivateMode)
@@ -208,11 +223,12 @@ namespace PDS_project_2017
             {
                 this.WindowState = WindowState.Normal;
             }
+
             this.Show();
             // TODO need hwnd
             // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
-        
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Hide();

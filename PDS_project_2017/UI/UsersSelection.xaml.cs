@@ -170,6 +170,10 @@ namespace PDS_project_2017
                 }
 
                 Close();
+
+                // pop up main window
+                Application.Current.MainWindow.WindowState = WindowState.Normal;
+                Application.Current.MainWindow.Show();
             }
             else
                 this.ShowMessageAsync("Ops", "Choose at least one user");

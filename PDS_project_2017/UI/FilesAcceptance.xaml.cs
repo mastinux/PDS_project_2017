@@ -42,7 +42,7 @@ namespace PDS_project_2017
             SetTitle(fileNode.Name);
 
             Filename_Label.Content = fileNode.Name;
-            Size_Label.Content = fileNode.Dimension;
+            Size_Label.Content = ConvertToHumanReadableSize(fileNode.Dimension);
             Filetype_Label.Content = fileNode.MimeType;
         }
 

@@ -34,7 +34,7 @@
                     <Label Content="Filename:" HorizontalAlignment="Left" Margin="39,18,0,0" VerticalAlignment="Top"/>
                     <Label Content="Size:" HorizontalAlignment="Left" Margin="39,14,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                     <Label Content="Filetype:&#xD;&#xA;" HorizontalAlignment="Center" Margin="39,20,21,10" Grid.Row="2" VerticalAlignment="Center" Width="71"/>
-                    <Label x:Name="Filename_Label" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="Filename_Label" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Content}"/>
                     <Label x:Name="Size_Label" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="29,14,0,0" Grid.Row="1" VerticalAlignment="Top"/>
                     <Label x:Name="Filetype_Label" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="29,20,0,0" Grid.Row="2" VerticalAlignment="Top"/>
                 </Grid>

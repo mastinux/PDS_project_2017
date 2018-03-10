@@ -23,12 +23,6 @@ namespace PDS_project_2017.Core
         public delegate void AddNewTransfer(FileTransfer transfer);
         public static event AddNewTransfer NewTransferEvent;
 
-        public delegate void UpdateProgressBarValue(FileTransfer transfer);
-        public static event UpdateProgressBarValue UpdateProgressBarEvent;
-
-        public delegate void UpdateRemainingTimeValue(FileTransfer transfer);
-        public static event UpdateRemainingTimeValue UpdateRemainingTimeEvent;
-
         public TCPSender(String server, int port, string userName, String path)
         {
             _tcpClient = new TcpClient(server, port);
@@ -99,14 +93,12 @@ namespace PDS_project_2017.Core
                 totalBytesRead += bytesRead;
                 double progress = (((double)totalBytesRead / (double)fileStream.Length) * 100);
                 fileTransfer.Progress = progress;
-                UpdateProgressBarEvent(fileTransfer);
 
                 //TODO remove 
                 Thread.Sleep(Constants.TRANSFER_TCP_SENDER_DELAY + Constants.TRANSFER_TCP_SENDER_DELAY * _index);
 
                 TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(baseDateTime, bytesRead, totalBytesRead, fileDimension);
                 fileTransfer.RemainingTime = remainingTimeSpan;
-                UpdateRemainingTimeEvent(fileTransfer);
                 baseDateTime = DateTime.Now;
             }
 

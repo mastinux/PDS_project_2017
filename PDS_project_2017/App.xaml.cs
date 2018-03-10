@@ -64,7 +64,8 @@ namespace PDS_project_2017
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             mainWindow = new MainWindow();
-            if(e.Args.Length != 0)
+            
+            if (e.Args.Length != 0)
                 ProcessCommand(e.Args[0]);
         }
 
