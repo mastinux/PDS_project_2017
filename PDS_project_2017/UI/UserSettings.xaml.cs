@@ -1,22 +1,15 @@
 ﻿using MahApps.Metro.Controls;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using PDS_project_2017.Core;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 
 namespace PDS_project_2017.UI
@@ -34,9 +27,33 @@ namespace PDS_project_2017.UI
             DefaultDir_CheckBox.IsChecked = Properties.Settings.Default.UseDefaultDir;
             DefaultDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
             Profile_Image.Source = LoadImage();
+
+            if (Profile_Image.Source == null)
+                Profile_Image.Source = LoadDefaultImage();
         }
 
-        private void Image_Button_Click(object sender, RoutedEventArgs e)
+        private ImageSource LoadDefaultImage()
+        {
+            return ConvertBitmapToBitmapImage(Properties.Resources.DefaultProfileImage);
+        }
+
+        private static BitmapImage ConvertBitmapToBitmapImage(Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+
+                return bitmapImage;
+            }
+        }
+
+        private void Change_Image_Button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Image files|*.bmp;*.jpg;*.gif;*.png;*.tif|All files|*.*";
@@ -68,7 +85,9 @@ namespace PDS_project_2017.UI
             {
                 string f = Properties.Settings.Default.Image;
                 byte[] bytes = Convert.FromBase64String(f);
+                
                 System.IO.MemoryStream mem = new System.IO.MemoryStream(bytes);
+
                 BitmapImage bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
                 bitmapImage.StreamSource = mem;
@@ -76,6 +95,7 @@ namespace PDS_project_2017.UI
                 bitmapImage.EndInit();
                 return bitmapImage;
             }
+
             return null;
         }
 
@@ -197,6 +217,14 @@ namespace PDS_project_2017.UI
         private void Save_Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void Remove_Image_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.Image = null;
+            Properties.Settings.Default.Save();
+
+            Profile_Image.Source = LoadDefaultImage();
         }
     }
 }

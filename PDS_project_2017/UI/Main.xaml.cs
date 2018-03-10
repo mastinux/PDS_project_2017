@@ -8,6 +8,7 @@ using System.Threading;
 using System.ComponentModel;
 using PDS_project_2017.Core.Entities;
 using System.Collections.ObjectModel;
+using System.Web.Caching;
 
 namespace PDS_project_2017
 {
@@ -88,17 +89,7 @@ namespace PDS_project_2017
             testTcpReceiverThread.Start();
             */
         }
-
-        private void UpdateRemTimeSending(FileTransfer transfer)
-        {
-
-        }
-
-        private void UpdateSendingProgress(FileTransfer transfer)
-        {
-
-        }
-
+        
         private void AddNewSendingTransfer(FileTransfer transfer)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(
@@ -228,13 +219,11 @@ namespace PDS_project_2017
             // TODO need hwnd
             // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        
+        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
-            Hide();
-            // initing user selection class
-            UsersSelection usersSelection = new UsersSelection("Test");
-            usersSelection.Show();
+            // TODO cancel file transfer
+            throw new NotImplementedException();
         }
     }
 }

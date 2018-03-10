@@ -5,36 +5,66 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace PDS_project_2017.Core.Entities
 {
     public class FileTransfer : INotifyPropertyChanged
     {
-        private FileNode file;
-        private double progress;
-        private TimeSpan remainingTime;
-
+        private FileNode _fileNode;
+        private double _progress;
+        private TimeSpan _remainingTime;
+        private string _humanReadableRemainingTime;
+        private bool _continueFileTransfer;
+        
         public FileNode File
         {
-            get => file;
+            get => _fileNode;
             set
             {
-                file = value;
+                _fileNode = value;
                 NotifyPropertyChanged();
             }
         }
         public double Progress
         {
-            get => progress;
+            get => _progress;
             set
             {
-                progress = value;
+                _progress = value;
                 NotifyPropertyChanged();
             }
         }
-  
-        public TimeSpan RemainingTime { get => remainingTime; set => remainingTime = value; }
 
+        public TimeSpan RemainingTime
+        {
+            get => _remainingTime;
+            set
+            {
+                _remainingTime = value;
+                HumanReadableRemainingTime = string.Format("{0:D2}h:{1:D2}m:{2:D2}s",
+                    _remainingTime.Hours,
+                    _remainingTime.Minutes,
+                    _remainingTime.Seconds);
+            }
+        }
+
+        public string HumanReadableRemainingTime
+        {
+            get => _humanReadableRemainingTime;
+            set
+            {
+                _humanReadableRemainingTime = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public bool ContinueFileTransfer
+        {
+            get => _continueFileTransfer;
+            set => _continueFileTransfer = value;
+        }
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -44,6 +74,5 @@ namespace PDS_project_2017.Core.Entities
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
     }
 }

@@ -35,8 +35,8 @@
             <Button x:Name="CancelButton" VerticalAlignment="Center" Content="X" IsCancel="True" ToolTip="Cancel" Click="CancelButton_OnClick" Margin="0,0,5,0"/>
         </DockPanel>
         <DockPanel Grid.Row="2" Grid.Column="1">
-            <TextBlock Text="Remaining time:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-            <TextBlock x:Name="RemainingTime" Text="" VerticalAlignment="Center"/>
+            <TextBlock Text="Remaining time:" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <TextBlock x:Name="RemainingTime" Margin="0,0,5,0" Text="" VerticalAlignment="Center" HorizontalAlignment="Left"/>
         </DockPanel>
 
     </Grid>

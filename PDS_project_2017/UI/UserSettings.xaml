@@ -27,12 +27,12 @@
             <TextBox x:Name="Name_TextBox" HorizontalAlignment="Right" VerticalAlignment="Center" Height="23" TextWrapping="Wrap" Text="" Width="100" TextChanged="Name_TextBox_TextChanged"/>
         </DockPanel>
 
-        <DockPanel Grid.Column="0" Grid.Row="3">
+        <DockPanel Grid.Column="0" Grid.Row="5">
             <Label Content="Save in Default Dir:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <CheckBox x:Name="DefaultDir_CheckBox" Content="" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="DefaultDir_CheckBox_Checked" Unchecked="DefaultDir_CheckBox_Unchecked"/>
         </DockPanel>
 
-        <DockPanel Grid.Column="1" Grid.Row="3">
+        <DockPanel Grid.Column="1" Grid.Row="5">
             <Button x:Name="DefaultDir_Button" Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Width="24" Height="18" Click="DefaultDir_Button_Click" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
             <TextBox x:Name="DefaultDir_TextBox" HorizontalAlignment="Center" Height="23" VerticalAlignment="Center" Width="160"  IsReadOnly="True" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
         </DockPanel>
@@ -46,18 +46,19 @@
             <Button x:Name="Save_Button" Content="OK" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Click="Save_Button_Click"/>
         </DockPanel>
         
-        <DockPanel Grid.Column="0" Grid.Row="5">
+        <DockPanel Grid.Column="0" Grid.Row="3">
             <Label Content="Private Mode:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <CheckBox x:Name="Private_CheckBox" Content="" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="Private_CheckBox_Checked" Unchecked="Private_CheckBox_Unchecked"/>
         </DockPanel>
 
-        <DockPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" LastChildFill="True">
+        <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0" Grid.RowSpan="5">
             <DockPanel Dock="Top">
                 <Label Content="Profile Image" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             </DockPanel>
 
             <DockPanel Dock="Bottom">
-                <Button x:Name="Image_Button" Content="CHANGE" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="58" Height="26" Click="Image_Button_Click"/>
+                <Button x:Name="Change_Image_Button" Content="CHANGE" Width="58" Height="26" Click="Change_Image_Button_Click"/>
+                <Button x:Name="Remove_Image_Button" Content="REMOVE" HorizontalAlignment="Right" Width="58" Height="26" Click="Remove_Image_Button_Click"/>
             </DockPanel>
 
             <DockPanel>

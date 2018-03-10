@@ -19,32 +19,36 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="15*"/>
+                                        <ColumnDefinition Width="1*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <DockPanel Grid.Row="0" Grid.ColumnSpan="3">
-                                        <TextBlock x:Name="UserRole" Text="" Margin="0,0,5,0"/>
-                                        <TextBlock x:Name="UserName" Text=""/>
+                                    <DockPanel Grid.Row="0" Grid.Column="0">
+                                        <TextBlock Text="{Binding Path=File.ReceiverUserName}" VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                                     </DockPanel>
 
-                                    <DockPanel Grid.Row="1" Grid.Column="0">
-                                        <TextBlock Text="File Name:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                        <TextBlock x:Name="FileName" Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                    <DockPanel Grid.Row="0" Grid.Column="1">
+                                        <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                                     </DockPanel>
-                                    <DockPanel Grid.Row="1" Grid.Column="1">
+
+                                    <DockPanel Grid.Row="0" Grid.Column="2">
                                         <ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="{Binding Path=Progress}" Margin="0,0,5,0"/>
                                     </DockPanel>
-                                    <DockPanel Grid.Row="1" Grid.Column="2">
-                                        <Button x:Name="CancelButton" VerticalAlignment="Center" Content="X" IsCancel="True" ToolTip="Cancel"  Margin="0,0,5,0"/>
+
+                                    <DockPanel Grid.Row="0" Grid.Column="3">
+                                        <Button VerticalAlignment="Center" Content="X" IsCancel="True" ToolTip="Cancel File Tranfer" Margin="0,0,5,0" Click="Cancel_Button_Click"/>
                                     </DockPanel>
-                                    <DockPanel Grid.Row="2" Grid.Column="1">
+
+                                    <DockPanel Grid.Row="1" Grid.Column="2">
                                         <TextBlock Text="Remaining time:" Margin="0,0,5,0" VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="RemainingTime" Text="" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Path=HumanReadableRemainingTime}" VerticalAlignment="Center"/>
+
+                                        <TextBlock Text="{Binding Path=Progress, StringFormat={}{0:N1}}" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,0,5,0"/>
+                                        <TextBlock Text="Percentage: " VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
                                     </DockPanel>
 
                                 </Grid>
