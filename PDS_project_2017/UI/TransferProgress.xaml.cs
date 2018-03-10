@@ -2,6 +2,7 @@
 using System.Windows;
 using MahApps.Metro.Controls;
 using PDS_project_2017.Core;
+using PDS_project_2017.Core.Entities;
 
 namespace PDS_project_2017
 {
@@ -13,7 +14,7 @@ namespace PDS_project_2017
         public delegate void CancelTransferProcess();
         public CancelTransferProcess CancelTransferProcessEvent;
         
-        public TransferProgress(string userName, string fileName, TCPSender tcpSender)
+        public TransferProgress(FileNode fileNode, object o)
         {
             // TODO read some material about uwp
             // to be used in combination with wpf
@@ -22,15 +23,40 @@ namespace PDS_project_2017
 
             DataContext = this;
             
-            UserName.Text = userName;
-            FileName.Text = fileName;
+            UserName.Text = fileNode.SenderUserName;
+            FileName.Text = fileNode.Name;
             ProgressBar.Value = 0;
 
+            if (o.GetType() == typeof(TCPSender))
+            {
+                SetTcpSenderEvents((TCPSender) o);
+                UserRole.Text = "Sending file to user: ";
+
+                Top = Constants.SENDER_WINDOW_TOP;
+                Left = Constants.SENDER_WINDOW_LEFT;
+            }
+            else if (o.GetType() == typeof(TcpReceiver))
+            {
+                SetTcpReceiverEvents((TcpReceiver) o);
+                UserRole.Text = "Receiving file from user: ";
+
+                Top = Constants.RECEIVER_WINDOW_TOP;
+                Left = Constants.RECEIVER_WINDOW_LEFT;
+            }
+            else
+                throw new Exception("bad type passed to TransferProgress()");
+        }
+
+        public void SetTcpSenderEvents(TCPSender tcpSender)
+        {
             tcpSender.UpdateProgressBarEvent += SetProgressBarValue;
             tcpSender.UpdateRemainingTimeEvent += SetRemainingTimeValue;
+        }
 
-            Top = Constants.SENDER_WINDOW_TOP;
-            Left = Constants.SENDER_WINDOW_LEFT;
+        public void SetTcpReceiverEvents(TcpReceiver tcpReceiver)
+        {
+            tcpReceiver.UpdateProgressBarEvent += SetProgressBarValue;
+            tcpReceiver.UpdateRemainingTimeEvent += SetRemainingTimeValue;
         }
 
         public void SetIndex(int index)

@@ -130,6 +130,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\Utils\WindowUtils.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,7 +147,6 @@
     <Compile Include="Core\Utils\IpUtils.cs" />
     <Compile Include="Core\Entities\User.cs" />
     <Compile Include="Core\Utils\TcpUtils.cs" />
-    <Compile Include="Core\Utils\WindowsUtils.cs" />
     <Compile Include="UI\Utils\UserUtils.cs" />
     <Compile Include="FileShellExtension.cs" />
     <Compile Include="SingleInstance.cs" />

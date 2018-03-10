@@ -90,14 +90,12 @@ namespace PDS_project_2017.Core
 
             lock (_lock)
             {
-                Console.WriteLine("entering shared area");
                 while (File.Exists(filePath))
                 {
                     filePath = string.Format(fileNameFormat, count);
 
                     count++;
                 }
-                Console.WriteLine("exiting shared area");
             }
 
             return File.Open(filePath, FileMode.Create);

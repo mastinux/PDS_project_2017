@@ -8,9 +8,16 @@ namespace PDS_project_2017.Core.Entities
 {
     public class FileNode
     {
+        private string _senderUserName;
         private string _name;
         private long _dimension;
         private string _mimeType;
+
+        public string SenderUserName
+        {
+            get => _senderUserName;
+            set => _senderUserName = value;
+        }
 
         public string Name
         {

@@ -20,11 +20,13 @@ namespace PDS_project_2017.Core
         public const int TRANSFER_TCP_FILE_CONTENT_LEN = 8;
         public const int TRANSFER_TCP_INT_LEN = 4;
         public const int TRANSFER_TCP_COMMAND_LEN = 3;
+
         public const string TRANSFER_TCP_FILE = "FIL";
         public const string TRANSFER_TCP_DIRECTORY = "DIR";
         public const string TRANSFER_TCP_ACCEPT = "OK ";
         public const string TRANSFER_TCP_REFUSE = "NO ";
-        public static int TRANSFER_TCP_READ_TIMEOUT = 10;
+
+        public static int TRANSFER_TCP_READ_TIMEOUT = 30;
         
         // windows positions
         private static double offset = 70;
@@ -33,5 +35,10 @@ namespace PDS_project_2017.Core
         public static double RECEIVER_WINDOW_TOP = offset;
         public static double RECEIVER_WINDOW_LEFT = System.Windows.SystemParameters.WorkArea.Width / 2 + offset;
         public static int SENDER_WINDOW_OFFSET = 10;
+
+        // delays
+        public static int TRANSFER_TCP_SENDER_DELAY = 100;
+        public static int TRANSFER_TCP_RECEIVER_DELAY = TRANSFER_TCP_SENDER_DELAY * 2;
+        public static int TRANSFER_TCP_COMPLETED_TRANSFER_DELAY = 1 * 1000;
     }
 }

@@ -6,6 +6,7 @@ using System.Web;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
+using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
 {
@@ -15,7 +16,6 @@ namespace PDS_project_2017.Core
 
         private TcpClient _tcpClient;
         private String _path;
-        private string _userName;
         private int _index;
 
         private bool _continueTransferProcess;
@@ -30,7 +30,8 @@ namespace PDS_project_2017.Core
         {
             _tcpClient = new TcpClient(server, port);
 
-            _userName = userName;
+            _index = 0;
+            
             _path = path;
         }
 
@@ -58,17 +59,22 @@ namespace PDS_project_2017.Core
 
         private void SendFileContent(string filePath)
         {
-            // TRANSFER PROGRESS
-            TransferProgress transferProgressWindow = InitTransferProgressWindow(filePath);
-
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileDimension = fileStream.Length;
             NetworkStream networkStream = _tcpClient.GetStream();
             
+            FileNode fileNode = new FileNode();
+            fileNode.Name = Path.GetFileName(filePath);
+            fileNode.SenderUserName = Properties.Settings.Default.Name;
+
+            // TRANSFER PROGRESS
+            TransferProgress transferProgressWindow = WindowUtils.InitTransferProgressWindow(fileNode, _index, this);
+            transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
+
             Byte[] fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
             int bytesRead;
-            int totalBytesRead = 0;
+            long totalBytesRead = 0;
             _continueTransferProcess = true;
 
             DateTime baseDateTime = DateTime.Now;
@@ -76,54 +82,22 @@ namespace PDS_project_2017.Core
             // FILE CONTENT
             while ((bytesRead = fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length)) > 0 && _continueTransferProcess)
             {
+                // TODO add timeout
                 networkStream.Write(fileContentBuffer, 0, bytesRead);
                 totalBytesRead += bytesRead;
                 UpdateProgressBarEvent((int)(((float) totalBytesRead / (float) fileStream.Length) * 100));
-                Thread.Sleep(150 * _index);
+                Thread.Sleep(Constants.TRANSFER_TCP_SENDER_DELAY + Constants.TRANSFER_TCP_SENDER_DELAY * _index);
 
-                DateTime currentDateTime = DateTime.Now;
-                TimeSpan timeSpanDifference = currentDateTime - baseDateTime;
-                double transmissionSpeed = (double)bytesRead / timeSpanDifference.TotalSeconds;
-                long remainingFileDimension = fileDimension - (long)totalBytesRead;
-                double remainingTime = (double)remainingFileDimension / transmissionSpeed;
-                TimeSpan remainingTimeSpan = TimeSpan.FromSeconds(remainingTime);
+                TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(baseDateTime, bytesRead, totalBytesRead, fileDimension);
                 UpdateRemainingTimeEvent(remainingTimeSpan);
-                
-                baseDateTime = currentDateTime;
-            }
-
-            if (_continueTransferProcess == false)
-            {
-                Console.WriteLine("transfer process cancelled");
+                baseDateTime = DateTime.Now;
             }
 
             fileStream.Close();
 
-            CloseTransferProgressWindow(transferProgressWindow);
+            WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
         }
-
-        private void CloseTransferProgressWindow(TransferProgress transferProgressWindow)
-        {
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                transferProgressWindow.Close();
-            }));
-        }
-
-        private TransferProgress InitTransferProgressWindow(string filePath)
-        {
-            TransferProgress transferProgressWindow = null;
-            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                transferProgressWindow = new TransferProgress(_userName, Path.GetFileName(filePath), this);
-                transferProgressWindow.SetIndex(_index);
-                transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
-                transferProgressWindow.Show();
-            }));
-
-            return transferProgressWindow;
-        }
-
+        
         private void SendFileNodeDescription(string filePath)
         {
             // FILE NAME
@@ -135,6 +109,7 @@ namespace PDS_project_2017.Core
             fileNode.Name = fileName;
             fileNode.Dimension = dimension;
             fileNode.MimeType = MimeMapping.GetMimeMapping(fileName);
+            fileNode.SenderUserName = Properties.Settings.Default.Name;
 
             string jsonFileNodeDescription = JsonConvert.SerializeObject(fileNode);
 
@@ -146,6 +121,8 @@ namespace PDS_project_2017.Core
             TcpUtils.SendDirectoryRequest(_tcpClient);
 
             DirectoryNode directoryNode = FilesUtils.BuildDirectoryNode(_path);
+            directoryNode.SenderUserName = Properties.Settings.Default.Name;
+
             string jsonDirectoryNodeDescription = JsonConvert.SerializeObject(directoryNode);
 
             TcpUtils.SendDescription(_tcpClient, jsonDirectoryNodeDescription);

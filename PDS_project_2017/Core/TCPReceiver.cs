@@ -6,16 +6,25 @@ using System.Threading;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
+using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
 {
-    class TcpReceiver
+    public class TcpReceiver
     {
         // server class
 
         // https://msdn.microsoft.com/it-it/library/fx6588te(v=vs.110).aspx
 
         private TcpListener _tcpServer;
+
+        private bool _continueTransferProcess;
+
+        public delegate void UpdateProgressBarValue(int value);
+        public event UpdateProgressBarValue UpdateProgressBarEvent;
+
+        public delegate void UpdateRemainingTimeValue(TimeSpan timeSpan);
+        public event UpdateRemainingTimeValue UpdateRemainingTimeEvent;
 
         public TcpReceiver(int port)
         {
@@ -113,7 +122,6 @@ namespace PDS_project_2017.Core
             {
                 // asking user for file acceptance
                 FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(directoryNode);
-                // TODO create viewTree in window
 
                 // blocking call until window is closed
                 fileAcceptanceWindow.ShowDialog();
@@ -147,6 +155,7 @@ namespace PDS_project_2017.Core
 
             foreach (var fileNode in directoryNode.FileNodes)
             {
+                // TODO manage timeout and directories deletion
                 ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
             }
 
@@ -169,6 +178,12 @@ namespace PDS_project_2017.Core
         
         private void ReceiveFileContent(TcpClient tcpClient, FileNode fileNode, string destinationDir)
         {
+            _continueTransferProcess = true;
+
+            // TRANSFER PROGRESS
+            TransferProgress transferProgressWindow = WindowUtils.InitTransferProgressWindow(fileNode, 0, this);
+            transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
+
             string filePath = destinationDir + "\\" + fileNode.Name;
 
             NetworkStream networkStream = tcpClient.GetStream();
@@ -182,10 +197,15 @@ namespace PDS_project_2017.Core
 
             BinaryWriter fileWriter = new BinaryWriter(file);
 
+            DateTime baseDateTime = DateTime.Now;
+
             // FILE CONTENT
-            while (fileContentLenghtReceived < fileNode.Dimension)
+            while (fileContentLenghtReceived < fileNode.Dimension && _continueTransferProcess == true)
             {
                 int bytesRead = 0;
+
+                if ((fileNode.Dimension - fileContentLenghtReceived) < buffer.Length)
+                    buffer = new Byte[fileNode.Dimension - fileContentLenghtReceived];
 
                 try
                 {
@@ -195,15 +215,28 @@ namespace PDS_project_2017.Core
                 {
                     // sender closed connection
                     fileWriter.Close();
+                    File.Delete(file.Name);
+
+                    WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
+
                     return;
                 }
 
                 fileWriter.Write(buffer, 0, bytesRead);
-
                 fileContentLenghtReceived += bytesRead;
+
+                Thread.Sleep(Constants.TRANSFER_TCP_RECEIVER_DELAY);
+
+                UpdateProgressBarEvent((int)(((float)fileContentLenghtReceived / (float)fileNode.Dimension) * 100));
+
+                TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(baseDateTime, bytesRead, fileContentLenghtReceived, fileNode.Dimension);
+                UpdateRemainingTimeEvent(remainingTimeSpan);
+                baseDateTime = DateTime.Now;
             }
 
             fileWriter.Close();
+
+            WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
         }
     }
 }

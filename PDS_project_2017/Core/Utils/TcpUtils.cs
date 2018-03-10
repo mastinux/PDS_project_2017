@@ -21,7 +21,8 @@ namespace PDS_project_2017.Core.Utils
         public static string ReceiveCommand(TcpClient tcpClient, int expectedCommandLenght)
         {
             Byte[] data = new Byte[expectedCommandLenght];
-
+            
+            // TODO manage timeot
             tcpClient.GetStream().Read(data, 0, expectedCommandLenght);
 
             return Encoding.UTF8.GetString(data);
@@ -85,6 +86,18 @@ namespace PDS_project_2017.Core.Utils
             String description = Encoding.UTF8.GetString(descriptionData);
 
             return description;
+        }
+
+        public static TimeSpan ComputeRemainingTime(DateTime start, int partial, long completed, long total)
+        {
+            DateTime end = DateTime.Now;
+            TimeSpan timeSpanDifference = end - start;
+            double transmissionSpeed = (double)partial / timeSpanDifference.TotalSeconds;
+            long remainingFileDimension = total - (long)completed;
+            double remainingTime = (double)remainingFileDimension / transmissionSpeed;
+            TimeSpan remainingTimeSpan = TimeSpan.FromSeconds(remainingTime);
+
+            return remainingTimeSpan;
         }
     }
 }

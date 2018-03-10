@@ -9,11 +9,18 @@ namespace PDS_project_2017.Core
 {
     public class DirectoryNode
     {
-        private String _directoryName;
+        private string _senderUserName;
+        private string _directoryName;
         private List<FileNode> _fileNodes;
         private List<DirectoryNode> _directoryNodes;
 
-        public String DirectoryName { get => _directoryName; }
+        public string SenderUserName
+        {
+            get => _senderUserName;
+            set => _senderUserName = value;
+        }
+
+        public string DirectoryName { get => _directoryName; }
         public List<FileNode> FileNodes { get => _fileNodes; }
         public List<DirectoryNode> DirectoryNodes { get => _directoryNodes; }
 

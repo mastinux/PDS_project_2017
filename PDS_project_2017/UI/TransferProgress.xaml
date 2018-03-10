@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
 
         <DockPanel Grid.Row="0" Grid.ColumnSpan="3">
-            <TextBlock Text="Destination user:" Margin="0,0,5,0"/>
+            <TextBlock x:Name="UserRole" Text="" Margin="0,0,5,0"/>
             <TextBlock x:Name="UserName" Text=""/>
         </DockPanel>
 
