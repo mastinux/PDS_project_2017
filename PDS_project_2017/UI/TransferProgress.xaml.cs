@@ -49,8 +49,8 @@ namespace PDS_project_2017
 
         public void SetTcpSenderEvents(TCPSender tcpSender)
         {
-            tcpSender.UpdateProgressBarEvent += SetProgressBarValue;
-            tcpSender.UpdateRemainingTimeEvent += SetRemainingTimeValue;
+            //tcpSender.UpdateProgressBarEvent += SetProgressBarValue;
+            //tcpSender.UpdateRemainingTimeEvent += SetRemainingTimeValue;
         }
 
         public void SetTcpReceiverEvents(TcpReceiver tcpReceiver)

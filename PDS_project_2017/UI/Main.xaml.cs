@@ -6,6 +6,8 @@ using PDS_project_2017.UI;
 using PDS_project_2017.Core;
 using System.Threading;
 using System.ComponentModel;
+using PDS_project_2017.Core.Entities;
+using System.Collections.ObjectModel;
 
 namespace PDS_project_2017
 {
@@ -20,9 +22,11 @@ namespace PDS_project_2017
         private System.Windows.Forms.MenuItem trayPrivateFlag = new System.Windows.Forms.MenuItem();
 
         private UdpListener udpListener;
+        private ObservableCollection<FileTransfer> sendingTransferList;
 
         public MenuItem TrayPrivateFlag { get => trayPrivateFlag; set => trayPrivateFlag = value; }
-        internal UdpListener UdpListener { get => udpListener; set => udpListener = value; }
+        public UdpListener UdpListener { get => udpListener; set => udpListener = value; }
+        public ObservableCollection<FileTransfer> SendingTransferList { get => sendingTransferList; set => sendingTransferList = value; }
 
         public MainWindow()
         {
@@ -35,6 +39,13 @@ namespace PDS_project_2017
                 UserSettings us = new UserSettings();
                 us.ShowDialog(); //ShowDialog returns only when the window is closed
             }
+
+            DataContext = this;
+
+            sendingTransferList = new ObservableCollection<FileTransfer>();
+            TCPSender.NewTransferEvent += AddNewSendingTransfer;
+            TCPSender.UpdateProgressBarEvent += UpdateSendingProgress;
+            TCPSender.UpdateRemainingTimeEvent += UpdateRemTimeSending;
 
             // udp socket listening for request
             udpListener = new UdpListener();
@@ -63,6 +74,24 @@ namespace PDS_project_2017
             testTcpReceiverThread.IsBackground = true;
             testTcpReceiverThread.Start();
             */
+        }
+
+        private void UpdateRemTimeSending(FileTransfer transfer)
+        {
+            
+        }
+
+        private void UpdateSendingProgress(FileTransfer transfer)
+        {
+            
+        }
+
+        private void AddNewSendingTransfer(FileTransfer transfer)
+        {
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                sendingTransferList.Add(transfer);
+            }));
         }
 
         protected override void OnInitialized(EventArgs e)

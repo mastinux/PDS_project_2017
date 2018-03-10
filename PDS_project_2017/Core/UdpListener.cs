@@ -18,7 +18,7 @@ namespace PDS_project_2017.Core
      * This class listen to users requesting available users.
      * It answers only if the current status is "available"
      */
-    class UdpListener
+    public class UdpListener
     {
         private UdpClient _udpServer;
         private User _me;
@@ -44,6 +44,7 @@ namespace PDS_project_2017.Core
 
         public static void ResetStatusAvailableEvent()
         {
+
             _statusAvailableEvent.Reset();
         }
 

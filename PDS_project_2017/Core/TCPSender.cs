@@ -20,11 +20,14 @@ namespace PDS_project_2017.Core
 
         private bool _continueTransferProcess;
 
-        public delegate void UpdateProgressBarValue(int value);
-        public event UpdateProgressBarValue UpdateProgressBarEvent;
+        public delegate void AddNewTransfer(FileTransfer transfer);
+        public static event AddNewTransfer NewTransferEvent;
 
-        public delegate void UpdateRemainingTimeValue(TimeSpan timeSpan);
-        public event UpdateRemainingTimeValue UpdateRemainingTimeEvent;
+        public delegate void UpdateProgressBarValue(FileTransfer transfer);
+        public static event UpdateProgressBarValue UpdateProgressBarEvent;
+
+        public delegate void UpdateRemainingTimeValue(FileTransfer transfer);
+        public static event UpdateRemainingTimeValue UpdateRemainingTimeEvent;
 
         public TCPSender(String server, int port, string userName, String path)
         {
@@ -67,9 +70,18 @@ namespace PDS_project_2017.Core
             fileNode.Name = Path.GetFileName(filePath);
             fileNode.SenderUserName = Properties.Settings.Default.Name;
 
+            FileTransfer fileTransfer = new FileTransfer()
+            {
+                File = fileNode,
+                Progress = 0
+            };
+
+            NewTransferEvent(fileTransfer);
+
             // TRANSFER PROGRESS
-            TransferProgress transferProgressWindow = WindowUtils.InitTransferProgressWindow(fileNode, _index, this);
-            transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
+            //TransferProgress transferProgressWindow = WindowUtils.InitTransferProgressWindow(fileNode, _index, this);
+            //transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
+
 
             Byte[] fileContentBuffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
 
@@ -85,17 +97,24 @@ namespace PDS_project_2017.Core
                 // TODO add timeout
                 networkStream.Write(fileContentBuffer, 0, bytesRead);
                 totalBytesRead += bytesRead;
-                UpdateProgressBarEvent((int)(((float) totalBytesRead / (float) fileStream.Length) * 100));
+                double progress = (((double)totalBytesRead / (double)fileStream.Length) * 100);
+                fileTransfer.Progress = progress;
+                UpdateProgressBarEvent(fileTransfer);
+
+                //TODO remove 
                 Thread.Sleep(Constants.TRANSFER_TCP_SENDER_DELAY + Constants.TRANSFER_TCP_SENDER_DELAY * _index);
 
                 TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(baseDateTime, bytesRead, totalBytesRead, fileDimension);
-                UpdateRemainingTimeEvent(remainingTimeSpan);
+                fileTransfer.RemainingTime = remainingTimeSpan;
+                UpdateRemainingTimeEvent(fileTransfer);
                 baseDateTime = DateTime.Now;
             }
 
             fileStream.Close();
 
-            WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
+            //TODO status completed, open file directory, remove remaining time
+
+            //WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
         }
         
         private void SendFileNodeDescription(string filePath)

@@ -181,8 +181,8 @@ namespace PDS_project_2017.Core
             _continueTransferProcess = true;
 
             // TRANSFER PROGRESS
-            TransferProgress transferProgressWindow = WindowUtils.InitTransferProgressWindow(fileNode, 0, this);
-            transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
+            //TransferProgress transferProgressWindow = WindowUtils.InitTransferProgressWindow(fileNode, 0, this);
+            //transferProgressWindow.CancelTransferProcessEvent = () => _continueTransferProcess = false;
 
             string filePath = destinationDir + "\\" + fileNode.Name;
 
@@ -217,7 +217,7 @@ namespace PDS_project_2017.Core
                     fileWriter.Close();
                     File.Delete(file.Name);
 
-                    WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
+                    //WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
 
                     return;
                 }
@@ -227,16 +227,16 @@ namespace PDS_project_2017.Core
 
                 Thread.Sleep(Constants.TRANSFER_TCP_RECEIVER_DELAY);
 
-                UpdateProgressBarEvent((int)(((float)fileContentLenghtReceived / (float)fileNode.Dimension) * 100));
+                //UpdateProgressBarEvent((int)(((float)fileContentLenghtReceived / (float)fileNode.Dimension) * 100));
 
                 TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(baseDateTime, bytesRead, fileContentLenghtReceived, fileNode.Dimension);
-                UpdateRemainingTimeEvent(remainingTimeSpan);
+                //UpdateRemainingTimeEvent(remainingTimeSpan);
                 baseDateTime = DateTime.Now;
             }
 
             fileWriter.Close();
 
-            WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
+            //WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
         }
     }
 }
