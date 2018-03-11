@@ -8,7 +8,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 
@@ -27,12 +26,31 @@ namespace PDS_project_2017.UI
             DefaultDir_CheckBox.IsChecked = Properties.Settings.Default.UseDefaultDir;
             DefaultDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
             Profile_Image.Source = LoadImage();
-
-            if (Profile_Image.Source == null)
-                Profile_Image.Source = LoadDefaultImage();
         }
 
-        private ImageSource LoadDefaultImage()
+        public static BitmapImage LoadImage()
+        {
+            if (Properties.Settings.Default.Image == "")
+                return LoadDefaultImage();
+            else
+            //if (Properties.Settings.Default.Image.Trim().Length > 0 && Properties.Settings.Default.Image.Trim() != ""
+            //                                                        && Properties.Settings.Default.Image.Trim() != "\"\"")
+            {
+                string f = Properties.Settings.Default.Image;
+                byte[] bytes = Convert.FromBase64String(f);
+
+                System.IO.MemoryStream mem = new System.IO.MemoryStream(bytes);
+
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = mem;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                return bitmapImage;
+            }
+        }
+
+        private static BitmapImage LoadDefaultImage()
         {
             return ConvertBitmapToBitmapImage(Properties.Resources.DefaultProfileImage);
         }
@@ -76,27 +94,6 @@ namespace PDS_project_2017.UI
         public static string LoadName()
         {
             return Properties.Settings.Default.Name;
-        }
-
-        public static BitmapImage LoadImage()
-        {
-            if (Properties.Settings.Default.Image.Trim().Length > 0 && Properties.Settings.Default.Image.Trim() != ""
-                && Properties.Settings.Default.Image.Trim() != "\"\"")
-            {
-                string f = Properties.Settings.Default.Image;
-                byte[] bytes = Convert.FromBase64String(f);
-                
-                System.IO.MemoryStream mem = new System.IO.MemoryStream(bytes);
-
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = mem;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                return bitmapImage;
-            }
-
-            return null;
         }
 
         private void SaveImage(Bitmap img)
@@ -221,7 +218,7 @@ namespace PDS_project_2017.UI
 
         private void Remove_Image_Button_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.Image = null;
+            Properties.Settings.Default.Image = "";
             Properties.Settings.Default.Save();
 
             Profile_Image.Source = LoadDefaultImage();

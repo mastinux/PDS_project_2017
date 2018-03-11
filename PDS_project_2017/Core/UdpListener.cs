@@ -4,12 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace PDS_project_2017.Core
@@ -30,9 +28,15 @@ namespace PDS_project_2017.Core
             _statusAvailableEvent = new ManualResetEvent(!Properties.Settings.Default.PrivateMode);
             
             // initing current machine identity
+            UpdateMe();
+        }
+
+        private void UpdateMe()
+        {
             _me = new User
             {
                 Name = UserSettings.LoadName(),
+                // TODO check if this operation is expensive as it is performed for each udp request
                 Image = UserSettings.LoadImage()
             };
         }
@@ -67,6 +71,8 @@ namespace PDS_project_2017.Core
 
                         User requesterUser = JsonConvert.DeserializeObject<User>(readData);
                         requesterUser.Id = remoteIpEndPoint.Address.ToString();
+
+                        UpdateMe();
 
                         // preparing response
                         byte[] byteToSend = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(_me));
