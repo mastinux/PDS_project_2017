@@ -56,13 +56,13 @@
                 <Label Content="Profile Image" HorizontalAlignment="Center" VerticalAlignment="Top"/>
             </DockPanel>
 
-            <DockPanel Dock="Bottom">
-                <Button x:Name="Change_Image_Button" Content="CHANGE" Width="58" Height="26" Click="Change_Image_Button_Click"/>
-                <Button x:Name="Remove_Image_Button" Content="REMOVE" HorizontalAlignment="Right" Width="58" Height="26" Click="Remove_Image_Button_Click"/>
+            <DockPanel Dock="Top">
+                <Button x:Name="Change_Image_Button" Content="CHANGE" Width="58" Height="26" Click="Change_Image_Button_Click" Margin="5,0,0,0"/>
+                <Button x:Name="Remove_Image_Button" Content="REMOVE" HorizontalAlignment="Right" Width="58" Height="26" Click="Remove_Image_Button_Click"  Margin="0,0,5,0"/>
             </DockPanel>
 
             <DockPanel>
-                <Image x:Name="Profile_Image" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Image x:Name="Profile_Image" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="120"/>
             </DockPanel>
         </DockPanel>
 

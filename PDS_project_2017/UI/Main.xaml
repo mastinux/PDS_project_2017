@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PDS_project_2017"
-                      mc:Ignorable="d"
+        mc:Ignorable="d"
         ShowInTaskbar="False"
         Title="LAN-Sharing - Main" WindowStartupLocation="CenterScreen" Height="400" MinHeight="400" Width="800" MinWidth="800">
     <Window.Resources>
@@ -19,7 +19,7 @@
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="6*"/>
                     <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Row="0" Grid.Column="0">
@@ -27,112 +27,109 @@
                 </DockPanel>
 
                 <DockPanel Grid.Row="0" Grid.Column="1">
-                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontWeight="Bold"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="0" Grid.Column="2">
                     <ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="{Binding Path=Progress}" Margin="0,0,5,0"/>
                 </DockPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="3">
+                <DockPanel Grid.Row="0" Grid.Column="3" Grid.RowSpan="2">
                     <Button VerticalAlignment="Center" Content="X" CommandParameter="{Binding .}" IsCancel="True" ToolTip="Cancel File Tranfer" Margin="0,0,5,0" Click="Cancel_Button_Click"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="1" Grid.Column="2">
-                    <TextBlock Text="Remaining time:" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Remaining time:" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="Navy" FontWeight="Bold"/>
                     <TextBlock Text="{Binding Path=HumanReadableRemainingTime}" VerticalAlignment="Center"/>
 
                     <TextBlock Text="{Binding Path=Progress, StringFormat={}{0:N1}}" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,0,5,0"/>
-                    <TextBlock Text="Percentage: " VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right"/>
+                    <TextBlock Text="Percentage: " VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Foreground="Navy" FontWeight="Bold"/>
                 </DockPanel>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="sendingCompletedTemplate">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="6*"/>
                     <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
 
-                <DockPanel Grid.Row="0" Grid.Column="0">
+                <DockPanel Grid.Column="0">
                     <TextBlock Text="{Binding Path=File.ReceiverUserName}" VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                 </DockPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="1">
-                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                <DockPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontWeight="Bold"/>
                 </DockPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="Transfer Completed"  Margin="0,0,5,0"/>
+                <DockPanel Grid.Column="2">
+                    <TextBlock Text="Transfer Completed" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkGreen"/>
+                    <Button VerticalAlignment="Center" Content="Open" CommandParameter="{Binding .}" ToolTip="Open File in Directory" Margin="0,0,5,0" Click="Open_Button_Click" Width="50"/>
                 </DockPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="3">
-                    <Button VerticalAlignment="Center" Content="Del" CommandParameter="{Binding .}" IsCancel="True" ToolTip="Delete from List" Margin="0,0,5,0" Click="Delete_Button_Click"/>
+                <DockPanel Grid.Column="3">
+                    <Button VerticalAlignment="Center" Content="Clear" CommandParameter="{Binding .}" IsCancel="True" ToolTip="Delete from List" Margin="0,0,5,0" Click="Delete_Button_Click"/>
                 </DockPanel>
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="cancelledTemplate">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="6*"/>
                     <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
 
-                <DockPanel Grid.Row="0" Grid.Column="0">
+                <DockPanel Grid.Column="0">
                     <TextBlock Text="{Binding Path=File.ReceiverUserName}" VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                 </DockPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="1">
-                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                <DockPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontWeight="Bold"/>
                 </DockPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="2">
-                    <TextBlock Text="Transfer Canceleld"  Margin="0,0,5,0"/>
+                <DockPanel Grid.Column="2">
+                    <TextBlock Text="Transfer Canceled" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkRed"/>
                 </DockPanel>
 
-                <DockPanel Grid.Row="0" Grid.Column="3">
+                <DockPanel Grid.Column="3">
                     <Button VerticalAlignment="Center" Content="Del" CommandParameter="{Binding .}" IsCancel="True" ToolTip="Delete from List" Margin="0,0,5,0" Click="Delete_Button_Click"/>
                 </DockPanel>
             </Grid>
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <TabControl HorizontalAlignment="Left" Height="369" VerticalAlignment="Top" Width="792">
-            <TabItem Header="Sending Files" Margin="129,0,-129,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+        <TabControl>
+            <TabItem Header="Sending Files">
                 <Grid Background="#FFE5E5E5">
-                    <ListView x:Name="SendingList" ItemsSource="{Binding SendingTransferList}">
+                    <ListView x:Name="SendingList" ItemsSource="{Binding SendingTransferList}" HorizontalContentAlignment="Stretch">
                         <ListView.Resources>
                             <Style TargetType="ListViewItem">
+
                                 <!-- Default Template -->
                                 <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
-                                
+
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=Status}" Value="2">
                                         <Setter Property="ContentTemplate" Value="{StaticResource cancelledTemplate}" />
                                     </DataTrigger>
+
                                     <DataTrigger Binding="{Binding Path=Status}" Value="1">
                                         <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
                                     </DataTrigger>
                                 </Style.Triggers>
-                               
+
                             </Style>
                         </ListView.Resources>
                     </ListView>
                 </Grid>
             </TabItem>
-            <TabItem Header="Receiving Files" Margin="0,0,-251,0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="198" HorizontalContentAlignment="Stretch">
+
+            <TabItem Header="Receiving Files">
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>

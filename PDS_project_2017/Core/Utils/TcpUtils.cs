@@ -22,7 +22,7 @@ namespace PDS_project_2017.Core.Utils
         {
             Byte[] data = new Byte[expectedCommandLenght];
             
-            // TODO manage timeot
+            // TODO manage timeout
             tcpClient.GetStream().Read(data, 0, expectedCommandLenght);
 
             return Encoding.UTF8.GetString(data);

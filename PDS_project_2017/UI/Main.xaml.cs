@@ -224,7 +224,7 @@ namespace PDS_project_2017
         {
             var item = (System.Windows.Controls.Button)sender;
             FileTransfer ft = (FileTransfer)item.CommandParameter;
-            ft.ContinueFileTransfer = false;          
+            ft.ContinueFileTransfer = false;
         }
 
         private void Delete_Button_Click(object sender, RoutedEventArgs e)
@@ -232,6 +232,11 @@ namespace PDS_project_2017
             var item = (System.Windows.Controls.Button)sender;
             FileTransfer ft = (FileTransfer)item.CommandParameter;
             sendingTransferList.Remove(ft);
+        }
+
+        private void Open_Button_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
