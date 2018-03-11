@@ -222,8 +222,16 @@ namespace PDS_project_2017
         
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
-            // TODO cancel file transfer
-            throw new NotImplementedException();
+            var item = (System.Windows.Controls.Button)sender;
+            FileTransfer ft = (FileTransfer)item.CommandParameter;
+            ft.ContinueFileTransfer = false;          
+        }
+
+        private void Delete_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (System.Windows.Controls.Button)sender;
+            FileTransfer ft = (FileTransfer)item.CommandParameter;
+            sendingTransferList.Remove(ft);
         }
     }
 }

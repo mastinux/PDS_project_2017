@@ -72,7 +72,8 @@ namespace PDS_project_2017.Core
             {
                 File = fileNode,
                 Progress = 0,
-                ContinueFileTransfer = true
+                ContinueFileTransfer = true,
+                Status = TransferStatus.Pending
             };
 
             NewTransferEvent(fileTransfer);
@@ -107,6 +108,12 @@ namespace PDS_project_2017.Core
             if (!fileTransfer.ContinueFileTransfer)
             {
                 Console.WriteLine("file transfer cancelled");
+                fileTransfer.Status = TransferStatus.Cancelled;
+            }
+            else
+            {
+                Console.WriteLine("file transfer completed");
+                fileTransfer.Status = TransferStatus.Completed;
             }
 
             //TODO status completed, open file directory, remove remaining time

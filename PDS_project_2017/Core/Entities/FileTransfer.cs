@@ -9,6 +9,13 @@ using System.Windows.Input;
 
 namespace PDS_project_2017.Core.Entities
 {
+    public enum TransferStatus
+    {
+        Pending,
+        Completed,
+        Cancelled
+    };
+
     public class FileTransfer : INotifyPropertyChanged
     {
         private FileNode _fileNode;
@@ -16,7 +23,9 @@ namespace PDS_project_2017.Core.Entities
         private TimeSpan _remainingTime;
         private string _humanReadableRemainingTime;
         private bool _continueFileTransfer;
+        private TransferStatus status;
         
+
         public FileNode File
         {
             get => _fileNode;
@@ -64,7 +73,17 @@ namespace PDS_project_2017.Core.Entities
             get => _continueFileTransfer;
             set => _continueFileTransfer = value;
         }
-        
+
+        public TransferStatus Status
+        {
+            get => status;
+            set
+            {
+                status = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
