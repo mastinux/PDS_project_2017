@@ -19,8 +19,6 @@ namespace PDS_project_2017.Core
         private int _index;
         private string _receiverUserName;
 
-        private bool _continueTransferProcess;
-
         public delegate void AddNewTransfer(FileTransfer transfer);
         public static event AddNewTransfer NewTransferEvent;
 
@@ -73,7 +71,8 @@ namespace PDS_project_2017.Core
                 File = fileNode,
                 Progress = 0,
                 ContinueFileTransfer = true,
-                Status = TransferStatus.Pending
+                Status = TransferStatus.Pending,
+                Sending = true
             };
 
             NewTransferEvent(fileTransfer);
@@ -82,8 +81,6 @@ namespace PDS_project_2017.Core
 
             int bytesRead;
             long totalBytesRead = 0;
-            _continueTransferProcess = true;
-
             DateTime baseDateTime = DateTime.Now;
 
             // FILE CONTENT

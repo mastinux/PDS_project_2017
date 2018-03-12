@@ -23,7 +23,19 @@
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="{Binding Path=File.ReceiverUserName}" VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                    <DockPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Sending}" Value="True">
+                                    <Setter Property="Text" Value="{Binding Path=File.ReceiverUserName}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Sending}" Value="False">
+                                    <Setter Property="Text" Value="{Binding Path=File.SenderUserName}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Resources>
+                    <TextBlock VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="0" Grid.Column="1">
@@ -66,7 +78,33 @@
 
                 <DockPanel Grid.Column="2">
                     <TextBlock Text="Transfer Completed" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkGreen"/>
-                    <Button VerticalAlignment="Center" Content="Open" CommandParameter="{Binding .}" ToolTip="Open File in Directory" Margin="0,0,5,0" Click="Open_Button_Click" Width="50"/>
+                </DockPanel>
+
+                <DockPanel Grid.Column="3">
+                    <Button VerticalAlignment="Center" Content="Clear" CommandParameter="{Binding .}" IsCancel="True" ToolTip="Delete from List" Margin="0,0,5,0" Click="Delete_Button_Click"/>
+                </DockPanel>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="receivingCompletedTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+
+                <DockPanel Grid.Column="0">
+                    <TextBlock Text="{Binding Path=File.SenderUserName}" VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                </DockPanel>
+
+                <DockPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontWeight="Bold"/>
+                </DockPanel>
+
+                <DockPanel Grid.Column="2">
+                    <TextBlock Text="Transfer Completed" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkGreen"/>
+                    <Button VerticalAlignment="Center" Content="Open Dir" CommandParameter="{Binding .}" ToolTip="Open File in Directory" Margin="0,0,5,0" Click="Open_Button_Click" Width="50"/>
                 </DockPanel>
 
                 <DockPanel Grid.Column="3">
@@ -83,8 +121,20 @@
                     <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
 
-                <DockPanel Grid.Column="0">
-                    <TextBlock Text="{Binding Path=File.ReceiverUserName}" VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                <DockPanel Grid.Row="0" Grid.Column="0">
+                    <DockPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Sending}" Value="True">
+                                    <Setter Property="Text" Value="{Binding Path=File.ReceiverUserName}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Sending}" Value="False">
+                                    <Setter Property="Text" Value="{Binding Path=File.SenderUserName}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Resources>
+                    <TextBlock VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Column="1">
@@ -93,6 +143,44 @@
 
                 <DockPanel Grid.Column="2">
                     <TextBlock Text="Transfer Canceled" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkRed"/>
+                </DockPanel>
+
+                <DockPanel Grid.Column="3">
+                    <Button VerticalAlignment="Center" Content="Clear" CommandParameter="{Binding .}" IsCancel="True" ToolTip="Delete from List" Margin="0,0,5,0" Click="Delete_Button_Click"/>
+                </DockPanel>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="errorTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+
+                <DockPanel Grid.Row="0" Grid.Column="0">
+                    <DockPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Sending}" Value="True">
+                                    <Setter Property="Text" Value="{Binding Path=File.ReceiverUserName}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=Sending}" Value="False">
+                                    <Setter Property="Text" Value="{Binding Path=File.SenderUserName}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Resources>
+                    <TextBlock VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                </DockPanel>
+
+                <DockPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Path=File.Name}" VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}" FontWeight="Bold"/>
+                </DockPanel>
+
+                <DockPanel Grid.Column="2">
+                    <TextBlock Text="Error during transfer" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkRed"/>
                 </DockPanel>
 
                 <DockPanel Grid.Column="3">
@@ -118,9 +206,18 @@
                                         <Setter Property="ContentTemplate" Value="{StaticResource cancelledTemplate}" />
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Path=Status}" Value="1">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
+                                    <DataTrigger Binding="{Binding Path=Status}" Value="3">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
                                     </DataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=Status}" Value="1" />
+                                            <Condition Binding="{Binding Path=Sending}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
+                                    </MultiDataTrigger>
+                                    
                                 </Style.Triggers>
 
                             </Style>
@@ -130,7 +227,37 @@
             </TabItem>
 
             <TabItem Header="Receiving Files">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <ListView x:Name="ReceivingList" ItemsSource="{Binding ReceivingTransferList}" HorizontalContentAlignment="Stretch">
+                        <ListView.Resources>
+                            <Style TargetType="ListViewItem">
+
+                                <!-- Default Template -->
+                                <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Status}" Value="2">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource cancelledTemplate}" />
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=Status}" Value="3">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
+                                    </DataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=Status}" Value="1" />
+                                            <Condition Binding="{Binding Path=Sending}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="ContentTemplate" Value="{StaticResource receivingCompletedTemplate}" />
+                                    </MultiDataTrigger>
+
+                                </Style.Triggers>
+
+                            </Style>
+                        </ListView.Resources>
+                    </ListView>
+                </Grid>
             </TabItem>
         </TabControl>
 

@@ -9,6 +9,7 @@ using System.ComponentModel;
 using PDS_project_2017.Core.Entities;
 using System.Collections.ObjectModel;
 using System.Web.Caching;
+using System.Diagnostics;
 
 namespace PDS_project_2017
 {
@@ -25,6 +26,7 @@ namespace PDS_project_2017
 
         private UdpListener udpListener;
         private ObservableCollection<FileTransfer> sendingTransferList;
+        private ObservableCollection<FileTransfer> receivingTransferList;
 
         public MenuItem TrayPrivateFlag
         {
@@ -43,6 +45,7 @@ namespace PDS_project_2017
             get => sendingTransferList;
             set => sendingTransferList = value;
         }
+        public ObservableCollection<FileTransfer> ReceivingTransferList { get => receivingTransferList; set => receivingTransferList = value; }
 
         public MainWindow()
         {
@@ -59,7 +62,7 @@ namespace PDS_project_2017
             DataContext = this;
 
             sendingTransferList = new ObservableCollection<FileTransfer>();
-            TCPSender.NewTransferEvent += AddNewSendingTransfer;
+            TCPSender.NewTransferEvent += AddNewTransfer;
 
             // udp socket listening for request
             udpListener = new UdpListener();
@@ -71,6 +74,8 @@ namespace PDS_project_2017
 
             // tcp socket listening for file transfer
             TcpReceiver tcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_PORT);
+            receivingTransferList = new ObservableCollection<FileTransfer>();
+            TcpReceiver.NewTransferEvent += AddNewTransfer;
 
             // launching background thread
             Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
@@ -90,10 +95,15 @@ namespace PDS_project_2017
             */
         }
         
-        private void AddNewSendingTransfer(FileTransfer transfer)
+        private void AddNewTransfer(FileTransfer transfer)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(
-                new Action(() => { sendingTransferList.Add(transfer); }));
+                new Action(() => {
+                    if (transfer.Sending)
+                        sendingTransferList.Add(transfer);
+                    else
+                        ReceivingTransferList.Add(transfer);
+                }));
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -231,12 +241,17 @@ namespace PDS_project_2017
         {
             var item = (System.Windows.Controls.Button)sender;
             FileTransfer ft = (FileTransfer)item.CommandParameter;
-            sendingTransferList.Remove(ft);
+            if (ft.Sending)
+                sendingTransferList.Remove(ft);
+            else
+                receivingTransferList.Remove(ft);
         }
 
         private void Open_Button_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var item = (System.Windows.Controls.Button)sender;
+            FileTransfer ft = (FileTransfer)item.CommandParameter;
+            Process.Start("explorer.exe", ft.SavingPath);
         }
     }
 }
