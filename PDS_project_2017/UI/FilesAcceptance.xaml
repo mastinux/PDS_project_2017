@@ -6,37 +6,40 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:PDS_project_2017.UI"
         mc:Ignorable="d"
-        Title="LAN-Sharing - Files Acceptance" WindowStartupLocation="Manual" Height="312" MinHeight="200" Width="326" MinWidth="300">
+        Title="LAN-Sharing - Files Acceptance" WindowStartupLocation="Manual" Height="300" MinHeight="300" Width="300" MinWidth="300">
     <Grid>
-        <DockPanel LastChildFill="True">
+        <DockPanel LastChildFill="True" Grid.ColumnSpan="2">
 
             <DockPanel DockPanel.Dock="Bottom">
                 <Button x:Name="Accept_Button" Content="ACCEPT" Margin="10,10,10,10" Width="75" Click="Accept_Button_Click" DockPanel.Dock="Right"/>
                 <Button x:Name="Refuse_Button" Content="REFUSE" Margin="10,10,10,10" Width="75" Click="Refuse_Button_Click" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
             </DockPanel>
 
-            <DockPanel DockPanel.Dock="Top" Margin="5,5,5,83" Width="283">
+            <DockPanel DockPanel.Dock="Top" Margin="0,10,0,10">
                 <Label Content="Destination Directory:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                <Button x:Name="DestinationDir_Button" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="24" Click="DestinationDir_Button_Click"/>
-                <TextBox x:Name="DestinationDir_TextBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,0,5,0" IsReadOnly="True"  ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                <Button x:Name="DestinationDir_Button" Content="..." HorizontalAlignment="Right" VerticalAlignment="Top" Width="24" Click="DestinationDir_Button_Click" Margin="0,0,5,0"/>
+                <TextBox x:Name="DestinationDir_TextBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,5,0" IsReadOnly="True" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
             </DockPanel>
-            <DockPanel x:Name="dp" Height="192" VerticalAlignment="Center" Width="264" Margin="0,-78,0,0" LastChildFill="False">
-                <Grid Height="159" VerticalAlignment="Top" Width="268">
+
+            <DockPanel x:Name="dp" VerticalAlignment="Center" LastChildFill="True">
+                <Grid VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="65*"/>
-                        <ColumnDefinition Width="68*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="16*"/>
-                        <RowDefinition Height="15*"/>
-                        <RowDefinition Height="17*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Label Content="Filename:" HorizontalAlignment="Left" Margin="39,18,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Size:" HorizontalAlignment="Left" Margin="39,14,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                    <Label Content="Filetype:&#xD;&#xA;" HorizontalAlignment="Center" Margin="39,20,21,10" Grid.Row="2" VerticalAlignment="Center" Width="71"/>
-                    <Label x:Name="Filename_Label" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Content}"/>
-                    <Label x:Name="Size_Label" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="29,14,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                    <Label x:Name="Filetype_Label" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="29,20,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+
+                    <Label Content="Filename:" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Label Content="Size:" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <Label Content="Filetype:" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    
+                    <Label x:Name="Filename_Label" Content="FN" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Content}"/>
+                    <Label x:Name="Size_Label" Content="FS" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Center"/>
+                    <Label x:Name="Filetype_Label" Content="FT" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center"/>
                 </Grid>
                 <!--<TreeView x:Name="tv" Height="192" VerticalAlignment="Top" Width="263"/>-->
             </DockPanel>

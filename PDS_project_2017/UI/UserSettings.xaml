@@ -23,12 +23,12 @@
         </Grid.RowDefinitions>
 
         <DockPanel Grid.Column="0" Grid.Row="1">
-            <Label Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <TextBox x:Name="Name_TextBox" HorizontalAlignment="Right" VerticalAlignment="Center" Height="23" TextWrapping="Wrap" Text="" Width="100" TextChanged="Name_TextBox_TextChanged"/>
+            <Label Content="Name:" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Left"/>
+            <TextBox x:Name="Name_TextBox" VerticalAlignment="Center" Height="23" TextWrapping="Wrap" Text="" Width="100" TextChanged="Name_TextBox_TextChanged" HorizontalAlignment="Right"/>
         </DockPanel>
 
         <DockPanel Grid.Column="0" Grid.Row="5">
-            <Label Content="Save in Default Dir:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Label Content="Save in Default Dir:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
             <CheckBox x:Name="DefaultDir_CheckBox" Content="" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="DefaultDir_CheckBox_Checked" Unchecked="DefaultDir_CheckBox_Unchecked"/>
         </DockPanel>
 
@@ -38,7 +38,7 @@
         </DockPanel>
 
         <DockPanel Grid.Column="0" Grid.Row="4">
-            <Label Content="Auto Accept File:" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
+            <Label Content="Auto Accept File:" HorizontalAlignment="Left" VerticalAlignment="Center" IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}" FontWeight="Bold"/>
             <CheckBox x:Name="AutoAccept_CheckBox" Content="" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="AutoAccept_CheckBox_Checked" Unchecked="AutoAccept_CheckBox_Unchecked"  IsEnabled="{Binding ElementName=DefaultDir_CheckBox, Path=IsChecked}"/>
         </DockPanel>
         
@@ -47,13 +47,13 @@
         </DockPanel>
         
         <DockPanel Grid.Column="0" Grid.Row="3">
-            <Label Content="Private Mode:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Label Content="Private Mode:" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold"/>
             <CheckBox x:Name="Private_CheckBox" Content="" HorizontalAlignment="Right" VerticalAlignment="Center" Checked="Private_CheckBox_Checked" Unchecked="Private_CheckBox_Unchecked"/>
         </DockPanel>
 
         <DockPanel LastChildFill="True" Grid.Column="1" Grid.Row="0" Grid.RowSpan="5">
             <DockPanel Dock="Top">
-                <Label Content="Profile Image" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <Label Content="Profile Image" HorizontalAlignment="Center" VerticalAlignment="Top" FontWeight="Bold"/>
             </DockPanel>
 
             <DockPanel Dock="Top">

@@ -13,7 +13,7 @@ namespace PDS_project_2017.Core.Entities
     {
         Pending,
         Completed,
-        Cancelled,
+        Canceled,
         Error
     };
 

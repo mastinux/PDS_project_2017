@@ -71,7 +71,9 @@ namespace PDS_project_2017
 
         private TreeViewItem CreateTreeViewItem(DirectoryNode dn)
         {
-            TreeViewItem tvItem = new TreeViewItem() { Header = dn.DirectoryName };
+            int filesInDirectory = dn.FileNodes.Count;
+
+            TreeViewItem tvItem = new TreeViewItem() { Header = dn.DirectoryName + " (" + filesInDirectory + " files)", FontWeight = FontWeights.Bold};
 
             foreach(var directory in dn.DirectoryNodes)
             {
@@ -82,7 +84,8 @@ namespace PDS_project_2017
             {
                 tvItem.Items.Add(new TreeViewItem()
                 {
-                    Header = file.Name + " (" + ConvertToHumanReadableSize(file.Dimension) + ")"
+                    Header = file.Name + " (" + ConvertToHumanReadableSize(file.Dimension) + ")",
+                    FontWeight = FontWeights.Regular
                 });
             }
 

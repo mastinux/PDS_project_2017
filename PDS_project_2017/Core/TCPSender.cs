@@ -105,7 +105,7 @@ namespace PDS_project_2017.Core
             if (!fileTransfer.ContinueFileTransfer)
             {
                 Console.WriteLine("file transfer cancelled");
-                fileTransfer.Status = TransferStatus.Cancelled;
+                fileTransfer.Status = TransferStatus.Canceled;
             }
             else
             {

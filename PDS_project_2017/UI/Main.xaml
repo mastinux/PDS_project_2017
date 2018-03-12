@@ -26,16 +26,20 @@
                     <DockPanel.Resources>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
+
                                 <DataTrigger Binding="{Binding Path=Sending}" Value="True">
                                     <Setter Property="Text" Value="{Binding Path=File.ReceiverUserName}" />
                                 </DataTrigger>
+
                                 <DataTrigger Binding="{Binding Path=Sending}" Value="False">
                                     <Setter Property="Text" Value="{Binding Path=File.SenderUserName}" />
                                 </DataTrigger>
+
                             </Style.Triggers>
                         </Style>
                     </DockPanel.Resources>
-                    <TextBlock VerticalAlignment="Center" Margin="0,0,5,0"  ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+
+                    <TextBlock VerticalAlignment="Center" Margin="0,0,5,0" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                 </DockPanel>
 
                 <DockPanel Grid.Row="0" Grid.Column="1">
@@ -194,69 +198,95 @@
         <TabControl>
             <TabItem Header="Sending Files">
                 <Grid Background="#FFE5E5E5">
-                    <ListView x:Name="SendingList" ItemsSource="{Binding SendingTransferList}" HorizontalContentAlignment="Stretch">
-                        <ListView.Resources>
-                            <Style TargetType="ListViewItem">
 
-                                <!-- Default Template -->
-                                <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
+                    <DockPanel LastChildFill="True">
 
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=Status}" Value="2">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource cancelledTemplate}" />
-                                    </DataTrigger>
+                        <DockPanel DockPanel.Dock="Bottom">
+                            <Button x:Name="Clear_All_S_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Completed_Button_Click" DockPanel.Dock="Right"/>
+                            <Button x:Name="Clear_All_S_Canceled_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Canceled_Button_Click" HorizontalAlignment="Right"/>
+                        </DockPanel>
 
-                                    <DataTrigger Binding="{Binding Path=Status}" Value="3">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
-                                    </DataTrigger>
+                        <ListView x:Name="SendingList" ItemsSource="{Binding SendingTransferList}" HorizontalContentAlignment="Stretch">
+                            <ListView.Resources>
+                                <Style TargetType="ListViewItem">
+                                    <!-- Default Template -->
+                                    <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
 
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Path=Status}" Value="1" />
-                                            <Condition Binding="{Binding Path=Sending}" Value="True" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
-                                    </MultiDataTrigger>
-                                    
-                                </Style.Triggers>
+                                    <Style.Triggers>
+                                        <!--
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Path=Status}" Value="1" />
+                                                <Condition Binding="{Binding Path=Sending}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
+                                        </MultiDataTrigger>
+                                        -->
 
-                            </Style>
-                        </ListView.Resources>
-                    </ListView>
+                                        <DataTrigger Binding="{Binding Path=Status}" Value="1">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=Status}" Value="2">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource cancelledTemplate}" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=Status}" Value="3">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </ListView.Resources>
+                        </ListView>
+                    </DockPanel>
                 </Grid>
             </TabItem>
 
             <TabItem Header="Receiving Files">
                 <Grid Background="#FFE5E5E5">
-                    <ListView x:Name="ReceivingList" ItemsSource="{Binding ReceivingTransferList}" HorizontalContentAlignment="Stretch">
-                        <ListView.Resources>
-                            <Style TargetType="ListViewItem">
+                    <DockPanel LastChildFill="True">
 
-                                <!-- Default Template -->
-                                <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
+                        <DockPanel DockPanel.Dock="Bottom">
+                            <Button x:Name="Clear_All_R_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" DockPanel.Dock="Right"/>
+                            <Button x:Name="Clear_All_R_Canceled_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Canceled_Button_Click" HorizontalAlignment="Right"/>
+                        </DockPanel>
 
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=Status}" Value="2">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource cancelledTemplate}" />
-                                    </DataTrigger>
+                        <ListView x:Name="ReceivingList" ItemsSource="{Binding ReceivingTransferList}" HorizontalContentAlignment="Stretch">
+                            <ListView.Resources>
+                                <Style TargetType="ListViewItem">
 
-                                    <DataTrigger Binding="{Binding Path=Status}" Value="3">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
-                                    </DataTrigger>
+                                    <!-- Default Template -->
+                                    <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
 
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Path=Status}" Value="1" />
-                                            <Condition Binding="{Binding Path=Sending}" Value="False" />
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="ContentTemplate" Value="{StaticResource receivingCompletedTemplate}" />
-                                    </MultiDataTrigger>
+                                    <Style.Triggers>
+                                        <!--
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Path=Status}" Value="1" />
+                                                <Condition Binding="{Binding Path=Sending}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ContentTemplate" Value="{StaticResource receivingCompletedTemplate}" />
+                                        </MultiDataTrigger>
+                                        -->
 
-                                </Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Status}" Value="1">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource receivingCompletedTemplate}" />
+                                        </DataTrigger>
 
-                            </Style>
-                        </ListView.Resources>
-                    </ListView>
+                                        <DataTrigger Binding="{Binding Path=Status}" Value="2">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource cancelledTemplate}" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=Status}" Value="3">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+
+                                </Style>
+                            </ListView.Resources>
+                        </ListView>
+                    </DockPanel>
                 </Grid>
             </TabItem>
         </TabControl>

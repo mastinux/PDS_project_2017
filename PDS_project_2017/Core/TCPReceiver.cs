@@ -143,6 +143,7 @@ namespace PDS_project_2017.Core
         private void PopulateDirectory(TcpClient tcpClient, DirectoryNode directoryNode, string destinationDir)
         {
             string directoryPath = destinationDir + "\\" + directoryNode.DirectoryName;
+            string senderUserName = directoryNode.SenderUserName;
 
             directoryPath = FilesUtils.CheckDirectoryExistance(directoryPath);
 
@@ -151,11 +152,13 @@ namespace PDS_project_2017.Core
             foreach (var fileNode in directoryNode.FileNodes)
             {
                 // TODO manage timeout and directories deletion
+                fileNode.SenderUserName = senderUserName;
                 ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
             }
 
             foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
             {
+                innerDirectoryNode.SenderUserName = senderUserName;
                 PopulateDirectory(tcpClient, innerDirectoryNode, directoryPath);
             }
         }
@@ -236,7 +239,7 @@ namespace PDS_project_2017.Core
             if (!fileTransfer.ContinueFileTransfer)
             {
                 Console.WriteLine("file transfer cancelled");
-                fileTransfer.Status = TransferStatus.Cancelled;
+                fileTransfer.Status = TransferStatus.Canceled;
             }
             else
             {

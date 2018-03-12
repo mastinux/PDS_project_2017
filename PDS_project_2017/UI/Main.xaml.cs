@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Forms;
 using MahApps.Metro.Controls;
@@ -10,6 +11,7 @@ using PDS_project_2017.Core.Entities;
 using System.Collections.ObjectModel;
 using System.Web.Caching;
 using System.Diagnostics;
+using System.Linq;
 
 namespace PDS_project_2017
 {
@@ -45,7 +47,12 @@ namespace PDS_project_2017
             get => sendingTransferList;
             set => sendingTransferList = value;
         }
-        public ObservableCollection<FileTransfer> ReceivingTransferList { get => receivingTransferList; set => receivingTransferList = value; }
+
+        public ObservableCollection<FileTransfer> ReceivingTransferList
+        {
+            get => receivingTransferList;
+            set => receivingTransferList = value;
+        }
 
         public MainWindow()
         {
@@ -252,6 +259,34 @@ namespace PDS_project_2017
             var item = (System.Windows.Controls.Button)sender;
             FileTransfer ft = (FileTransfer)item.CommandParameter;
             Process.Start("explorer.exe", ft.SavingPath);
+        }
+
+        private void PurgeListFrom(ObservableCollection<FileTransfer> list, TransferStatus status)
+        {
+            List<FileTransfer> itemsToRemove = list.Where(x => x.Status == status).ToList();
+
+            foreach (var item in itemsToRemove)
+                list.Remove(item);
+        }
+
+        private void Clear_All_S_Completed_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PurgeListFrom(sendingTransferList, TransferStatus.Completed);
+        }
+
+        private void Clear_All_S_Canceled_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PurgeListFrom(sendingTransferList, TransferStatus.Canceled);
+        }
+
+        private void Clear_All_R_Completed_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PurgeListFrom(receivingTransferList, TransferStatus.Completed);
+        }
+
+        private void Clear_All_R_Canceled_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PurgeListFrom(receivingTransferList, TransferStatus.Canceled);
         }
     }
 }
