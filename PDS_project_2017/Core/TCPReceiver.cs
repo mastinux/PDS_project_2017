@@ -48,6 +48,8 @@ namespace PDS_project_2017.Core
                     {
                         ReceiveDirectory(client);
                     }
+
+                    client.Close();
                 });
 
                 clientThread.IsBackground = true;
@@ -173,7 +175,16 @@ namespace PDS_project_2017.Core
 
             ReceiveFileContent(tcpClient, fileNode, destinationDir);
         }
-        
+
+        private bool IsConnected(TcpClient tcpclient)
+        {
+            if (!(tcpclient.Client.Poll(1, SelectMode.SelectRead) && tcpclient.Client.Available == 0))
+                return true;
+            else
+                throw new IOException();
+                
+        }
+
         private void ReceiveFileContent(TcpClient tcpClient, FileNode fileNode, string destinationDir)
         {
             string filePath = destinationDir + "\\" + fileNode.Name;
@@ -209,6 +220,7 @@ namespace PDS_project_2017.Core
 
                 try
                 {
+                    IsConnected(tcpClient);
                     bytesRead = networkStream.Read(buffer, 0, buffer.Length);
                 }
                 catch (IOException ioe)
@@ -216,9 +228,7 @@ namespace PDS_project_2017.Core
                     // sender closed connection
                     fileWriter.Close();
                     File.Delete(file.Name);
-
-                    //WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
-
+                    fileTransfer.Status = TransferStatus.Error;
                     return;
                 }
 
@@ -246,6 +256,7 @@ namespace PDS_project_2017.Core
                 Console.WriteLine("file transfer completed");
                 fileTransfer.Status = TransferStatus.Completed;
             }
+
             //WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
         }
     }

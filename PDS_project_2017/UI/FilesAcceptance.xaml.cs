@@ -34,6 +34,7 @@ namespace PDS_project_2017
 
             Top = Constants.RECEIVER_WINDOW_TOP;
             Left = Constants.RECEIVER_WINDOW_LEFT;
+            this.Topmost = true;
         }
 
         public FilesAcceptance(FileNode fileNode)
@@ -116,6 +117,15 @@ namespace PDS_project_2017
             }
 
             _filesAccepted = true;
+            // pop up main window
+
+            Application.Current.Dispatcher.Invoke(() => 
+            {
+                Application.Current.MainWindow.WindowState = WindowState.Normal;
+                Application.Current.MainWindow.Topmost = true;
+                Application.Current.MainWindow.Show();
+            });
+            
 
             this.Close();
         }

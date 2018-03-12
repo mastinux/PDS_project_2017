@@ -93,6 +93,8 @@ namespace PDS_project_2017.Core.Utils
             DateTime end = DateTime.Now;
             TimeSpan timeSpanDifference = end - start;
             double transmissionSpeed = (double)partial / timeSpanDifference.TotalSeconds;
+            if (transmissionSpeed == 0 || double.IsNaN(transmissionSpeed))
+                return TimeSpan.MaxValue;
             long remainingFileDimension = total - (long)completed;
             double remainingTime = (double)remainingFileDimension / transmissionSpeed;
             TimeSpan remainingTimeSpan = TimeSpan.FromSeconds(remainingTime);

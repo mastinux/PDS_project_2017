@@ -26,8 +26,9 @@ namespace PDS_project_2017.Core
         public const string TRANSFER_TCP_ACCEPT = "OK ";
         public const string TRANSFER_TCP_REFUSE = "NO ";
 
-        public static int TRANSFER_TCP_READ_TIMEOUT = 30;
-        
+        public static int TRANSFER_TCP_READ_TIMEOUT = 5;
+        public static int TRANSFER_TCP_WRITE_TIMEOUT = 5;
+
         // windows positions
         private static double offset = 70;
         public static double SENDER_WINDOW_TOP = offset;

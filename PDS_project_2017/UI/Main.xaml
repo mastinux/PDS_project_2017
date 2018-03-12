@@ -108,7 +108,7 @@
 
                 <DockPanel Grid.Column="2">
                     <TextBlock Text="Transfer Completed" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkGreen"/>
-                    <Button VerticalAlignment="Center" Content="Open Dir" CommandParameter="{Binding .}" ToolTip="Open File in Directory" Margin="0,0,5,0" Click="Open_Button_Click" Width="50"/>
+                    <Button VerticalAlignment="Center" Content="Open Directory" CommandParameter="{Binding .}" ToolTip="Open File in Directory" Margin="0,0,5,0" Click="Open_Button_Click" Width="130"/>
                 </DockPanel>
 
                 <DockPanel Grid.Column="3">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Web;
 using Newtonsoft.Json;
@@ -36,6 +37,7 @@ namespace PDS_project_2017.Core
         public void SendFile()
         {
             SendDirectoryFile(_path);
+            _tcpClient.Close();
         }
 
         private void SendDirectoryFile(string filePath)
@@ -60,6 +62,7 @@ namespace PDS_project_2017.Core
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileDimension = fileStream.Length;
             NetworkStream networkStream = _tcpClient.GetStream();
+            networkStream.WriteTimeout = Constants.TRANSFER_TCP_WRITE_TIMEOUT;
             
             FileNode fileNode = new FileNode();
             fileNode.Name = Path.GetFileName(filePath);
@@ -86,8 +89,17 @@ namespace PDS_project_2017.Core
             // FILE CONTENT
             while ((bytesRead = fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length)) > 0 && fileTransfer.ContinueFileTransfer)
             {
-                // TODO add timeout on Write
-                networkStream.Write(fileContentBuffer, 0, bytesRead);
+                try
+                {
+                    networkStream.Write(fileContentBuffer, 0, bytesRead);
+                    
+                }
+                catch (IOException ioe)
+                {
+                    fileTransfer.Status = TransferStatus.Error;
+                    return;
+                }
+                
                 totalBytesRead += bytesRead;
                 double progress = (((double)totalBytesRead / (double)fileStream.Length) * 100);
                 fileTransfer.Progress = progress;
