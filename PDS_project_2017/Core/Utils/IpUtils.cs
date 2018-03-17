@@ -16,7 +16,7 @@ namespace PDS_project_2017.Core
             // managing only IPv4 addresses
 
             // TODO test purpose : remove on production environment
-            return false;
+            //return false;
 
             if (GetLocalIPAddress().Equals(remoteIpEndPoint.Address))
                 return true;
