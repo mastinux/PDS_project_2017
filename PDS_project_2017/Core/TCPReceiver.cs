@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -19,13 +20,15 @@ namespace PDS_project_2017.Core
         public delegate void AddNewTransfer(FileTransfer transfer);
         public static event AddNewTransfer NewTransferEvent;
 
+        private Dictionary<TcpClient, Dictionary<FileNode, string>> acceptedFiles;
+
         public TcpReceiver(int port)
         {
             //IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIPAddress().ToString());
-            IPAddress localAddr = IPAddress.Parse("25.0.222.207");
 
-            _tcpServer = new TcpListener(localAddr, port);
+            _tcpServer = new TcpListener(IPAddress.Any, port);
             _tcpServer.Start();
+            acceptedFiles = new Dictionary<TcpClient, Dictionary<FileNode, string>>();
         }
 
         public void Receive()
@@ -63,40 +66,47 @@ namespace PDS_project_2017.Core
             String jsonFileNode = TcpUtils.ReceiveDescription(client);
             FileNode fileNode = JsonConvert.DeserializeObject<FileNode>(jsonFileNode);
 
-            String destinationDir = null;
+            String destinationDir = CheckDict(client, fileNode);
 
-            // retrieveing destination dir
-            if (Properties.Settings.Default.AutoAccept)
+            if(destinationDir != null)
             {
-                TcpUtils.SendAcceptanceResponse(client);
-
-                // default dir
-                destinationDir = Properties.Settings.Default.DefaultDir;
+                ReceiveDirectoryFile(client, fileNode, destinationDir);
             }
             else
             {
-                // asking user for file acceptance
-                FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(fileNode);
-                // blocking call until window is closed
-                fileAcceptanceWindow.ShowDialog();
-
-                if (fileAcceptanceWindow.AreFilesAccepted)
+                // retrieveing destination dir
+                if (Properties.Settings.Default.AutoAccept)
                 {
-                    // file accepted
                     TcpUtils.SendAcceptanceResponse(client);
 
-                    destinationDir = fileAcceptanceWindow.DestinationDir;
+                    // default dir
+                    destinationDir = Properties.Settings.Default.DefaultDir;
                 }
                 else
                 {
-                    // file not accepted or window closed
-                    TcpUtils.SendRefuseResponse(client);
+                    // asking user for file acceptance
+                    FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(fileNode);
+                    // blocking call until window is closed
+                    fileAcceptanceWindow.ShowDialog();
 
-                    return;
+                    if (fileAcceptanceWindow.AreFilesAccepted)
+                    {
+                        // file accepted
+                        TcpUtils.SendAcceptanceResponse(client);
+
+                        destinationDir = fileAcceptanceWindow.DestinationDir;
+                    }
+                    else
+                    {
+                        // file not accepted or window closed
+                        TcpUtils.SendRefuseResponse(client);
+
+                        return;
+                    }
                 }
-            }
 
-            ReceiveFileContent(client, fileNode, destinationDir);
+                ReceiveFileContent(client, fileNode, destinationDir);
+            }
         }
         
         private void ReceiveDirectory(TcpClient client)
@@ -151,10 +161,11 @@ namespace PDS_project_2017.Core
             foreach (var fileNode in directoryNode.FileNodes)
             {
                 fileNode.SenderUserName = senderUserName;
-                bool completed = ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
+                UpdateDict(tcpClient, fileNode, directoryPath);
+                //bool completed = ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
 
-                if (!completed)
-                    return false;
+                //if (!completed)
+                //    return false;
             }
 
             foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
@@ -167,6 +178,37 @@ namespace PDS_project_2017.Core
             }
 
             return true;
+        }
+
+        private string CheckDict(TcpClient tcpClient, FileNode fileNode)
+        {
+            if (acceptedFiles.ContainsKey(tcpClient))
+            {
+                if (acceptedFiles[tcpClient].ContainsKey(fileNode))
+                {
+                    return acceptedFiles[tcpClient][fileNode];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private void UpdateDict(TcpClient tcpClient, FileNode fileNode, string directoryPath)
+        {
+            if (acceptedFiles.ContainsKey(tcpClient))
+            {
+                acceptedFiles[tcpClient].Add(fileNode, directoryPath);
+            }
+            else
+            {
+                acceptedFiles.Add(tcpClient, new Dictionary<FileNode, string>() { {fileNode, directoryPath} });
+            }
         }
 
         private bool ReceiveDirectoryFile(TcpClient tcpClient, FileNode fileNode, string destinationDir)

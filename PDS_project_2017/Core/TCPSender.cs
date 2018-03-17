@@ -13,17 +13,21 @@ namespace PDS_project_2017.Core
     {
         // client class
 
-        private TcpClient _tcpClient;
+        //private TcpClient _tcpClient;
         private String _path;
         private int _index;
         private string _receiverUserName;
+        private string _server;
+        private int _port;
 
         public delegate void AddNewTransfer(FileTransfer transfer);
         public static event AddNewTransfer NewTransferEvent;
 
-        public TCPSender(String server, int port, string receiverUserName, String path)
+        public TCPSender(string server, int port, string receiverUserName, string path)
         {
-            _tcpClient = new TcpClient(server, port);
+            _server = server;
+
+            _port = port;
 
             _receiverUserName = receiverUserName;
 
@@ -34,25 +38,33 @@ namespace PDS_project_2017.Core
 
         public void SendFile()
         {
-            SendDirectoryFile(_path);
-            _tcpClient.Close();
+            TcpClient tcpClient = new TcpClient(_server, _port);
+            SendDirectoryFile(tcpClient, _path);
+            tcpClient.Close();
         }
 
-        private bool SendDirectoryFile(string filePath)
+        public void SendFile(string path)
+        {
+            TcpClient tcpClient = new TcpClient(_server, _port);
+            SendDirectoryFile(tcpClient, path);
+            tcpClient.Close();
+        }
+
+        private bool SendDirectoryFile(TcpClient _tcpClient, string filePath)
         {
             TcpUtils.SendFileRequest(_tcpClient);
 
-            SendFileNodeDescription(filePath);
+            SendFileNodeDescription(_tcpClient, filePath);
 
             string responseCommand = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
 
             if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
                 return false;
             
-            return SendFileContent(filePath);
+            return SendFileContent(_tcpClient, filePath);
         }
 
-        private bool SendFileContent(string filePath)
+        private bool SendFileContent(TcpClient _tcpClient, string filePath)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileDimension = fileStream.Length;
@@ -124,7 +136,7 @@ namespace PDS_project_2017.Core
             }
         }
         
-        private void SendFileNodeDescription(string filePath)
+        private void SendFileNodeDescription(TcpClient _tcpClient, string filePath)
         {
             // FILE NAME
             String fileName = Path.GetFileName(filePath);
@@ -144,6 +156,7 @@ namespace PDS_project_2017.Core
         
         public void SendDirectory()
         {
+            TcpClient _tcpClient = new TcpClient(_server, _port);
             TcpUtils.SendDirectoryRequest(_tcpClient);
 
             DirectoryNode directoryNode = FilesUtils.BuildDirectoryNode(_path);
@@ -159,6 +172,7 @@ namespace PDS_project_2017.Core
                 return;
 
             SendDirectoryContent(directoryNode, _path);
+            _tcpClient.Close();
         }
 
         private bool SendDirectoryContent(DirectoryNode directoryNode, string directoryPath)
@@ -166,10 +180,11 @@ namespace PDS_project_2017.Core
             foreach (var fileNode in directoryNode.FileNodes)
             {
                 string filePath = directoryPath + "\\" + fileNode.Name;
-                bool completed = SendDirectoryFile(filePath);
 
-                if (!completed)
-                    return false;
+                Thread thread = new Thread(() => SendFile(filePath));
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.IsBackground = true;
+                thread.Start();
             }
 
             foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
