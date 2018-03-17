@@ -9,6 +9,7 @@ using System.Threading;
 using System.ComponentModel;
 using PDS_project_2017.Core.Entities;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace PDS_project_2017
 
         //private Dictionary<string, System.Drawing.Icon> appIcons = null;
         private System.Windows.Forms.MenuItem trayPrivateFlag = new System.Windows.Forms.MenuItem();
-
+        
         private UdpListener udpListener;
         private ObservableCollection<FileTransfer> sendingTransferList;
         private ObservableCollection<FileTransfer> receivingTransferList;
@@ -133,13 +134,54 @@ namespace PDS_project_2017
 
         private void AddNewTransfer(FileTransfer transfer)
         {
+            transfer.StatusChangedEvent += ManageStatusChangedEvent;
+            // calling status change event
+            transfer.Status = transfer.Status;
+
             System.Windows.Application.Current.Dispatcher.Invoke(
-                new Action(() => {
+                new Action(() =>
+                {
                     if (transfer.Sending)
+                    {
                         sendingTransferList.Add(transfer);
+                    }
                     else
+                    {
                         ReceivingTransferList.Add(transfer);
+                    }
                 }));
+        }
+
+        private void ManageStatusChangedEvent(FileTransfer filetransfer)
+        {
+            string title = ""; // filename
+            string text = ""; // operation on file
+
+            switch (filetransfer.Status)
+            {
+                case TransferStatus.Pending:
+                    title += filetransfer.File.Name;
+                    text += (filetransfer.Sending ? "Sending" : "Receiving") + " " + filetransfer.File.Name;
+                    break;
+                case TransferStatus.Completed:
+                    title += filetransfer.File.Name;
+                    text += filetransfer.File.Name + " " + (filetransfer.Sending ? "sent" : "received");
+                    break;
+                case TransferStatus.Canceled:
+                    title += filetransfer.File.Name;
+                    text += (filetransfer.Sending ? "Sending" : "Receiving") + " " + filetransfer.File.Name + " canceled";
+                    break;
+                case TransferStatus.Error:
+                    title += filetransfer.File.Name;
+                    text += "Error while " + (filetransfer.Sending ? "sending" : "receiving") + " " + filetransfer.File.Name;
+                    break;
+            }
+            
+            // baloontip
+            notifyIcon.BalloonTipTitle = title;
+            notifyIcon.BalloonTipText = text;
+
+            notifyIcon.ShowBalloonTip(Constants.BALLOONTIP_DELAY);
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -176,7 +218,7 @@ namespace PDS_project_2017
             notifyIcon.Text = "Lan Sharing Application";
 
             notifyIcon.Visible = true;
-            notifyIcon.ShowBalloonTip(1000);
+            notifyIcon.ShowBalloonTip(Constants.BALLOONTIP_DELAY);
 
             System.Windows.Forms.MenuItem item1 = new System.Windows.Forms.MenuItem();
             //System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();

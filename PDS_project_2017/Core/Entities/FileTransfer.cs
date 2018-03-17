@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace PDS_project_2017.Core.Entities
 {
@@ -29,14 +23,14 @@ namespace PDS_project_2017.Core.Entities
         private bool _sending;
         private String _savingPath;
         private DateTime _managementDateTime;
-
+        
         public FileNode File
         {
             get => _fileNode;
             set
             {
                 _fileNode = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged("File");
             }
         }
         public double Progress
@@ -45,7 +39,7 @@ namespace PDS_project_2017.Core.Entities
             set
             {
                 _progress = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged("Progress");
             }
         }
 
@@ -68,7 +62,7 @@ namespace PDS_project_2017.Core.Entities
             set
             {
                 _humanReadableRemainingTime = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged("HumanReadableRemainingTime");
             }
         }
 
@@ -84,27 +78,29 @@ namespace PDS_project_2017.Core.Entities
             set
             {
                 _status = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged("Status");
             }
         }
 
-        public DateTime ManagementDateTime
-        {
-            get => _managementDateTime;
-            set => _managementDateTime = value;
-        }
-
+        public DateTime ManagementDateTime { get => _managementDateTime; set => _managementDateTime = value; }
         public bool Sending { get => _sending; set => _sending = value; }
         public string SavingPath { get => _savingPath; set => _savingPath = value; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        public delegate void StatusChangedDelegate(FileTransfer fileTransfer);
+        public event StatusChangedDelegate StatusChangedEvent;
+
+        private void NotifyPropertyChanged(String propertyName)
         {
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+
+            if (StatusChangedEvent != null)
+                if (propertyName.Equals("Status"))
+                    StatusChangedEvent(this);
         }
     }
 }

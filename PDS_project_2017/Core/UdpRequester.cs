@@ -1,15 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using PDS_project_2017.UI;
 
 namespace PDS_project_2017.Core
@@ -36,8 +29,8 @@ namespace PDS_project_2017.Core
             _udpClient = new UdpClient();
             _udpClient.Client.ReceiveTimeout = Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1000;
 
-            _broadcastIp = new IPEndPoint(IPAddress.Broadcast, Constants.DISCOVERY_UDP_PORT);
-            
+            _broadcastIp = new IPEndPoint(IPAddress.Parse("25.255.255.255"), Constants.DISCOVERY_UDP_PORT);
+
             // initing current user identity
             _me = new User
             {

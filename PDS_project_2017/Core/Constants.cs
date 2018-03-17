@@ -41,5 +41,6 @@ namespace PDS_project_2017.Core
         public static int TRANSFER_TCP_SENDER_DELAY = 100;
         public static int TRANSFER_TCP_RECEIVER_DELAY = TRANSFER_TCP_SENDER_DELAY * 0;
         public static int TRANSFER_TCP_COMPLETED_TRANSFER_DELAY = 1000 * 0;
+        public static int BALLOONTIP_DELAY = 1000;
     }
 }

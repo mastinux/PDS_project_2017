@@ -21,7 +21,8 @@ namespace PDS_project_2017.Core
 
         public TcpReceiver(int port)
         {
-            IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIPAddress().ToString());
+            //IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIPAddress().ToString());
+            IPAddress localAddr = IPAddress.Parse("25.0.222.207");
 
             _tcpServer = new TcpListener(localAddr, port);
             _tcpServer.Start();

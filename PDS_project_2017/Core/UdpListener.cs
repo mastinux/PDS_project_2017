@@ -80,12 +80,13 @@ namespace PDS_project_2017.Core
                         // sending response
                         _udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
 
-                        //testSendMultipleUsers(remoteIpEndPoint);
+                        // TODO test purpose
+                        testSendMultipleUsers(remoteIpEndPoint);
                     }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    Console.WriteLine("problems while udp responding, " + e.ToString());
                 }
             }
         }

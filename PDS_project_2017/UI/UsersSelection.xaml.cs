@@ -45,7 +45,7 @@ namespace PDS_project_2017
             
             // udp socket requesting available users
             _udpRequester = new UdpRequester();
-            _udpRequester.AddUserEvent += AddAvailableAddUser;
+            _udpRequester.AddUserEvent += ManageAddUserEvent;
             _udpRequester.CleanUsersEvent += CleanAvailableUsers;
 
             // background thread
@@ -75,7 +75,7 @@ namespace PDS_project_2017
             Title = String.Format("Share \"{0}\" with:", _pathName);
         }
 
-        public void AddAvailableAddUser(User newAvailableUser)
+        public void ManageAddUserEvent(User newAvailableUser)
         {
             // checking if user already exists
             foreach (var user in AvailableUsers)
