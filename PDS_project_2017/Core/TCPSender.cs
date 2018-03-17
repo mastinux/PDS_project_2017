@@ -70,7 +70,8 @@ namespace PDS_project_2017.Core
                 Progress = 0,
                 ContinueFileTransfer = true,
                 Status = TransferStatus.Pending,
-                Sending = true
+                Sending = true,
+                ManagementDateTime = DateTime.Now
             };
 
             NewTransferEvent(fileTransfer);

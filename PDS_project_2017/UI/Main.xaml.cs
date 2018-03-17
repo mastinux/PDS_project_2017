@@ -9,9 +9,11 @@ using System.Threading;
 using System.ComponentModel;
 using PDS_project_2017.Core.Entities;
 using System.Collections.ObjectModel;
-using System.Web.Caching;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Windows.Data;
+using Newtonsoft.Json;
 
 namespace PDS_project_2017
 {
@@ -69,6 +71,11 @@ namespace PDS_project_2017
             sendingTransferList = new ObservableCollection<FileTransfer>();
             TCPSender.NewTransferEvent += AddNewTransfer;
 
+            // sorting fileTransfers
+            ICollectionView sendingTransferListView = CollectionViewSource.GetDefaultView(sendingTransferList);
+            sendingTransferListView.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
+            sendingTransferListView.SortDescriptions.Add(new SortDescription("ManagementDateTime", ListSortDirection.Ascending));
+
             // udp socket listening for request
             udpListener = new UdpListener();
 
@@ -79,8 +86,14 @@ namespace PDS_project_2017
 
             // tcp socket listening for file transfer
             TcpReceiver tcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_PORT);
+
             receivingTransferList = new ObservableCollection<FileTransfer>();
             TcpReceiver.NewTransferEvent += AddNewTransfer;
+
+            // sorting receivingTransfers
+            ICollectionView receivingTransferListView = CollectionViewSource.GetDefaultView(receivingTransferList);
+            receivingTransferListView.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
+            receivingTransferListView.SortDescriptions.Add(new SortDescription("ManagementDateTime", ListSortDirection.Ascending));
 
             // launching background thread
             Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
@@ -98,8 +111,26 @@ namespace PDS_project_2017
             testTcpReceiverThread.IsBackground = true;
             testTcpReceiverThread.Start();
             */
+
+            if (Properties.Settings.Default.SendingTransferFiles != "")
+                foreach (var fileTransfer in JsonConvert.DeserializeObject<ObservableCollection<FileTransfer>>(Properties.Settings.Default.SendingTransferFiles))
+                {
+                    if (fileTransfer.Status == TransferStatus.Pending)
+                        fileTransfer.Status = TransferStatus.Error;
+
+                    sendingTransferList.Add(fileTransfer);
+                }
+
+            if (Properties.Settings.Default.ReceivingTransferFiles != "")
+                foreach (var fileTransfer in JsonConvert.DeserializeObject<ObservableCollection<FileTransfer>>(Properties.Settings.Default.ReceivingTransferFiles))
+                {
+                    if (fileTransfer.Status == TransferStatus.Pending)
+                        fileTransfer.Status = TransferStatus.Error;
+
+                    receivingTransferList.Add(fileTransfer);
+                }
         }
-        
+
         private void AddNewTransfer(FileTransfer transfer)
         {
             System.Windows.Application.Current.Dispatcher.Invoke(
@@ -113,7 +144,7 @@ namespace PDS_project_2017
 
         protected override void OnInitialized(EventArgs e)
         {
-            Closing += OnClosing;
+            Closing += HideWindow;
 
             initializeNotifyIcon();
 
@@ -126,7 +157,7 @@ namespace PDS_project_2017
         {
             this.WindowState = WindowState.Minimized;
             //this.ShowInTaskbar = false;
-            //this.Topmost = false;
+            this.Topmost = false;
         }
 
         private void initializeNotifyIcon()
@@ -186,7 +217,14 @@ namespace PDS_project_2017
 
                 Properties.Settings.Default.Save();
             };
-            item3.Click += delegate { App.Current.Shutdown(); };
+            item3.Click += delegate
+            {
+                Properties.Settings.Default.SendingTransferFiles = JsonConvert.SerializeObject(sendingTransferList);
+                Properties.Settings.Default.ReceivingTransferFiles = JsonConvert.SerializeObject(receivingTransferList);
+                Properties.Settings.Default.Save();
+                
+                App.Current.Shutdown();
+            };
 
         }
 
@@ -205,7 +243,7 @@ namespace PDS_project_2017
             // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
 
-        private void OnClosing(object sender, CancelEventArgs e)
+        private void HideWindow(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
 
@@ -230,11 +268,28 @@ namespace PDS_project_2017
                 receivingTransferList.Remove(ft);
         }
 
-        private void Open_Button_Click(object sender, RoutedEventArgs e)
+        private void Open_File_Button_Click(object sender, RoutedEventArgs e)
         {
             var item = (System.Windows.Controls.Button)sender;
-            FileTransfer ft = (FileTransfer)item.CommandParameter;
-            Process.Start("explorer.exe", ft.SavingPath);
+            FileTransfer fileTransfer = (FileTransfer)item.CommandParameter;
+
+            string filePath = fileTransfer.SavingPath + "\\" + fileTransfer.File.Name;
+
+            if (File.Exists(filePath))
+                Process.Start("explorer.exe", filePath);
+            else
+                fileTransfer.Status = TransferStatus.Removed;
+        }
+
+        private void Open_Directory_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (System.Windows.Controls.Button)sender;
+            FileTransfer fileTransfer = (FileTransfer)item.CommandParameter;
+
+            if (Directory.Exists(fileTransfer.SavingPath))
+                Process.Start("explorer.exe", fileTransfer.SavingPath);
+            else
+                fileTransfer.Status = TransferStatus.Removed;
         }
 
         private void PurgeListFrom(ObservableCollection<FileTransfer> list, TransferStatus status)
@@ -259,6 +314,7 @@ namespace PDS_project_2017
         private void Clear_All_R_Completed_Button_Click(object sender, RoutedEventArgs e)
         {
             PurgeListFrom(receivingTransferList, TransferStatus.Completed);
+            PurgeListFrom(receivingTransferList, TransferStatus.Removed);
         }
 
         private void Clear_All_R_Canceled_Button_Click(object sender, RoutedEventArgs e)

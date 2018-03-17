@@ -8,7 +8,8 @@ namespace PDS_project_2017.Core
 {
     class FilesUtils
     {
-        private static object _lock = new object();
+        private static object _fileLock = new object();
+        private static object _directoryLock = new object();
 
         public static DirectoryNode BuildDirectoryNode(string path)
         {
@@ -88,7 +89,7 @@ namespace PDS_project_2017.Core
 
             // TODO understand why first progress bar is closed
 
-            lock (_lock)
+            lock (_fileLock)
             {
                 while (File.Exists(filePath))
                 {
@@ -96,25 +97,30 @@ namespace PDS_project_2017.Core
 
                     count++;
                 }
-            }
 
-            return File.Open(filePath, FileMode.Create);
+                return File.Open(filePath, FileMode.Create);
+            }
         }
 
-        public static string CheckDirectoryExistance(string directoryPath)
+        public static string CreateUniqueDirectory(string directoryPath)
         {
             int count = 1;
 
             string directoryNameFormat = directoryPath + " ({0})";
 
-            while (Directory.Exists(directoryPath))
+            lock (_directoryLock)
             {
-                directoryPath = string.Format(directoryNameFormat, count);
+                while (Directory.Exists(directoryPath))
+                {
+                    directoryPath = string.Format(directoryNameFormat, count);
 
-                count++;
+                    count++;
+                }
+
+                Directory.CreateDirectory(directoryPath);
+
+                return directoryPath;
             }
-
-            return directoryPath;
         }
     }
 }

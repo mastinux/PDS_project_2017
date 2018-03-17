@@ -14,7 +14,8 @@ namespace PDS_project_2017.Core.Entities
         Pending,
         Completed,
         Canceled,
-        Error
+        Error,
+        Removed
     };
 
     public class FileTransfer : INotifyPropertyChanged
@@ -24,10 +25,10 @@ namespace PDS_project_2017.Core.Entities
         private TimeSpan _remainingTime;
         private string _humanReadableRemainingTime;
         private bool _continueFileTransfer;
-        private TransferStatus status;
-        private bool sending;
-        private String savingPath;
-        
+        private TransferStatus _status;
+        private bool _sending;
+        private String _savingPath;
+        private DateTime _managementDateTime;
 
         public FileNode File
         {
@@ -79,16 +80,22 @@ namespace PDS_project_2017.Core.Entities
 
         public TransferStatus Status
         {
-            get => status;
+            get => _status;
             set
             {
-                status = value;
+                _status = value;
                 NotifyPropertyChanged();
             }
         }
 
-        public bool Sending { get => sending; set => sending = value; }
-        public string SavingPath { get => savingPath; set => savingPath = value; }
+        public DateTime ManagementDateTime
+        {
+            get => _managementDateTime;
+            set => _managementDateTime = value;
+        }
+
+        public bool Sending { get => _sending; set => _sending = value; }
+        public string SavingPath { get => _savingPath; set => _savingPath = value; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

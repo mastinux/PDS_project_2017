@@ -145,13 +145,10 @@ namespace PDS_project_2017.Core
             string directoryPath = destinationDir + "\\" + directoryNode.DirectoryName;
             string senderUserName = directoryNode.SenderUserName;
 
-            directoryPath = FilesUtils.CheckDirectoryExistance(directoryPath);
-
-            Directory.CreateDirectory(directoryPath);
+            directoryPath = FilesUtils.CreateUniqueDirectory(directoryPath);
 
             foreach (var fileNode in directoryNode.FileNodes)
             {
-                // TODO manage timeout and directories deletion
                 fileNode.SenderUserName = senderUserName;
                 bool completed = ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
 
@@ -201,6 +198,7 @@ namespace PDS_project_2017.Core
             long fileContentLenghtReceived = 0;
             Byte[] buffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
             FileStream fileStream = FilesUtils.CreateUniqueFile(filePath);
+            fileNode.Name = Path.GetFileName(fileStream.Name);
             BinaryWriter fileWriter = new BinaryWriter(fileStream);
             DateTime baseDateTime = DateTime.Now;
 
@@ -211,7 +209,8 @@ namespace PDS_project_2017.Core
                 ContinueFileTransfer = true,
                 Status = TransferStatus.Pending,
                 Sending = false,
-                SavingPath = destinationDir
+                SavingPath = destinationDir,
+                ManagementDateTime = DateTime.Now
             };
 
             NewTransferEvent(fileTransfer);
