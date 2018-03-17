@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PDS_project_2017.Core.Entities
 {
-    public class FileNode
+    public class FileNode : IEquatable<FileNode>
     {
         private string _senderUserName;
         private string _receiverUserName;
@@ -42,6 +42,22 @@ namespace PDS_project_2017.Core.Entities
         {
             get => _mimeType;
             set => _mimeType = value;
+        }
+
+        public bool Equals(FileNode other)
+        {
+            if (other == null)
+                return false;
+
+            if (SenderUserName == other.SenderUserName && ReceiverUserName == other.ReceiverUserName && Name == other.Name && Dimension == other.Dimension && MimeType == other.MimeType)
+                return true;
+            else
+                return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode() & Dimension.GetHashCode() & SenderUserName.GetHashCode();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace PDS_project_2017.Core
         public delegate void AddNewTransfer(FileTransfer transfer);
         public static event AddNewTransfer NewTransferEvent;
 
-        private Dictionary<TcpClient, Dictionary<FileNode, string>> acceptedFiles;
+        private Dictionary<IPAddress, Dictionary<FileNode, string>> acceptedFiles;
 
         public TcpReceiver(int port)
         {
@@ -28,7 +28,7 @@ namespace PDS_project_2017.Core
 
             _tcpServer = new TcpListener(IPAddress.Any, port);
             _tcpServer.Start();
-            acceptedFiles = new Dictionary<TcpClient, Dictionary<FileNode, string>>();
+            acceptedFiles = new Dictionary<IPAddress, Dictionary<FileNode, string>>();
         }
 
         public void Receive()
@@ -182,11 +182,13 @@ namespace PDS_project_2017.Core
 
         private string CheckDict(TcpClient tcpClient, FileNode fileNode)
         {
-            if (acceptedFiles.ContainsKey(tcpClient))
+            IPEndPoint client = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
+            IPAddress addr = client.Address;
+            if (acceptedFiles.ContainsKey(addr))
             {
-                if (acceptedFiles[tcpClient].ContainsKey(fileNode))
+                if (acceptedFiles[addr].ContainsKey(fileNode))
                 {
-                    return acceptedFiles[tcpClient][fileNode];
+                    return acceptedFiles[addr][fileNode];
                 }
                 else
                 {
@@ -201,23 +203,26 @@ namespace PDS_project_2017.Core
 
         private void UpdateDict(TcpClient tcpClient, FileNode fileNode, string directoryPath)
         {
-            if (acceptedFiles.ContainsKey(tcpClient))
+            IPEndPoint client = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
+            IPAddress addr = client.Address;
+            if (acceptedFiles.ContainsKey(addr))
             {
-                acceptedFiles[tcpClient].Add(fileNode, directoryPath);
+                acceptedFiles[addr].Add(fileNode, directoryPath);
             }
             else
             {
-                acceptedFiles.Add(tcpClient, new Dictionary<FileNode, string>() { {fileNode, directoryPath} });
+                acceptedFiles.Add(addr, new Dictionary<FileNode, string>() { {fileNode, directoryPath} });
             }
         }
 
         private bool ReceiveDirectoryFile(TcpClient tcpClient, FileNode fileNode, string destinationDir)
         {
-            TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_FILE.Length);
-
-            String jsonFileNodeDescription = TcpUtils.ReceiveDescription(tcpClient);
-
             TcpUtils.SendAcceptanceResponse(tcpClient);
+
+            IPEndPoint client = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
+            IPAddress addr = client.Address;
+
+            acceptedFiles[addr].Remove(fileNode);
 
             return ReceiveFileContent(tcpClient, fileNode, destinationDir);
         }
