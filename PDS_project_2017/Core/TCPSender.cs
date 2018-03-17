@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Web;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
-using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
 {
@@ -40,7 +38,7 @@ namespace PDS_project_2017.Core
             _tcpClient.Close();
         }
 
-        private void SendDirectoryFile(string filePath)
+        private bool SendDirectoryFile(string filePath)
         {
             TcpUtils.SendFileRequest(_tcpClient);
 
@@ -49,15 +47,12 @@ namespace PDS_project_2017.Core
             string responseCommand = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
 
             if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
-            {
-                Console.WriteLine("file refused");
-                return;
-            }
-
-            SendFileContent(filePath);
+                return false;
+            
+            return SendFileContent(filePath);
         }
 
-        private void SendFileContent(string filePath)
+        private bool SendFileContent(string filePath)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileDimension = fileStream.Length;
@@ -97,7 +92,7 @@ namespace PDS_project_2017.Core
                 catch (IOException ioe)
                 {
                     fileTransfer.Status = TransferStatus.Error;
-                    return;
+                    return false;
                 }
                 
                 totalBytesRead += bytesRead;
@@ -116,16 +111,16 @@ namespace PDS_project_2017.Core
 
             if (!fileTransfer.ContinueFileTransfer)
             {
-                Console.WriteLine("file transfer cancelled");
                 fileTransfer.Status = TransferStatus.Canceled;
+
+                return false;
             }
             else
             {
-                Console.WriteLine("file transfer completed");
                 fileTransfer.Status = TransferStatus.Completed;
-            }
 
-            //TODO status completed, open file directory, remove remaining time
+                return true;
+            }
         }
         
         private void SendFileNodeDescription(string filePath)
@@ -165,23 +160,26 @@ namespace PDS_project_2017.Core
             SendDirectoryContent(directoryNode, _path);
         }
 
-        private void SendDirectoryContent(DirectoryNode directoryNode, string directoryPath)
+        private bool SendDirectoryContent(DirectoryNode directoryNode, string directoryPath)
         {
             foreach (var fileNode in directoryNode.FileNodes)
             {
                 string filePath = directoryPath + "\\" + fileNode.Name;
-                SendDirectoryFile(filePath);
+                bool completed = SendDirectoryFile(filePath);
+
+                if (!completed)
+                    return false;
             }
 
             foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
             {
-                SendDirectoryContent(innerDirectoryNode, directoryPath + "\\" + innerDirectoryNode.DirectoryName);
-            }
-        }
+                bool completed = SendDirectoryContent(innerDirectoryNode, directoryPath + "\\" + innerDirectoryNode.DirectoryName);
 
-        public void SetIndex(int i)
-        {
-            _index = i;
+                if (!completed)
+                    return false;
+            }
+
+            return true;
         }
     }
 }

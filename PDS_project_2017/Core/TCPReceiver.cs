@@ -14,8 +14,6 @@ namespace PDS_project_2017.Core
     {
         // server class
 
-        // https://msdn.microsoft.com/it-it/library/fx6588te(v=vs.110).aspx
-
         private TcpListener _tcpServer;
 
         public delegate void AddNewTransfer(FileTransfer transfer);
@@ -202,8 +200,8 @@ namespace PDS_project_2017.Core
             
             long fileContentLenghtReceived = 0;
             Byte[] buffer = new Byte[Constants.TRANSFER_TCP_BUFFER];
-            FileStream file = FilesUtils.CreateUniqueFile(filePath);
-            BinaryWriter fileWriter = new BinaryWriter(file);
+            FileStream fileStream = FilesUtils.CreateUniqueFile(filePath);
+            BinaryWriter fileWriter = new BinaryWriter(fileStream);
             DateTime baseDateTime = DateTime.Now;
 
             FileTransfer fileTransfer = new FileTransfer()
@@ -221,7 +219,7 @@ namespace PDS_project_2017.Core
             // FILE CONTENT
             while (fileContentLenghtReceived < fileNode.Dimension && fileTransfer.ContinueFileTransfer == true)
             {
-                int bytesRead = 0;
+                int bytesRead;
 
                 if ((fileNode.Dimension - fileContentLenghtReceived) < buffer.Length)
                     buffer = new Byte[fileNode.Dimension - fileContentLenghtReceived];
@@ -235,8 +233,10 @@ namespace PDS_project_2017.Core
                 {
                     // sender closed connection
                     fileWriter.Close();
-                    File.Delete(file.Name);
+
+                    File.Delete(fileStream.Name);
                     fileTransfer.Status = TransferStatus.Error;
+
                     return false;
                 }
 
@@ -256,20 +256,17 @@ namespace PDS_project_2017.Core
 
             if (!fileTransfer.ContinueFileTransfer)
             {
-                Console.WriteLine("file transfer cancelled");
+                File.Delete(fileStream.Name);
                 fileTransfer.Status = TransferStatus.Canceled;
-
+                
                 return false;
             }
             else
             {
-                Console.WriteLine("file transfer completed");
                 fileTransfer.Status = TransferStatus.Completed;
 
                 return true;
             }
-
-            //WindowUtils.CloseTransferProgressWindow(transferProgressWindow);
         }
     }
 }

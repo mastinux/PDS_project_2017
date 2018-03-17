@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PDS_project_2017.Core.Utils
 {
@@ -22,7 +19,6 @@ namespace PDS_project_2017.Core.Utils
         {
             Byte[] data = new Byte[expectedCommandLenght];
             
-            // TODO manage timeout
             tcpClient.GetStream().Read(data, 0, expectedCommandLenght);
 
             return Encoding.UTF8.GetString(data);
@@ -30,22 +26,22 @@ namespace PDS_project_2017.Core.Utils
         
         public static void SendRefuseResponse(TcpClient client)
         {
-            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_REFUSE);
+            SendCommand(client, Constants.TRANSFER_TCP_REFUSE);
         }
 
         public static void SendAcceptanceResponse(TcpClient client)
         {
-            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_ACCEPT);
+            SendCommand(client, Constants.TRANSFER_TCP_ACCEPT);
         }
 
         public static void SendFileRequest(TcpClient client)
         {
-            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_FILE);
+            SendCommand(client, Constants.TRANSFER_TCP_FILE);
         }
 
         public static void SendDirectoryRequest(TcpClient client)
         {
-            TcpUtils.SendCommand(client, Constants.TRANSFER_TCP_DIRECTORY);
+            SendCommand(client, Constants.TRANSFER_TCP_DIRECTORY);
         }
 
 

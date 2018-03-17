@@ -253,6 +253,7 @@ namespace PDS_project_2017
         private void Clear_All_S_Canceled_Button_Click(object sender, RoutedEventArgs e)
         {
             PurgeListFrom(sendingTransferList, TransferStatus.Canceled);
+            PurgeListFrom(sendingTransferList, TransferStatus.Error);
         }
 
         private void Clear_All_R_Completed_Button_Click(object sender, RoutedEventArgs e)
@@ -260,8 +261,9 @@ namespace PDS_project_2017
             PurgeListFrom(receivingTransferList, TransferStatus.Completed);
         }
 
-        private void Clear_All_R_Error_Button_Click(object sender, RoutedEventArgs e)
+        private void Clear_All_R_Canceled_Button_Click(object sender, RoutedEventArgs e)
         {
+            PurgeListFrom(receivingTransferList, TransferStatus.Canceled);
             PurgeListFrom(receivingTransferList, TransferStatus.Error);
         }
     }

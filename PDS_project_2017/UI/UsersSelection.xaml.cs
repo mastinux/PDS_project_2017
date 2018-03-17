@@ -148,8 +148,7 @@ namespace PDS_project_2017
                     {
                         // single file
                         TCPSender tcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_PORT, u.Name, _path);
-                        tcpSender.SetIndex(i);
-
+                        
                         Thread tcpSenderThread = new Thread(tcpSender.SendFile);
                         tcpSenderThread.SetApartmentState(ApartmentState.STA);
                         tcpSenderThread.IsBackground = true;

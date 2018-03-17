@@ -72,9 +72,7 @@ namespace PDS_project_2017
 
         private TreeViewItem CreateTreeViewItem(DirectoryNode dn)
         {
-            int filesInDirectory = dn.FileNodes.Count;
-
-            TreeViewItem tvItem = new TreeViewItem() { Header = dn.DirectoryName + " (" + filesInDirectory + " files)", FontWeight = FontWeights.Bold};
+            TreeViewItem tvItem = new TreeViewItem() { Header = GenerateHeader(dn), FontWeight = FontWeights.Bold};
 
             foreach(var directory in dn.DirectoryNodes)
             {
@@ -91,6 +89,40 @@ namespace PDS_project_2017
             }
 
             return tvItem;
+        }
+
+        private string GenerateHeader(DirectoryNode directoryNode)
+        {
+            string header = directoryNode.DirectoryName + " (";
+
+            int directoriesInDirectory = directoryNode.DirectoryNodes.Count;
+            int filesInDirectory = directoryNode.FileNodes.Count;
+
+            if (directoriesInDirectory == 0 && filesInDirectory == 0)
+            {
+                header += "empty)";
+            }
+            else
+            {
+                string directoriesDescription = directoriesInDirectory + " directories";
+                string filesDescription = filesInDirectory + " files";
+
+                if (directoriesInDirectory > 0)
+                {
+                    header += directoriesDescription;
+
+                    if (filesInDirectory > 0)
+                        header += ", " + filesDescription;
+                }
+                else
+                {
+                    header += filesDescription;
+                }
+
+                header += ")";
+            }
+
+            return header;
         }
 
         private string ConvertToHumanReadableSize(long fileDimension)

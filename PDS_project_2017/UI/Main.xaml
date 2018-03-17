@@ -239,7 +239,7 @@
 
                         <DockPanel DockPanel.Dock="Bottom">
                             <Button x:Name="Clear_All_R_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
-                            <Button x:Name="Clear_All_R_Error_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Error_Button_Click" HorizontalAlignment="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
+                            <Button x:Name="Clear_All_R_Error_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Canceled_Button_Click" HorizontalAlignment="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
                         </DockPanel>
 
                         <ListView x:Name="ReceivingList" ItemsSource="{Binding ReceivingTransferList}" HorizontalContentAlignment="Stretch">

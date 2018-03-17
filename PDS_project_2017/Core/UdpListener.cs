@@ -104,16 +104,16 @@ namespace PDS_project_2017.Core
         private void testSendMultipleUsers(IPEndPoint remoteIpEndPoint)
         {
             List<string> names = new List<string>();
-            names.Add("antonio");
-            names.Add("anna");
-            names.Add("vincenzo");
-            names.Add("michele");
-            names.Add("elia");
-            names.Add("michel");
-            names.Add("giuseppe");
-            names.Add("leandro");
-            names.Add("matteo");
-            names.Add("gianpiero");
+            names.Add("Antonio");
+            names.Add("Anna");
+            names.Add("Vincenzo");
+            names.Add("Michele");
+            names.Add("Elia");
+            names.Add("Michel");
+            names.Add("Giuseppe");
+            names.Add("Leandro");
+            names.Add("Matteo");
+            names.Add("Gianpiero");
 
             Random random = new Random();
 
