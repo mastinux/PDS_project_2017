@@ -56,8 +56,6 @@ namespace PDS_project_2017
 
         public MainWindow()
         {
-            // TODO update notify icon menu for private mode when usersettings are changed
-
             InitializeComponent();
 
             if (Properties.Settings.Default.Name.CompareTo("") == 0)
@@ -115,33 +113,20 @@ namespace PDS_project_2017
 
         protected override void OnInitialized(EventArgs e)
         {
-            StateChanged += OnStateChanged;
             Closing += OnClosing;
-            //Loaded += OnLoaded;
 
             initializeNotifyIcon();
 
-            this.startMinimized();
+            StartMinimized();
 
             base.OnInitialized(e);
         }
 
-        private void startMinimized()
+        private void StartMinimized()
         {
-            this.ShowInTaskbar = true;
             this.WindowState = WindowState.Minimized;
-
-            // not showing main window on startup
-            //this.Show();
-
-            this.ShowInTaskbar = false;
-        }
-
-        private void OnClosing(object sender, CancelEventArgs e)
-        {
-            e.Cancel = true;
-            WindowState = WindowState.Minimized;
-            //Hide();
+            //this.ShowInTaskbar = false;
+            //this.Topmost = false;
         }
 
         private void initializeNotifyIcon()
@@ -211,32 +196,23 @@ namespace PDS_project_2017
                 this.ShowWindow();
         }
 
-        private void OnStateChanged(object sender, EventArgs e)
-        {
-            if (this.WindowState == WindowState.Minimized)
-            {
-                this.Topmost = false;
-                this.ShowInTaskbar = false;
-            }
-            else
-            {
-                this.ShowInTaskbar = true;
-                this.Topmost = true;
-            }
-        }
-
         private void ShowWindow()
         {
-            if (this.WindowState == WindowState.Minimized)
-            {
-                this.WindowState = WindowState.Normal;
-            }
+            Show();
+            WindowState = WindowState.Normal;
 
-            this.Show();
             // TODO need hwnd
             // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
-        
+
+        private void OnClosing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+
+            Hide();
+            WindowState = WindowState.Maximized;
+        }
+
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
             var item = (System.Windows.Controls.Button)sender;
@@ -284,9 +260,9 @@ namespace PDS_project_2017
             PurgeListFrom(receivingTransferList, TransferStatus.Completed);
         }
 
-        private void Clear_All_R_Canceled_Button_Click(object sender, RoutedEventArgs e)
+        private void Clear_All_R_Error_Button_Click(object sender, RoutedEventArgs e)
         {
-            PurgeListFrom(receivingTransferList, TransferStatus.Canceled);
+            PurgeListFrom(receivingTransferList, TransferStatus.Error);
         }
     }
 }

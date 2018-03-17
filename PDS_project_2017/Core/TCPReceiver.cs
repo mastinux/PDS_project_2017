@@ -142,7 +142,7 @@ namespace PDS_project_2017.Core
             PopulateDirectory(client, directoryNode, destinationDir);
         }
         
-        private void PopulateDirectory(TcpClient tcpClient, DirectoryNode directoryNode, string destinationDir)
+        private bool PopulateDirectory(TcpClient tcpClient, DirectoryNode directoryNode, string destinationDir)
         {
             string directoryPath = destinationDir + "\\" + directoryNode.DirectoryName;
             string senderUserName = directoryNode.SenderUserName;
@@ -155,17 +155,25 @@ namespace PDS_project_2017.Core
             {
                 // TODO manage timeout and directories deletion
                 fileNode.SenderUserName = senderUserName;
-                ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
+                bool completed = ReceiveDirectoryFile(tcpClient, fileNode, directoryPath);
+
+                if (!completed)
+                    return false;
             }
 
             foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
             {
                 innerDirectoryNode.SenderUserName = senderUserName;
-                PopulateDirectory(tcpClient, innerDirectoryNode, directoryPath);
+                bool completed = PopulateDirectory(tcpClient, innerDirectoryNode, directoryPath);
+
+                if (!completed)
+                    return false;
             }
+
+            return true;
         }
 
-        private void ReceiveDirectoryFile(TcpClient tcpClient, FileNode fileNode, string destinationDir)
+        private bool ReceiveDirectoryFile(TcpClient tcpClient, FileNode fileNode, string destinationDir)
         {
             TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_FILE.Length);
 
@@ -173,7 +181,7 @@ namespace PDS_project_2017.Core
 
             TcpUtils.SendAcceptanceResponse(tcpClient);
 
-            ReceiveFileContent(tcpClient, fileNode, destinationDir);
+            return ReceiveFileContent(tcpClient, fileNode, destinationDir);
         }
 
         private bool IsConnected(TcpClient tcpclient)
@@ -185,7 +193,7 @@ namespace PDS_project_2017.Core
                 
         }
 
-        private void ReceiveFileContent(TcpClient tcpClient, FileNode fileNode, string destinationDir)
+        private bool ReceiveFileContent(TcpClient tcpClient, FileNode fileNode, string destinationDir)
         {
             string filePath = destinationDir + "\\" + fileNode.Name;
 
@@ -229,7 +237,7 @@ namespace PDS_project_2017.Core
                     fileWriter.Close();
                     File.Delete(file.Name);
                     fileTransfer.Status = TransferStatus.Error;
-                    return;
+                    return false;
                 }
 
                 fileWriter.Write(buffer, 0, bytesRead);
@@ -250,11 +258,15 @@ namespace PDS_project_2017.Core
             {
                 Console.WriteLine("file transfer cancelled");
                 fileTransfer.Status = TransferStatus.Canceled;
+
+                return false;
             }
             else
             {
                 Console.WriteLine("file transfer completed");
                 fileTransfer.Status = TransferStatus.Completed;
+
+                return true;
             }
 
             //WindowUtils.CloseTransferProgressWindow(transferProgressWindow);

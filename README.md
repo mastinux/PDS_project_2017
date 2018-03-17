@@ -15,6 +15,6 @@
 
 - [x] modalità privata: non risponde ma può inviare
 
-- [ ] in invio : barra avanzamento, tempo necessario e tasto Annulla
+- [x] in invio : barra avanzamento, tempo necessario e tasto Annulla
 
 - [x] invio a più utenti lo stesso file/cartella contemporaneamente

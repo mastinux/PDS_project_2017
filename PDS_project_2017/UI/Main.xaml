@@ -202,8 +202,8 @@
                     <DockPanel LastChildFill="True">
 
                         <DockPanel DockPanel.Dock="Bottom">
-                            <Button x:Name="Clear_All_S_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Completed_Button_Click" DockPanel.Dock="Right"/>
-                            <Button x:Name="Clear_All_S_Canceled_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Canceled_Button_Click" HorizontalAlignment="Right"/>
+                            <Button x:Name="Clear_All_S_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Completed_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding SendingTransferList.Count}"/>
+                            <Button x:Name="Clear_All_S_Canceled_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Canceled_Button_Click" HorizontalAlignment="Right" IsEnabled="{Binding SendingTransferList.Count}"/>
                         </DockPanel>
 
                         <ListView x:Name="SendingList" ItemsSource="{Binding SendingTransferList}" HorizontalContentAlignment="Stretch">
@@ -213,16 +213,6 @@
                                     <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
 
                                     <Style.Triggers>
-                                        <!--
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Path=Status}" Value="1" />
-                                                <Condition Binding="{Binding Path=Sending}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
-                                        </MultiDataTrigger>
-                                        -->
-
                                         <DataTrigger Binding="{Binding Path=Status}" Value="1">
                                             <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
                                         </DataTrigger>
@@ -248,8 +238,8 @@
                     <DockPanel LastChildFill="True">
 
                         <DockPanel DockPanel.Dock="Bottom">
-                            <Button x:Name="Clear_All_R_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" DockPanel.Dock="Right"/>
-                            <Button x:Name="Clear_All_R_Canceled_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Canceled_Button_Click" HorizontalAlignment="Right"/>
+                            <Button x:Name="Clear_All_R_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
+                            <Button x:Name="Clear_All_R_Error_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Error_Button_Click" HorizontalAlignment="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
                         </DockPanel>
 
                         <ListView x:Name="ReceivingList" ItemsSource="{Binding ReceivingTransferList}" HorizontalContentAlignment="Stretch">
@@ -260,16 +250,6 @@
                                     <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
 
                                     <Style.Triggers>
-                                        <!--
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Path=Status}" Value="1" />
-                                                <Condition Binding="{Binding Path=Sending}" Value="False" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="ContentTemplate" Value="{StaticResource receivingCompletedTemplate}" />
-                                        </MultiDataTrigger>
-                                        -->
-
                                         <DataTrigger Binding="{Binding Path=Status}" Value="1">
                                             <Setter Property="ContentTemplate" Value="{StaticResource receivingCompletedTemplate}" />
                                         </DataTrigger>
