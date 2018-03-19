@@ -9,31 +9,30 @@
         ShowInTaskbar="False"
         Title="LAN-Sharing - Main" WindowStartupLocation="CenterScreen" Height="400" MinHeight="400" Width="800" MinWidth="800">
     <Window.Resources>
-        <Grid x:Key="CommonHeader">
+        <Grid IsSharedSizeScope="True" x:Key="SharedColumnDefinitions">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" SharedSizeGroup="Row0"/>
+                <RowDefinition Height="*" SharedSizeGroup="Row1"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*"/>
-                <ColumnDefinition Width="6*"/>
-                <ColumnDefinition Width="15*"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="3*" SharedSizeGroup="Column0"/>
+                <ColumnDefinition Width="6*" SharedSizeGroup="Column1"/>
+                <ColumnDefinition Width="15*" SharedSizeGroup="Column2"/>
+                <ColumnDefinition Width="50" SharedSizeGroup="Column3"/>
             </Grid.ColumnDefinitions>
-
-            <TextBlock Grid.Column="0" Text="User" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="1" Text="File" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="2" Text="Status" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock Grid.Column="3" Text="Action" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>
 
         <DataTemplate x:Key="TransferingTemplate">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition SharedSizeGroup="Row0"/>
+                    <RowDefinition SharedSizeGroup="Row1"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="6*"/>
-                    <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                    <ColumnDefinition SharedSizeGroup="Column3"/>
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Row="0" Grid.Column="0">
@@ -80,10 +79,10 @@
         <DataTemplate x:Key="SendingCompletedTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="6*"/>
-                    <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                    <ColumnDefinition SharedSizeGroup="Column3"/>
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Column="0">
@@ -106,10 +105,10 @@
         <DataTemplate x:Key="ReceivingCompletedTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="6*"/>
-                    <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                    <ColumnDefinition SharedSizeGroup="Column3"/>
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Column="0">
@@ -134,10 +133,10 @@
         <DataTemplate x:Key="RemovedTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="6*"/>
-                    <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                    <ColumnDefinition SharedSizeGroup="Column3"/>
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Column="0">
@@ -160,10 +159,10 @@
         <DataTemplate x:Key="CanceledTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="6*"/>
-                    <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                    <ColumnDefinition SharedSizeGroup="Column3"/>
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Row="0" Grid.Column="0">
@@ -198,10 +197,10 @@
         <DataTemplate x:Key="ErrorTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="6*"/>
-                    <ColumnDefinition Width="15*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                    <ColumnDefinition SharedSizeGroup="Column3"/>
                 </Grid.ColumnDefinitions>
 
                 <DockPanel Grid.Row="0" Grid.Column="0">
@@ -242,7 +241,19 @@
 
                     <DockPanel LastChildFill="True">
                         <DockPanel DockPanel.Dock="Top">
-                            <ContentPresenter Content="{StaticResource CommonHeader}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                                    <ColumnDefinition SharedSizeGroup="Column3"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="User" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="File" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="Status" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="Action" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
                         </DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
@@ -279,10 +290,22 @@
 
             <TabItem Header="Receiving Files" x:Name="ReceivingTabItem">
                 <Grid Background="#FFE5E5E5">
-                        <DockPanel LastChildFill="True">
+                    <DockPanel LastChildFill="True">
 
                         <DockPanel DockPanel.Dock="Top">
-                            <ContentPresenter Content="{StaticResource CommonHeader}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Column0"/>
+                                    <ColumnDefinition SharedSizeGroup="Column1"/>
+                                    <ColumnDefinition SharedSizeGroup="Column2"/>
+                                    <ColumnDefinition SharedSizeGroup="Column3"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="User" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="File" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="Status" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="Action" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
                         </DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
@@ -324,3 +347,4 @@
 
     </Grid>
 </Controls:MetroWindow>
+
