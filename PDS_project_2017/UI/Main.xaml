@@ -9,7 +9,21 @@
         ShowInTaskbar="False"
         Title="LAN-Sharing - Main" WindowStartupLocation="CenterScreen" Height="400" MinHeight="400" Width="800" MinWidth="800">
     <Window.Resources>
-        <DataTemplate x:Key="pendingTemplate">
+        <Grid x:Key="CommonHeader">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="User" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="1" Text="File" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="2" Text="Status" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="3" Text="Action" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+
+        <DataTemplate x:Key="TransferingTemplate">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -63,7 +77,7 @@
                 </DockPanel>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="sendingCompletedTemplate">
+        <DataTemplate x:Key="SendingCompletedTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
@@ -89,7 +103,7 @@
                 </DockPanel>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="receivingCompletedTemplate">
+        <DataTemplate x:Key="ReceivingCompletedTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
@@ -117,7 +131,7 @@
                 </DockPanel>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="removedTemplate">
+        <DataTemplate x:Key="RemovedTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
@@ -143,7 +157,7 @@
                 </DockPanel>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="canceledTemplate">
+        <DataTemplate x:Key="CanceledTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
@@ -181,7 +195,7 @@
                 </DockPanel>
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="errorTemplate">
+        <DataTemplate x:Key="ErrorTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
@@ -222,11 +236,14 @@
     </Window.Resources>
     <Grid>
 
-        <TabControl>
-            <TabItem Header="Sending Files">
+        <TabControl x:Name="TabControl">
+            <TabItem Header="Sending Files" x:Name="SendingTabItem">
                 <Grid Background="#FFE5E5E5">
 
                     <DockPanel LastChildFill="True">
+                        <DockPanel DockPanel.Dock="Top">
+                            <ContentPresenter Content="{StaticResource CommonHeader}"/>
+                        </DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
                             <Button x:Name="Clear_All_S_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Completed_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding SendingTransferList.Count}"/>
@@ -237,19 +254,19 @@
                             <ListView.Resources>
                                 <Style TargetType="ListViewItem">
                                     <!-- Default Template -->
-                                    <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
+                                    <Setter Property="ContentTemplate" Value="{StaticResource TransferingTemplate}" />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Status}" Value="1">
-                                            <Setter Property="ContentTemplate" Value="{StaticResource sendingCompletedTemplate}" />
+                                            <Setter Property="ContentTemplate" Value="{StaticResource SendingCompletedTemplate}" />
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding Path=Status}" Value="2">
-                                            <Setter Property="ContentTemplate" Value="{StaticResource canceledTemplate}" />
+                                            <Setter Property="ContentTemplate" Value="{StaticResource CanceledTemplate}" />
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding Path=Status}" Value="3">
-                                            <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
+                                            <Setter Property="ContentTemplate" Value="{StaticResource ErrorTemplate}" />
                                         </DataTrigger>
                                     </Style.Triggers>
 
@@ -260,9 +277,13 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Receiving Files">
+            <TabItem Header="Receiving Files" x:Name="ReceivingTabItem">
                 <Grid Background="#FFE5E5E5">
-                    <DockPanel LastChildFill="True">
+                        <DockPanel LastChildFill="True">
+
+                        <DockPanel DockPanel.Dock="Top">
+                            <ContentPresenter Content="{StaticResource CommonHeader}"/>
+                        </DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
                             <Button x:Name="Clear_All_R_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
@@ -273,23 +294,23 @@
                             <ListView.Resources>
                                 <Style TargetType="ListViewItem">
                                     <!-- Default Template -->
-                                    <Setter Property="ContentTemplate" Value="{StaticResource pendingTemplate}" />
+                                    <Setter Property="ContentTemplate" Value="{StaticResource TransferingTemplate}" />
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Status}" Value="1">
-                                            <Setter Property="ContentTemplate" Value="{StaticResource receivingCompletedTemplate}" />
+                                            <Setter Property="ContentTemplate" Value="{StaticResource ReceivingCompletedTemplate}" />
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding Path=Status}" Value="2">
-                                            <Setter Property="ContentTemplate" Value="{StaticResource canceledTemplate}" />
+                                            <Setter Property="ContentTemplate" Value="{StaticResource CanceledTemplate}" />
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding Path=Status}" Value="3">
-                                            <Setter Property="ContentTemplate" Value="{StaticResource errorTemplate}" />
+                                            <Setter Property="ContentTemplate" Value="{StaticResource ErrorTemplate}" />
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding Path=Status}" Value="4">
-                                            <Setter Property="ContentTemplate" Value="{StaticResource removedTemplate}" />
+                                            <Setter Property="ContentTemplate" Value="{StaticResource RemovedTemplate}" />
                                         </DataTrigger>
                                     </Style.Triggers>
 

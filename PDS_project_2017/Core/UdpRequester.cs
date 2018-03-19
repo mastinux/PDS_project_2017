@@ -29,7 +29,7 @@ namespace PDS_project_2017.Core
             _udpClient = new UdpClient();
             _udpClient.Client.ReceiveTimeout = Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1000;
 
-            _broadcastIp = new IPEndPoint(IPAddress.Parse("25.255.255.255"), Constants.DISCOVERY_UDP_PORT);
+            _broadcastIp = new IPEndPoint(IPAddress.Parse(Constants.BROADCAST_IP), Constants.DISCOVERY_UDP_PORT);
 
             // initing current user identity
             _me = new User

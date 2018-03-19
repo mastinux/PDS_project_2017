@@ -9,7 +9,6 @@ using System.Threading;
 using System.ComponentModel;
 using PDS_project_2017.Core.Entities;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -261,13 +260,18 @@ namespace PDS_project_2017
             };
             item3.Click += delegate
             {
-                Properties.Settings.Default.SendingTransferFiles = JsonConvert.SerializeObject(sendingTransferList);
-                Properties.Settings.Default.ReceivingTransferFiles = JsonConvert.SerializeObject(receivingTransferList);
-                Properties.Settings.Default.Save();
+                StoreHistory();
                 
                 App.Current.Shutdown();
             };
 
+        }
+
+        private void StoreHistory()
+        {
+            Properties.Settings.Default.SendingTransferFiles = JsonConvert.SerializeObject(sendingTransferList);
+            Properties.Settings.Default.ReceivingTransferFiles = JsonConvert.SerializeObject(receivingTransferList);
+            Properties.Settings.Default.Save();
         }
 
         private void notifyIcon_OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -276,8 +280,11 @@ namespace PDS_project_2017
                 this.ShowWindow();
         }
 
-        private void ShowWindow()
+        public void ShowWindow(bool sending = true)
         {
+            if (!sending)
+                TabControl.SelectedItem = ReceivingTabItem;
+
             Show();
             WindowState = WindowState.Normal;
 

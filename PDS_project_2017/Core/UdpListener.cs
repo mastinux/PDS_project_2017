@@ -81,7 +81,8 @@ namespace PDS_project_2017.Core
                         _udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
 
                         // TODO test purpose
-                        //testSendMultipleUsers(remoteIpEndPoint);
+                        if (Constants.FAKE_USERS)
+                            testSendMultipleUsers(remoteIpEndPoint);
                     }
                 }
                 catch (Exception e)

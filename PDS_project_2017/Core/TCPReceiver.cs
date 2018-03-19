@@ -25,7 +25,7 @@ namespace PDS_project_2017.Core
         public TcpReceiver(int port)
         {
             //IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIPAddress().ToString());
-
+            // TODO test purpose, bind to local ip address
             _tcpServer = new TcpListener(IPAddress.Any, port);
             _tcpServer.Start();
             acceptedFiles = new Dictionary<IPAddress, Dictionary<FileNode, string>>();
@@ -70,6 +70,8 @@ namespace PDS_project_2017.Core
 
             if(destinationDir != null)
             {
+                WindowUtils.ShowMainWindow(false);
+
                 ReceiveDirectoryFile(client, fileNode, destinationDir);
             }
             else
@@ -95,6 +97,8 @@ namespace PDS_project_2017.Core
                         TcpUtils.SendAcceptanceResponse(client);
 
                         destinationDir = fileAcceptanceWindow.DestinationDir;
+
+                        WindowUtils.ShowMainWindow(false);
                     }
                     else
                     {

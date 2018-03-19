@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
+using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017
 {
@@ -170,8 +171,9 @@ namespace PDS_project_2017
 
                 Close();
 
-                Application.Current.MainWindow.Show();
-                Application.Current.MainWindow.WindowState = WindowState.Normal;
+                if (!Constants.FAKE_USERS)
+                    // TODO on production remove previous if and leave ShowMainWindow
+                    WindowUtils.ShowMainWindow();
             }
             else
                 this.ShowMessageAsync("Ops", "Choose at least one user");
