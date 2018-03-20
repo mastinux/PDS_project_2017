@@ -70,7 +70,8 @@ namespace PDS_project_2017.Core
 
             if(destinationDir != null)
             {
-                WindowUtils.ShowMainWindow(false);
+                if (!Properties.Settings.Default.AutoAccept)
+                    WindowUtils.ShowMainWindow(false);
 
                 ReceiveDirectoryFile(client, fileNode, destinationDir);
             }

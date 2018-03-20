@@ -99,7 +99,7 @@ namespace PDS_project_2017.Core.Entities
             }
 
             if (StatusChangedEvent != null)
-                if (propertyName.Equals("Status"))
+                if (propertyName.Equals("Status") && Status != TransferStatus.Removed)
                     StatusChangedEvent(this);
         }
     }
