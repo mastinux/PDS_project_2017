@@ -21,7 +21,7 @@ namespace PDS_project_2017.Core.Entities
         private bool _continueFileTransfer;
         private TransferStatus _status;
         private bool _sending;
-        private String _savingPath;
+        private String _destinationDirectoryPath;
         private DateTime _managementDateTime;
         
         public FileNode File
@@ -82,9 +82,23 @@ namespace PDS_project_2017.Core.Entities
             }
         }
 
-        public DateTime ManagementDateTime { get => _managementDateTime; set => _managementDateTime = value; }
-        public bool Sending { get => _sending; set => _sending = value; }
-        public string SavingPath { get => _savingPath; set => _savingPath = value; }
+        public DateTime ManagementDateTime
+        {
+            get => _managementDateTime;
+            set => _managementDateTime = value;
+        }
+
+        public bool Sending
+        {
+            get => _sending;
+            set => _sending = value;
+        }
+
+        public string DestinationDirectoryPath
+        {
+            get => _destinationDirectoryPath;
+            set => _destinationDirectoryPath = value;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

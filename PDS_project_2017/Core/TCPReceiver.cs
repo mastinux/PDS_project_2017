@@ -262,7 +262,7 @@ namespace PDS_project_2017.Core
                 ContinueFileTransfer = true,
                 Status = TransferStatus.Pending,
                 Sending = false,
-                SavingPath = destinationDir,
+                DestinationDirectoryPath = destinationDir,
                 ManagementDateTime = DateTime.Now
             };
 

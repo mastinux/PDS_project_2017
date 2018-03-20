@@ -322,7 +322,7 @@ namespace PDS_project_2017
             var item = (System.Windows.Controls.Button)sender;
             FileTransfer fileTransfer = (FileTransfer)item.CommandParameter;
 
-            string filePath = fileTransfer.SavingPath + "\\" + fileTransfer.File.Name;
+            string filePath = fileTransfer.DestinationDirectoryPath + "\\" + fileTransfer.File.Name;
 
             if (File.Exists(filePath))
                 Process.Start("explorer.exe", filePath);
@@ -335,8 +335,8 @@ namespace PDS_project_2017
             var item = (System.Windows.Controls.Button)sender;
             FileTransfer fileTransfer = (FileTransfer)item.CommandParameter;
 
-            if (Directory.Exists(fileTransfer.SavingPath))
-                Process.Start("explorer.exe", fileTransfer.SavingPath);
+            if (Directory.Exists(fileTransfer.DestinationDirectoryPath))
+                Process.Start("explorer.exe", fileTransfer.DestinationDirectoryPath);
             else
                 fileTransfer.Status = TransferStatus.Removed;
         }

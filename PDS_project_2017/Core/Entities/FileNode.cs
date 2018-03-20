@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PDS_project_2017.Core.Entities
 {
@@ -49,7 +45,11 @@ namespace PDS_project_2017.Core.Entities
             if (other == null)
                 return false;
 
-            if (SenderUserName == other.SenderUserName && ReceiverUserName == other.ReceiverUserName && Name == other.Name && Dimension == other.Dimension && MimeType == other.MimeType)
+            if (SenderUserName == other.SenderUserName && 
+                ReceiverUserName == other.ReceiverUserName && 
+                Name == other.Name && 
+                Dimension == other.Dimension && 
+                MimeType == other.MimeType)
                 return true;
             else
                 return false;

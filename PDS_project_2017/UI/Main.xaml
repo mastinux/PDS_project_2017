@@ -296,7 +296,7 @@
                                 <TextBlock Grid.Column="0" Text="User" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <TextBlock Grid.Column="1" Text="File" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                 <TextBlock Grid.Column="2" Text="Status" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                <TextBlock Grid.Column="3" Text="Action" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="Actions" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </Grid>
                         </DockPanel>
 
