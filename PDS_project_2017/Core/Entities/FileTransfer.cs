@@ -12,17 +12,27 @@ namespace PDS_project_2017.Core.Entities
         Removed
     };
 
+    /*
+     * this class describe a file transfer for both sender and receiver
+     */
     public class FileTransfer : INotifyPropertyChanged
     {
         private FileNode _fileNode;
+        // value for progress bar in main window
         private double _progress;
         private TimeSpan _remainingTime;
         private string _humanReadableRemainingTime;
-        private bool _continueFileTransfer;
         private TransferStatus _status;
-        private bool _sending;
-        private String _destinationDirectoryPath;
-        private DateTime _managementDateTime;
+
+        // used to sort transfers in main window
+        public DateTime ManagementDateTime { get; set; }
+
+        public bool Sending { get; set; }
+
+        public string DestinationDirectoryPath { get; set; }
+
+        // updated if user cancel transfer
+        public bool ContinueFileTransfer { get; set; }
         
         public FileNode File
         {
@@ -66,12 +76,6 @@ namespace PDS_project_2017.Core.Entities
             }
         }
 
-        public bool ContinueFileTransfer
-        {
-            get => _continueFileTransfer;
-            set => _continueFileTransfer = value;
-        }
-
         public TransferStatus Status
         {
             get => _status;
@@ -80,24 +84,6 @@ namespace PDS_project_2017.Core.Entities
                 _status = value;
                 NotifyPropertyChanged("Status");
             }
-        }
-
-        public DateTime ManagementDateTime
-        {
-            get => _managementDateTime;
-            set => _managementDateTime = value;
-        }
-
-        public bool Sending
-        {
-            get => _sending;
-            set => _sending = value;
-        }
-
-        public string DestinationDirectoryPath
-        {
-            get => _destinationDirectoryPath;
-            set => _destinationDirectoryPath = value;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

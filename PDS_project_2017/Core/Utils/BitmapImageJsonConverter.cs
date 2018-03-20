@@ -8,6 +8,8 @@ namespace PDS_project_2017.Core
 {
     class BitmapImageJsonConverter : JsonConverter
     {
+        // TODO comment
+
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(Image);

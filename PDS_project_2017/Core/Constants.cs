@@ -28,14 +28,13 @@
         public static double SENDER_WINDOW_LEFT = offset;
         public static double RECEIVER_WINDOW_TOP = offset;
         public static double RECEIVER_WINDOW_LEFT = System.Windows.SystemParameters.WorkArea.Width / 2 + offset;
-        public static int SENDER_WINDOW_OFFSET = 10;
 
         // delays
         public static int TRANSFER_TCP_SENDER_DELAY = 100;
         public static int TRANSFER_TCP_RECEIVER_DELAY = TRANSFER_TCP_SENDER_DELAY * 0;
-        public static int TRANSFER_TCP_COMPLETED_TRANSFER_DELAY = 1000 * 0;
         public static int BALLOONTIP_DELAY = 1000;
 
+        // IPs
         public static string BROADCAST_IP = "255.255.255.255";
         public static string HAMACHI_BROADCAST_IP = "25.255.255.255";
 

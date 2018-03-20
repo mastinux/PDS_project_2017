@@ -44,7 +44,6 @@ namespace PDS_project_2017.Core.Utils
             SendCommand(client, Constants.TRANSFER_TCP_DIRECTORY);
         }
 
-
         public static void SendDescription(TcpClient tcpClient, string description)
         {
             Byte[] descriptionData = Encoding.UTF8.GetBytes(description);
@@ -53,6 +52,7 @@ namespace PDS_project_2017.Core.Utils
 
             // DESCRIPTION LENGTH
             Byte[] descriptionLengthData = BitConverter.GetBytes(description.Length);
+
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(descriptionLengthData);
 
@@ -83,16 +83,18 @@ namespace PDS_project_2017.Core.Utils
 
             return description;
         }
-
-        public static TimeSpan ComputeRemainingTime(DateTime start, int partial, long completed, long total)
+        
+        public static TimeSpan ComputeRemainingTime(DateTime start, int currentPortion, long alreadyCompleted, long total)
         {
             DateTime end = DateTime.Now;
             TimeSpan timeSpanDifference = end - start;
-            double transmissionSpeed = (double)partial / timeSpanDifference.TotalSeconds;
+
+            double transmissionSpeed = (double)currentPortion / timeSpanDifference.TotalSeconds;
             if (transmissionSpeed == 0 || double.IsNaN(transmissionSpeed))
                 return TimeSpan.MaxValue;
-            long remainingFileDimension = total - (long)completed;
+            long remainingFileDimension = total - (long)alreadyCompleted;
             double remainingTime = (double)remainingFileDimension / transmissionSpeed;
+
             TimeSpan remainingTimeSpan = TimeSpan.FromSeconds(remainingTime);
 
             return remainingTimeSpan;

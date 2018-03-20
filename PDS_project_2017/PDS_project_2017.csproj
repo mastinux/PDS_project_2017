@@ -154,9 +154,6 @@
     <Compile Include="UI\FilesAcceptance.xaml.cs">
       <DependentUpon>FilesAcceptance.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\TransferProgress.xaml.cs">
-      <DependentUpon>TransferProgress.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\UserSettings.xaml.cs">
       <DependentUpon>UserSettings.xaml</DependentUpon>
     </Compile>
@@ -179,10 +176,6 @@
       <DependentUpon>Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UI\TransferProgress.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UI\UserSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -251,12 +244,12 @@
   <ItemGroup>
     <PublishFile Include="Windows">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
   </ItemGroup>
