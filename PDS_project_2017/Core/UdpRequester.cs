@@ -9,8 +9,6 @@ namespace PDS_project_2017.Core
 {
     class UdpRequester
     {
-        // https://msdn.microsoft.com/it-it/library/ts553s52(v=vs.110).aspx
-        
         private UdpClient _udpClient;
         private IPEndPoint _broadcastIp;
         private User _me;

@@ -6,8 +6,6 @@ using System.Windows.Media.Imaging;
 
 namespace PDS_project_2017.Core
 {
-    // https://stackoverflow.com/questions/44370046/how-do-i-serialize-object-to-json-using-json-net-which-contains-an-image-propert
-
     class BitmapImageJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
@@ -22,20 +20,12 @@ namespace PDS_project_2017.Core
             if (base64 == null)
                 return null;
 
-            //return Image.FromStream(new MemoryStream(Convert.FromBase64String(base64)));
-
             return Base64StringToBitmap(base64);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var bitmapImage = (BitmapImage)value;
-
-            //var memoryStream = new MemoryStream();
-
-            //image.Save(memoryStream, ImageFormat.Jpeg);
-
-            //byte[] imageBytes = memoryStream.ToArray();
 
             byte[] data;
             JpegBitmapEncoder encoder = new JpegBitmapEncoder();

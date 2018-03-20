@@ -2,13 +2,10 @@
 using PDS_project_2017.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Windows.Media.Imaging;
 
 namespace PDS_project_2017.Core
 {
@@ -48,7 +45,6 @@ namespace PDS_project_2017.Core
 
         public static void ResetStatusAvailableEvent()
         {
-
             _statusAvailableEvent.Reset();
         }
 
@@ -131,19 +127,6 @@ namespace PDS_project_2017.Core
             }
 
             //testSendUser(remoteIpEndPoint, "PAUL");
-        }
-
-        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
-        {
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new JpegBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                return new Bitmap(bitmap);
-            }
         }
     }
 }
