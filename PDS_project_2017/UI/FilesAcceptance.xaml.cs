@@ -5,8 +5,9 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using PDS_project_2017.Core;
 using PDS_project_2017.Core.Entities;
+using PDS_project_2017.UI.Utils;
 
-namespace PDS_project_2017
+namespace PDS_project_2017.UI
 {
     /// <summary>
     /// Logica di interazione per FilesAcceptance.xaml
@@ -26,7 +27,7 @@ namespace PDS_project_2017
             _destinationDir = null;
             _filesAccepted = false;
 
-            if (Properties.Settings.Default.UseDefaultDir == true)
+            if (Properties.Settings.Default.UseDefaultDir)
             {
                 DestinationDir_TextBox.Text = Properties.Settings.Default.DefaultDir;
                 _destinationDir = Properties.Settings.Default.DefaultDir;
@@ -34,7 +35,11 @@ namespace PDS_project_2017
 
             Top = Constants.RECEIVER_WINDOW_TOP;
             Left = Constants.RECEIVER_WINDOW_LEFT;
-            this.Topmost = true;
+        }
+
+        private void SetTitle(string title)
+        {
+            Title = String.Format("Accept \"{0}\"", title);
         }
 
         public FilesAcceptance(FileNode fileNode)
@@ -43,13 +48,8 @@ namespace PDS_project_2017
             SetTitle(fileNode.Name);
 
             Filename_Label.Content = fileNode.Name;
-            Size_Label.Content = ConvertToHumanReadableSize(fileNode.Dimension);
+            Size_Label.Content = InterfaceUtils.ConvertToHumanReadableSize(fileNode.Dimension);
             Filetype_Label.Content = fileNode.MimeType;
-        }
-
-        private void SetTitle(string title)
-        {
-            Title = String.Format("Accept \"{0}\"", title);
         }
 
         public FilesAcceptance(DirectoryNode directoryNode)
@@ -57,87 +57,9 @@ namespace PDS_project_2017
             BaseConstructor();
             SetTitle(directoryNode.DirectoryName);
 
-            TreeView tv = new TreeView();
-            PopulateTreeView(tv, directoryNode);
+            TreeView tv = InterfaceUtils.CreateTreeView(directoryNode);
             dp.Children.Clear();
             dp.Children.Add(tv);
-        }
-
-        private void PopulateTreeView(TreeView tv, DirectoryNode dn)
-        {
-            tv.Items.Add(CreateTreeViewItem(dn));
-            TreeViewItem tvi = (TreeViewItem)tv.Items.GetItemAt(0);
-            tvi.IsExpanded = true;
-        }
-
-        private TreeViewItem CreateTreeViewItem(DirectoryNode dn)
-        {
-            TreeViewItem tvItem = new TreeViewItem() { Header = GenerateHeader(dn), FontWeight = FontWeights.Bold};
-
-            foreach(var directory in dn.DirectoryNodes)
-            {
-                tvItem.Items.Add(CreateTreeViewItem(directory));
-            }
-
-            foreach(var file in dn.FileNodes)
-            {
-                tvItem.Items.Add(new TreeViewItem()
-                {
-                    Header = file.Name + " (" + ConvertToHumanReadableSize(file.Dimension) + ")",
-                    FontWeight = FontWeights.Regular
-                });
-            }
-
-            return tvItem;
-        }
-
-        private string GenerateHeader(DirectoryNode directoryNode)
-        {
-            string header = directoryNode.DirectoryName + " (";
-
-            int directoriesInDirectory = directoryNode.DirectoryNodes.Count;
-            int filesInDirectory = directoryNode.FileNodes.Count;
-
-            if (directoriesInDirectory == 0 && filesInDirectory == 0)
-            {
-                header += "empty)";
-            }
-            else
-            {
-                string directoriesDescription = directoriesInDirectory + " directories";
-                string filesDescription = filesInDirectory + " files";
-
-                if (directoriesInDirectory > 0)
-                {
-                    header += directoriesDescription;
-
-                    if (filesInDirectory > 0)
-                        header += ", " + filesDescription;
-                }
-                else
-                {
-                    header += filesDescription;
-                }
-
-                header += ")";
-            }
-
-            return header;
-        }
-
-        private string ConvertToHumanReadableSize(long fileDimension)
-        {
-            string[] suffixes = {"B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
-
-            int index = 0;
-
-            while (fileDimension >= 1024)
-            {
-                index++;
-                fileDimension /= 1024;
-            }
-
-            return String.Format("{0} {1}", fileDimension, suffixes[index]);
         }
 
         private void Accept_Button_Click(object sender, RoutedEventArgs e)
@@ -149,27 +71,20 @@ namespace PDS_project_2017
             }
 
             _filesAccepted = true;
-            // pop up main window
 
-            Application.Current.Dispatcher.Invoke(() => 
-            {
-                Application.Current.MainWindow.WindowState = WindowState.Normal;
-                Application.Current.MainWindow.Topmost = true;
-                Application.Current.MainWindow.Show();
-            });
+            InterfaceUtils.ShowMainWindow();
             
-
-            this.Close();
+            Close();
         }
 
         private void Refuse_Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void DestinationDir_Button_Click(object sender, RoutedEventArgs e)
         { 
-            Application.Current.Dispatcher.Invoke(() => { _destinationDir = UserUtils.RetrieveDirectoryLocation(); });
+            Application.Current.Dispatcher.Invoke(() => { _destinationDir = InterfaceUtils.RetrieveDirectoryLocation(); });
 
             DestinationDir_TextBox.Text = _destinationDir;
         }

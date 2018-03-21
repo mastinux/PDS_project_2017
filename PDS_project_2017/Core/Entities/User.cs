@@ -11,7 +11,7 @@ namespace PDS_project_2017.Core
         // last time user responded to udp request
         private DateTime _lastUpTime;
 
-        public string Id { get; set; }
+        public string IPAddress { get; set; }
 
         public string Name { get; set; }
 

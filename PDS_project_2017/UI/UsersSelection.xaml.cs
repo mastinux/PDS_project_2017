@@ -1,7 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using PDS_project_2017.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,14 +7,16 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using PDS_project_2017.Core;
 using PDS_project_2017.UI.Utils;
 
-namespace PDS_project_2017
+namespace PDS_project_2017.UI
 {
     public partial class UsersSelection : MetroWindow
     {
         private ObservableCollection<User> _availableUsers;
-        private ICollectionView _availableUsersView;
         private UdpRequester _udpRequester;
         private string _path;
         private string _pathName;
@@ -28,26 +27,27 @@ namespace PDS_project_2017
         public UsersSelection(string path)
         {
             InitializeComponent();
-            Closing += ClosingUserSelection;
+
+            Closing += OnClosing;
 
             DataContext = this;
 
             _path = path;
 
-            // parse path and set in window title
+            // set directory or file name in title
             SetPathInTitle();
 
             // user collection
             AvailableUsers = new ObservableCollection<User>();
 
             // _availableUserView maintains _availableUsers ordered in UI
-            _availableUsersView = CollectionViewSource.GetDefaultView(_availableUsers);
-            _availableUsersView.SortDescriptions.Add(new SortDescription("LastUpTime", ListSortDirection.Ascending));
+            ICollectionView availableUsersView = CollectionViewSource.GetDefaultView(_availableUsers);
+            availableUsersView.SortDescriptions.Add(new SortDescription("LastUpTime", ListSortDirection.Ascending));
             
             // udp socket requesting available users
             _udpRequester = new UdpRequester();
             _udpRequester.AddUserEvent += ManageAddUserEvent;
-            _udpRequester.CleanUsersEvent += CleanAvailableUsers;
+            _udpRequester.CleanUsersEvent += CleanExpiredUsers;
 
             // background thread
             Thread udpListenerThread = new Thread(_udpRequester.RetrieveAvailableUsers);
@@ -70,7 +70,7 @@ namespace PDS_project_2017
             else
             {
                 _isDirectory = false;
-                _pathName = System.IO.Path.GetFileName(_path);
+                _pathName = Path.GetFileName(_path);
             }
 
             Title = String.Format("Share \"{0}\" with:", _pathName);
@@ -81,10 +81,11 @@ namespace PDS_project_2017
             // checking if user already exists
             foreach (var user in AvailableUsers)
             {
-                // TODO test purpose - on production environment use Id instead of Name
-                //if (user.Id.Equals(newAvailableUser.Id))
+                // TODO test purpose - on production environment use IPAddress instead of Name
+                //if (user.IPAddress.Equals(newAvailableUser.IPAddress))
                 if (user.Name.Equals(newAvailableUser.Name))
                 {
+                    // updating already present user
                     user.Name = newAvailableUser.Name;
                     user.Image = newAvailableUser.Image;
                     user.LastUpTime = DateTime.Now;
@@ -100,7 +101,7 @@ namespace PDS_project_2017
             }));
         }
 
-        public void CleanAvailableUsers()
+        public void CleanExpiredUsers()
         {
             DateTime startTime = DateTime.Now;
             
@@ -124,56 +125,31 @@ namespace PDS_project_2017
             // terminating thread loop
             _udpRequester.StopRequesting();
 
-            List<User> selected = null;
-            //List<SendingFile> sendingFiles = null;
-
             if (listNeighborSelection.SelectedItems.Count > 0)
             {
-                selected = listNeighborSelection.SelectedItems.Cast<User>().ToList();
-
-                int i = 0;
+                List<User> selected = listNeighborSelection.SelectedItems.Cast<User>().ToList();
 
                 foreach( User u  in selected)
                 {
+                    TCPSender tcpSender = new TCPSender(u.IPAddress, Constants.TRANSFER_TCP_PORT, u.Name, _path);
+
+                    Thread tcpSenderThread;
+
                     if (_isDirectory)
-                    {
-                        // directory
-                        TCPSender tcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_PORT, u.Name, _path);
-
-                        Thread tcpSenderThread = new Thread(tcpSender.SendDirectory);
-                        tcpSenderThread.SetApartmentState(ApartmentState.STA);
-                        tcpSenderThread.IsBackground = true;
-                        tcpSenderThread.Start();
-                    }
+                        tcpSenderThread = new Thread(tcpSender.SendDirectory);
                     else
-                    {
-                        // single file
-                        TCPSender tcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_PORT, u.Name, _path);
-                        
-                        Thread tcpSenderThread = new Thread(tcpSender.SendFile);
-                        tcpSenderThread.SetApartmentState(ApartmentState.STA);
-                        tcpSenderThread.IsBackground = true;
-                        tcpSenderThread.Start();
+                        tcpSenderThread = new Thread(tcpSender.SendFile);
 
-                        /*
-                        TCPSender testTcpSender = new TCPSender(u.Id, Constants.TRANSFER_TCP_TEST_PORT, u.Name, _path);
-                        tcpSender.SetIndex(i * 2 + 1);
-
-                        Thread testTcpSenderThread = new Thread(testTcpSender.SendFile);
-                        testTcpSenderThread.SetApartmentState(ApartmentState.STA);
-                        testTcpSenderThread.IsBackground = true;
-                        testTcpSenderThread.Start();
-                        */
-                    }
-
-                    i++;
+                    tcpSenderThread.SetApartmentState(ApartmentState.STA);
+                    tcpSenderThread.IsBackground = true;
+                    tcpSenderThread.Start();
                 }
 
                 Close();
 
                 if (!Constants.FAKE_USERS)
-                    // TODO on production remove previous if and leave ShowMainWindow
-                    WindowUtils.ShowMainWindow();
+                    // TODO on production environment remove previous if() and leave ShowMainWindow
+                    InterfaceUtils.ShowMainWindow();
             }
             else
                 this.ShowMessageAsync("Ops", "Choose at least one user");
@@ -187,7 +163,7 @@ namespace PDS_project_2017
             this.Close();
         }
 
-        private void ClosingUserSelection(object sender, CancelEventArgs e)
+        private void OnClosing(object sender, CancelEventArgs e)
         {
             // terminating thread loop
             _udpRequester.StopRequesting();

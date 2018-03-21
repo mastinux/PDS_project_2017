@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using PDS_project_2017.UI;
+using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
 {
@@ -24,15 +25,14 @@ namespace PDS_project_2017.Core
         {
             _continueRequesting = true;
 
-            _udpClient = new UdpClient();
-            _udpClient.Client.ReceiveTimeout = Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1000;
+            _udpClient = new UdpClient {Client = {ReceiveTimeout = Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1000}};
 
             _broadcastIp = new IPEndPoint(IPAddress.Parse(Constants.BROADCAST_IP), Constants.DISCOVERY_UDP_PORT);
 
             // initing current user identity
             _me = new User
             {
-                Name = UserSettings.LoadName()
+                Name = InterfaceUtils.LoadName()
             };
         }
 
@@ -63,11 +63,12 @@ namespace PDS_project_2017.Core
                     catch (SocketException e)
                     {
                         if ( !e.SocketErrorCode.Equals(SocketError.TimedOut) )
-                            throw  new Exception("Unexpected exception", e);
+                            throw new Exception("Unexpected exception", e);
 
                         timedOut = true;
 
-                        // managing timeout
+                        // call the functions registered to the delegate, in particular in userSelection
+                        // clearing expired users
                         CleanUsersEvent();
                     }
 
@@ -78,10 +79,11 @@ namespace PDS_project_2017.Core
 
                         // parsing available user
                         User availableUser = JsonConvert.DeserializeObject<User>(readData);
-                        availableUser.Id = remoteIpEndPoint.Address.ToString();
+                        availableUser.IPAddress = remoteIpEndPoint.Address.ToString();
                         availableUser.LastUpTime = DateTime.Now;
 
                         // call the functions registered to the delegate, in particular in userSelection
+                        // adding new user
                         AddUserEvent(availableUser);
                     }
                 }

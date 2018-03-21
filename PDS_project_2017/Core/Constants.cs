@@ -8,7 +8,6 @@
 
         // tcp file transfer
         public const int TRANSFER_TCP_PORT = 55556;
-        public const int TRANSFER_TCP_TEST_PORT = 55557;
         public const int TRANSFER_TCP_BUFFER = 1024;
         public const int TRANSFER_TCP_FILE_CONTENT_LEN = 8;
         public const int TRANSFER_TCP_INT_LEN = 4;

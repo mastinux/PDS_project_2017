@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Data;
 using Newtonsoft.Json;
+using Application = System.Windows.Application;
 
 namespace PDS_project_2017
 {
@@ -22,39 +23,15 @@ namespace PDS_project_2017
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        // https://stackoverflow.com/questions/1472633/wpf-application-that-only-has-a-tray-icon
-        private System.Windows.Forms.NotifyIcon notifyIcon = null;
+        private System.Windows.Forms.NotifyIcon _notifyIcon = null;
 
-        //private Dictionary<string, System.Drawing.Icon> appIcons = null;
-        private System.Windows.Forms.MenuItem trayPrivateFlag = new System.Windows.Forms.MenuItem();
-        
-        private UdpListener udpListener;
-        private ObservableCollection<FileTransfer> sendingTransferList;
-        private ObservableCollection<FileTransfer> receivingTransferList;
+        public MenuItem TrayPrivateFlag { get; set; }
 
-        public MenuItem TrayPrivateFlag
-        {
-            get => trayPrivateFlag;
-            set => trayPrivateFlag = value;
-        }
+        public UdpListener UdpListener { get; set; }
 
-        public UdpListener UdpListener
-        {
-            get => udpListener;
-            set => udpListener = value;
-        }
+        public ObservableCollection<FileTransfer> SendingTransferList { get; set; }
 
-        public ObservableCollection<FileTransfer> SendingTransferList
-        {
-            get => sendingTransferList;
-            set => sendingTransferList = value;
-        }
-
-        public ObservableCollection<FileTransfer> ReceivingTransferList
-        {
-            get => receivingTransferList;
-            set => receivingTransferList = value;
-        }
+        public ObservableCollection<FileTransfer> ReceivingTransferList { get; set; }
 
         public MainWindow()
         {
@@ -62,38 +39,38 @@ namespace PDS_project_2017
 
             if (Properties.Settings.Default.Name.CompareTo("") == 0)
             {
+                // first application run
                 UserSettings us = new UserSettings();
                 us.ShowDialog(); //ShowDialog returns only when the window is closed
             }
 
             DataContext = this;
 
-            sendingTransferList = new ObservableCollection<FileTransfer>();
-            TCPSender.NewTransferEvent += AddNewTransfer;
-
-            // sorting fileTransfers
-            ICollectionView sendingTransferListView = CollectionViewSource.GetDefaultView(sendingTransferList);
+            SendingTransferList = new ObservableCollection<FileTransfer>();
+            // sorting sending fileTransfers
+            ICollectionView sendingTransferListView = CollectionViewSource.GetDefaultView(SendingTransferList);
             sendingTransferListView.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
             sendingTransferListView.SortDescriptions.Add(new SortDescription("ManagementDateTime", ListSortDirection.Ascending));
+            
+            TCPSender.NewTransferEvent += AddNewTransfer;
 
             // udp socket listening for request
-            udpListener = new UdpListener();
+            UdpListener = new UdpListener();
 
             // launching background thread
-            Thread udpListenerThread = new Thread(UdpListener.listen);
+            Thread udpListenerThread = new Thread(UdpListener.Listen);
             udpListenerThread.IsBackground = true;
             udpListenerThread.Start();
 
-            // tcp socket listening for file transfer
-            TcpReceiver tcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_PORT);
-
-            receivingTransferList = new ObservableCollection<FileTransfer>();
-            TcpReceiver.NewTransferEvent += AddNewTransfer;
-
-            // sorting receivingTransfers
-            ICollectionView receivingTransferListView = CollectionViewSource.GetDefaultView(receivingTransferList);
+            ReceivingTransferList = new ObservableCollection<FileTransfer>();
+            // sorting receiving fileTransfers
+            ICollectionView receivingTransferListView = CollectionViewSource.GetDefaultView(ReceivingTransferList);
             receivingTransferListView.SortDescriptions.Add(new SortDescription("Status", ListSortDirection.Ascending));
             receivingTransferListView.SortDescriptions.Add(new SortDescription("ManagementDateTime", ListSortDirection.Ascending));
+
+            // tcp socket listening for file transfer
+            TcpReceiver tcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_PORT);
+            TcpReceiver.NewTransferEvent += AddNewTransfer;
 
             // launching background thread
             Thread tcpReceiverThread = new Thread(tcpReceiver.Receive);
@@ -101,57 +78,52 @@ namespace PDS_project_2017
             tcpReceiverThread.IsBackground = true;
             tcpReceiverThread.Start();
 
-            /*
-            // test tcp socket listening for file transfer
-            TcpReceiver testTcpReceiver = new TcpReceiver(Constants.TRANSFER_TCP_TEST_PORT);
-            
-            // launching background test thread
-            Thread testTcpReceiverThread = new Thread(testTcpReceiver.Receive);
-            testTcpReceiverThread.SetApartmentState(ApartmentState.STA);
-            testTcpReceiverThread.IsBackground = true;
-            testTcpReceiverThread.Start();
-            */
-
+            // retrieving old sending file transfers
             if (Properties.Settings.Default.SendingTransferFiles != "")
-                foreach (var fileTransfer in JsonConvert.DeserializeObject<ObservableCollection<FileTransfer>>(Properties.Settings.Default.SendingTransferFiles))
+            {
+                string transfers = Properties.Settings.Default.SendingTransferFiles;
+
+                foreach (var fileTransfer in JsonConvert.DeserializeObject<ObservableCollection<FileTransfer>>(transfers))
                 {
                     if (fileTransfer.Status == TransferStatus.Pending)
                         fileTransfer.Status = TransferStatus.Error;
 
-                    sendingTransferList.Add(fileTransfer);
+                    SendingTransferList.Add(fileTransfer);
                 }
+            }
 
+            // retrieving old receiving file transfers
             if (Properties.Settings.Default.ReceivingTransferFiles != "")
-                foreach (var fileTransfer in JsonConvert.DeserializeObject<ObservableCollection<FileTransfer>>(Properties.Settings.Default.ReceivingTransferFiles))
+            {
+                string transfers = Properties.Settings.Default.ReceivingTransferFiles;
+
+                foreach (var fileTransfer in JsonConvert.DeserializeObject<ObservableCollection<FileTransfer>>(transfers))
                 {
                     if (fileTransfer.Status == TransferStatus.Pending)
                         fileTransfer.Status = TransferStatus.Error;
 
-                    receivingTransferList.Add(fileTransfer);
+                    ReceivingTransferList.Add(fileTransfer);
                 }
+            }
         }
 
         private void AddNewTransfer(FileTransfer transfer)
         {
-            transfer.StatusChangedEvent += ManageStatusChangedEvent;
-            // calling status change event
+            transfer.StatusChangedEvent += ShowBalloonTip;
+            // forcing calling of status change event, in order to show balloon tip
             transfer.Status = transfer.Status;
 
             System.Windows.Application.Current.Dispatcher.Invoke(
                 new Action(() =>
                 {
                     if (transfer.Sending)
-                    {
-                        sendingTransferList.Add(transfer);
-                    }
+                        SendingTransferList.Add(transfer);
                     else
-                    {
                         ReceivingTransferList.Add(transfer);
-                    }
                 }));
         }
 
-        private void ManageStatusChangedEvent(FileTransfer filetransfer)
+        public void ShowBalloonTip(FileTransfer filetransfer)
         {
             string title = ""; // filename
             string text = ""; // operation on file
@@ -168,26 +140,29 @@ namespace PDS_project_2017
                     break;
                 case TransferStatus.Canceled:
                     title += filetransfer.File.Name;
-                    text += (filetransfer.Sending ? "Sending" : "Receiving") + " " + filetransfer.File.Name + " canceled";
+                    text += (filetransfer.Sending ? "Sending" : "Receiving") + " of " + filetransfer.File.Name + " canceled";
                     break;
                 case TransferStatus.Error:
                     title += filetransfer.File.Name;
                     text += "Error while " + (filetransfer.Sending ? "sending" : "receiving") + " " + filetransfer.File.Name;
                     break;
+                case TransferStatus.Refused:
+                    title += filetransfer.File.Name;
+                    text += filetransfer.File.Name + " refused by " + filetransfer.File.ReceiverUserName;
+                    break;
             }
             
-            // baloontip
-            notifyIcon.BalloonTipTitle = title;
-            notifyIcon.BalloonTipText = text;
+            _notifyIcon.BalloonTipTitle = title;
+            _notifyIcon.BalloonTipText = text;
 
-            notifyIcon.ShowBalloonTip(Constants.BALLOONTIP_DELAY);
+            _notifyIcon.ShowBalloonTip(Constants.BALLOONTIP_DELAY);
         }
 
         protected override void OnInitialized(EventArgs e)
         {
             Closing += HideWindow;
 
-            initializeNotifyIcon();
+            InitializeNotifyIcon();
 
             StartMinimized();
 
@@ -196,41 +171,34 @@ namespace PDS_project_2017
 
         private void StartMinimized()
         {
+            Hide();
             this.WindowState = WindowState.Minimized;
-            //this.ShowInTaskbar = false;
-            this.Topmost = false;
         }
 
-        private void initializeNotifyIcon()
+        private void InitializeNotifyIcon()
         {
-            //appIcons = new Dictionary<string, System.Drawing.Icon>();
-            //appIcons.Add("QuickLaunch", new System.Drawing.Icon(System.IO.Path.Combine(Environment.CurrentDirectory, @"..\..\UI\images\LAN-Sharing.ico")));
+            _notifyIcon = new System.Windows.Forms.NotifyIcon();
+            _notifyIcon.MouseClick += NotifyIcon_OnMouseClick;
+            _notifyIcon.Icon = Properties.Resources.LAN_Sharing;
 
-            notifyIcon = new System.Windows.Forms.NotifyIcon();
-            notifyIcon.MouseClick += notifyIcon_OnMouseClick;
-            notifyIcon.Icon = Properties.Resources.LAN_Sharing;
+            _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+            _notifyIcon.BalloonTipText = Properties.Resources.Startup_Baloon_Tip_Text;
+            _notifyIcon.BalloonTipTitle = Properties.Resources.Startup_Baloon_Tip_Title;
+            _notifyIcon.Text = Properties.Resources.Application_Name;
 
-            notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-            notifyIcon.BalloonTipText =
-                "The service has started, you can receive and send file from other users";
-            notifyIcon.BalloonTipTitle = "Lan Sharing Application started";
-            notifyIcon.Text = "Lan Sharing Application";
-
-            notifyIcon.Visible = true;
-            notifyIcon.ShowBalloonTip(Constants.BALLOONTIP_DELAY);
+            _notifyIcon.Visible = true;
+            _notifyIcon.ShowBalloonTip(Constants.BALLOONTIP_DELAY);
 
             System.Windows.Forms.MenuItem item1 = new System.Windows.Forms.MenuItem();
-            //System.Windows.Forms.MenuItem item2 = new System.Windows.Forms.MenuItem();
+            TrayPrivateFlag = new System.Windows.Forms.MenuItem();
             System.Windows.Forms.MenuItem item3 = new System.Windows.Forms.MenuItem();
 
             System.Windows.Forms.ContextMenu cMenu = new System.Windows.Forms.ContextMenu();
             cMenu.MenuItems.Add(item1);
-            // TODO temporary disabled
-            // use Settings to enable/disable private mode
             cMenu.MenuItems.Add(TrayPrivateFlag);
             cMenu.MenuItems.Add(item3);
 
-            notifyIcon.ContextMenu = cMenu;
+            _notifyIcon.ContextMenu = cMenu;
             item1.Text = "Settings";
             TrayPrivateFlag.Text = "Private Mode";
             TrayPrivateFlag.Checked = Properties.Settings.Default.PrivateMode;
@@ -238,9 +206,9 @@ namespace PDS_project_2017
 
             item1.Click += delegate
             {
-                UserSettings us = new UserSettings();
-                us.Show();
+                ShowOrCreateUserSettingsWindow();
             };
+
             TrayPrivateFlag.Click += delegate
             {
                 if (Properties.Settings.Default.PrivateMode)
@@ -258,23 +226,42 @@ namespace PDS_project_2017
 
                 Properties.Settings.Default.Save();
             };
+
             item3.Click += delegate
             {
                 StoreHistory();
-                
+
                 App.Current.Shutdown();
             };
 
         }
 
+        private void ShowOrCreateUserSettingsWindow()
+        {
+            // retrieving existing user settings window
+            var existingWindow = Application.Current.Windows.Cast<Window>().SingleOrDefault(w => w is UserSettings);
+
+            if (existingWindow != null)
+            {
+                // activating
+                existingWindow.Activate();
+            }
+            else
+            {
+                // creating and showing
+                UserSettings us = new UserSettings();
+                us.Show();
+            }
+        }
+
         private void StoreHistory()
         {
-            Properties.Settings.Default.SendingTransferFiles = JsonConvert.SerializeObject(sendingTransferList);
-            Properties.Settings.Default.ReceivingTransferFiles = JsonConvert.SerializeObject(receivingTransferList);
+            Properties.Settings.Default.SendingTransferFiles = JsonConvert.SerializeObject(SendingTransferList);
+            Properties.Settings.Default.ReceivingTransferFiles = JsonConvert.SerializeObject(ReceivingTransferList);
             Properties.Settings.Default.Save();
         }
 
-        private void notifyIcon_OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void NotifyIcon_OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
                 this.ShowWindow();
@@ -286,10 +273,8 @@ namespace PDS_project_2017
                 TabControl.SelectedItem = ReceivingTabItem;
 
             Show();
+            Activate();
             WindowState = WindowState.Normal;
-
-            // TODO need hwnd
-            // Win32.Windows.SetWindowPos(this.Handle, Win32.Windows.Position.HWND_TOP, -1, -1, -1, -1, Win32.Windows.Options.SWP_NOSIZE | Win32.Windows.Options.SWP_NOMOVE);
         }
 
         private void HideWindow(object sender, CancelEventArgs e)
@@ -303,18 +288,20 @@ namespace PDS_project_2017
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
             var item = (System.Windows.Controls.Button)sender;
-            FileTransfer ft = (FileTransfer)item.CommandParameter;
-            ft.ContinueFileTransfer = false;
+            FileTransfer fileTransfer = (FileTransfer)item.CommandParameter;
+
+            fileTransfer.ContinueFileTransfer = false;
         }
 
         private void Delete_Button_Click(object sender, RoutedEventArgs e)
         {
             var item = (System.Windows.Controls.Button)sender;
-            FileTransfer ft = (FileTransfer)item.CommandParameter;
-            if (ft.Sending)
-                sendingTransferList.Remove(ft);
+            FileTransfer fileTransfer = (FileTransfer)item.CommandParameter;
+
+            if (fileTransfer.Sending)
+                SendingTransferList.Remove(fileTransfer);
             else
-                receivingTransferList.Remove(ft);
+                ReceivingTransferList.Remove(fileTransfer);
         }
 
         private void Open_File_Button_Click(object sender, RoutedEventArgs e)
@@ -351,25 +338,37 @@ namespace PDS_project_2017
 
         private void Clear_All_S_Completed_Button_Click(object sender, RoutedEventArgs e)
         {
-            PurgeListFrom(sendingTransferList, TransferStatus.Completed);
+            PurgeListFrom(SendingTransferList, TransferStatus.Completed);
         }
 
         private void Clear_All_S_Canceled_Button_Click(object sender, RoutedEventArgs e)
         {
-            PurgeListFrom(sendingTransferList, TransferStatus.Canceled);
-            PurgeListFrom(sendingTransferList, TransferStatus.Error);
+            PurgeListFrom(SendingTransferList, TransferStatus.Canceled);
+        }
+
+        private void Clear_All_S_Error_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PurgeListFrom(SendingTransferList, TransferStatus.Error);
         }
 
         private void Clear_All_R_Completed_Button_Click(object sender, RoutedEventArgs e)
         {
-            PurgeListFrom(receivingTransferList, TransferStatus.Completed);
-            PurgeListFrom(receivingTransferList, TransferStatus.Removed);
+            PurgeListFrom(ReceivingTransferList, TransferStatus.Completed);
         }
 
         private void Clear_All_R_Canceled_Button_Click(object sender, RoutedEventArgs e)
         {
-            PurgeListFrom(receivingTransferList, TransferStatus.Canceled);
-            PurgeListFrom(receivingTransferList, TransferStatus.Error);
+            PurgeListFrom(ReceivingTransferList, TransferStatus.Canceled);
+        }
+
+        private void Clear_All_R_Removed_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PurgeListFrom(SendingTransferList, TransferStatus.Removed);
+        }
+
+        private void Clear_All_R_Error_Button_Click(object sender, RoutedEventArgs e)
+        {
+            PurgeListFrom(ReceivingTransferList, TransferStatus.Error);
         }
     }
 }

@@ -177,7 +177,7 @@
                 </DockPanel>
 
                 <DockPanel Grid.Column="2">
-                    <TextBlock Text="Transfer Canceled" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" FontWeight="Bold" Foreground="DarkRed"/>
+                    <TextBlock Text="Transfer Canceled" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" FontWeight="Bold" Foreground="Purple"/>
                 </DockPanel>
 
                 <DockPanel Grid.Column="3">
@@ -249,8 +249,11 @@
                         </DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
-                            <Button x:Name="Clear_All_S_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Completed_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding SendingTransferList.Count}"/>
-                            <Button x:Name="Clear_All_S_Canceled_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Canceled_Button_Click" HorizontalAlignment="Right" IsEnabled="{Binding SendingTransferList.Count}"/>
+
+                            <Button Content="CLEAR COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Completed_Button_Click" IsEnabled="{Binding SendingTransferList.Count}" DockPanel.Dock="Right" Foreground="DarkGreen"/>
+                            <Button Content="CLEAR CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Canceled_Button_Click" IsEnabled="{Binding SendingTransferList.Count}" DockPanel.Dock="Right" Foreground="Purple"/>
+                            <Button Content="CLEAR ERRORS" Margin="10,10,10,10" Width="130" Click="Clear_All_S_Error_Button_Click" IsEnabled="{Binding SendingTransferList.Count}" HorizontalAlignment="Right" Foreground="DarkRed"/>
+
                         </DockPanel>
 
                         <ListView x:Name="SendingList" ItemsSource="{Binding SendingTransferList}" HorizontalContentAlignment="Stretch">
@@ -301,8 +304,12 @@
                         </DockPanel>
 
                         <DockPanel DockPanel.Dock="Bottom">
-                            <Button x:Name="Clear_All_R_Completed_Button" Content="CLEAR ALL COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" DockPanel.Dock="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
-                            <Button x:Name="Clear_All_R_Error_Button" Content="CLEAR ALL CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Canceled_Button_Click" HorizontalAlignment="Right" IsEnabled="{Binding ReceivingTransferList.Count}"/>
+
+                            <Button Content="CLEAR COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right"/>
+                            <Button Content="CLEAR CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Canceled_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right"/>
+                            <Button Content="CLEAR REMOVED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Removed_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right"/>
+                            <Button Content="CLEAR ERRORS" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Error_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" HorizontalAlignment="Right"/>
+
                         </DockPanel>
 
                         <ListView x:Name="ReceivingList" ItemsSource="{Binding ReceivingTransferList}" HorizontalContentAlignment="Stretch">

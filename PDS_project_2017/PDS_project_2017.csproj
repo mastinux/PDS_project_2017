@@ -52,7 +52,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>LAN-Sharing.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -131,7 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Entities\FileTransfer.cs" />
-    <Compile Include="UI\Utils\WindowUtils.cs" />
+    <Compile Include="UI\Utils\InterfaceUtils.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -148,7 +149,6 @@
     <Compile Include="Core\Utils\IpUtils.cs" />
     <Compile Include="Core\Entities\User.cs" />
     <Compile Include="Core\Utils\TcpUtils.cs" />
-    <Compile Include="UI\Utils\UserUtils.cs" />
     <Compile Include="FileShellExtension.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="UI\FilesAcceptance.xaml.cs">
@@ -219,12 +219,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\LAN-Sharing.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="UI\LAN-Sharing.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="LAN-Sharing.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Icon1.ico" />

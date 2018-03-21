@@ -9,7 +9,8 @@ namespace PDS_project_2017.Core.Entities
         Completed,
         Canceled,
         Error,
-        Removed
+        Removed,
+        Refused
     };
 
     /*
