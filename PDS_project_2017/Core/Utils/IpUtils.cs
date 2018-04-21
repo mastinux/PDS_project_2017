@@ -10,9 +10,6 @@ namespace PDS_project_2017.Core.Utils
         // this function checks if remoteIpEndPoint address equals current machine IP address
         public static bool IsSelfMessage(IPEndPoint remoteIpEndPoint)
         {
-            // TODO remove on production environment
-            return false;
-
             // managing only IPv4 addresses
             if (GetLocalHamachiIpAddress().Equals(remoteIpEndPoint.Address))
                 return true;
