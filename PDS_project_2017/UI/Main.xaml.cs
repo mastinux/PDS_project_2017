@@ -1,29 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Forms;
-using MahApps.Metro.Controls;
-using PDS_project_2017.UI;
-using PDS_project_2017.Core;
-using System.Threading;
-using System.ComponentModel;
-using PDS_project_2017.Core.Entities;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Forms;
+using MahApps.Metro.Controls;
 using Newtonsoft.Json;
+using PDS_project_2017.Core;
+using PDS_project_2017.Core.Entities;
 using Application = System.Windows.Application;
 
-namespace PDS_project_2017
+namespace PDS_project_2017.UI
 {
     /// <summary>
     /// Logica di interazione per MainWindow.xaml
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        private System.Windows.Forms.NotifyIcon _notifyIcon = null;
+        private NotifyIcon _notifyIcon = null;
 
         public MenuItem TrayPrivateFlag { get; set; }
 
@@ -113,7 +112,7 @@ namespace PDS_project_2017
             // forcing calling of status change event, in order to show balloon tip
             transfer.Status = transfer.Status;
 
-            System.Windows.Application.Current.Dispatcher.Invoke(
+            Application.Current.Dispatcher.Invoke(
                 new Action(() =>
                 {
                     if (transfer.Sending)
@@ -172,7 +171,8 @@ namespace PDS_project_2017
         private void StartMinimized()
         {
             Hide();
-            this.WindowState = WindowState.Minimized;
+
+            WindowState = WindowState.Minimized;
         }
 
         private void InitializeNotifyIcon()
@@ -189,11 +189,11 @@ namespace PDS_project_2017
             _notifyIcon.Visible = true;
             _notifyIcon.ShowBalloonTip(Constants.BALLOONTIP_DELAY);
 
-            System.Windows.Forms.MenuItem item1 = new System.Windows.Forms.MenuItem();
-            TrayPrivateFlag = new System.Windows.Forms.MenuItem();
-            System.Windows.Forms.MenuItem item3 = new System.Windows.Forms.MenuItem();
+            MenuItem item1 = new MenuItem();
+            TrayPrivateFlag = new MenuItem();
+            MenuItem item3 = new MenuItem();
 
-            System.Windows.Forms.ContextMenu cMenu = new System.Windows.Forms.ContextMenu();
+            ContextMenu cMenu = new ContextMenu();
             cMenu.MenuItems.Add(item1);
             cMenu.MenuItems.Add(TrayPrivateFlag);
             cMenu.MenuItems.Add(item3);
@@ -264,7 +264,7 @@ namespace PDS_project_2017
         private void NotifyIcon_OnMouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
-                this.ShowWindow();
+                ShowWindow();
         }
 
         public void ShowWindow(bool sending = true)
@@ -274,7 +274,7 @@ namespace PDS_project_2017
             else
                 TabControl.SelectedItem = ReceivingTabItem;
 
-
+            ShowInTaskbar = true;
             Show();
             Activate();
             WindowState = WindowState.Normal;
@@ -284,6 +284,7 @@ namespace PDS_project_2017
         {
             e.Cancel = true;
 
+            ShowInTaskbar = false;
             Hide();
             WindowState = WindowState.Maximized;
         }

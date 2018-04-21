@@ -11,7 +11,7 @@ namespace PDS_project_2017
     /// </summary>
     public partial class App : Application, ISingleInstanceApp
     {
-        private MainWindow mainWindow;
+        private UI.MainWindow mainWindow;
         private UI.UsersSelection usersSelection;
         // file type to register
         const string FileType = "*";
@@ -58,7 +58,7 @@ namespace PDS_project_2017
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            mainWindow = new MainWindow();
+            mainWindow = new UI.MainWindow();
             
             if (e.Args.Length != 0)
                 ProcessCommand(e.Args[0]);
