@@ -17,7 +17,7 @@ namespace PDS_project_2017
     public partial class App : Application, ISingleInstanceApp
     {
         private MainWindow mainWindow;
-        private UsersSelection usersSelection;
+        private UI.UsersSelection usersSelection;
         // file type to register
         const string FileType = "*";
 
@@ -73,7 +73,7 @@ namespace PDS_project_2017
 
         private void ProcessCommand(string arg)
         {
-            usersSelection = new UsersSelection(arg);
+            usersSelection = new UI.UsersSelection(arg);
             // visualize window
             usersSelection.Show();
             // put window in foreground

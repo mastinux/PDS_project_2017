@@ -122,6 +122,15 @@
     <value>..\UI\Images\default_profile_image.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="LAN_Sharing" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\UI\LAN-Sharing.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\UI\Images\LAN-Sharing.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Startup_Baloon_Tip_Text" xml:space="preserve">
+    <value>The service has started, you can receive and send file from other users</value>
+  </data>
+  <data name="Startup_Baloon_Tip_Title" xml:space="preserve">
+    <value>Lan Sharing Application started</value>
+  </data>
+  <data name="Application_Name" xml:space="preserve">
+    <value>Lan Sharing Application</value>
   </data>
 </root>

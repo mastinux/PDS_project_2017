@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PDS_project_2017.Core
+﻿namespace PDS_project_2017.Core
 {
     static class Constants
     {
@@ -15,7 +8,6 @@ namespace PDS_project_2017.Core
 
         // tcp file transfer
         public const int TRANSFER_TCP_PORT = 55556;
-        public const int TRANSFER_TCP_TEST_PORT = 55557;
         public const int TRANSFER_TCP_BUFFER = 1024;
         public const int TRANSFER_TCP_FILE_CONTENT_LEN = 8;
         public const int TRANSFER_TCP_INT_LEN = 4;
@@ -35,12 +27,17 @@ namespace PDS_project_2017.Core
         public static double SENDER_WINDOW_LEFT = offset;
         public static double RECEIVER_WINDOW_TOP = offset;
         public static double RECEIVER_WINDOW_LEFT = System.Windows.SystemParameters.WorkArea.Width / 2 + offset;
-        public static int SENDER_WINDOW_OFFSET = 10;
 
         // delays
         public static int TRANSFER_TCP_SENDER_DELAY = 100;
         public static int TRANSFER_TCP_RECEIVER_DELAY = TRANSFER_TCP_SENDER_DELAY * 0;
-        public static int TRANSFER_TCP_COMPLETED_TRANSFER_DELAY = 1000 * 0;
         public static int BALLOONTIP_DELAY = 1000;
+
+        // IPs
+        public static string BROADCAST_IP = "255.255.255.255";
+        public static string HAMACHI_BROADCAST_IP = "25.255.255.255";
+
+        // test 
+        public static bool FAKE_USERS = true;
     }
 }

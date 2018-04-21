@@ -6,32 +6,28 @@ using System.Web;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
+using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
 {
     public class TCPSender
     {
         // client class
-
-        //private TcpClient _tcpClient;
-        private String _path;
-        private int _index;
-        private string _receiverUserName;
+        
+        private string _path;
+        private string _destinationUserName;
         private string _server;
         private int _port;
 
         public delegate void AddNewTransfer(FileTransfer transfer);
         public static event AddNewTransfer NewTransferEvent;
 
-        public TCPSender(string server, int port, string receiverUserName, string path)
+        public TCPSender(string server, int port, string destinationUserName, string path)
         {
             _server = server;
-
             _port = port;
 
-            _receiverUserName = receiverUserName;
-
-            _index = 0;
+            _destinationUserName = destinationUserName;
             
             _path = path;
         }
@@ -50,32 +46,60 @@ namespace PDS_project_2017.Core
             tcpClient.Close();
         }
 
-        private bool SendDirectoryFile(TcpClient _tcpClient, string filePath)
+        private void SendDirectoryFile(TcpClient tcpClient, string filePath)
         {
-            TcpUtils.SendFileRequest(_tcpClient);
+            TcpUtils.SendFileRequest(tcpClient);
 
-            SendFileNodeDescription(_tcpClient, filePath);
+            SendFileNodeDescription(tcpClient, filePath);
 
-            string responseCommand = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
-
+            string responseCommand = TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
             if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
-                return false;
-            
-            return SendFileContent(_tcpClient, filePath);
+            {
+                ManageRefusedFile(filePath);
+                return;
+            }
+
+            SendFileContent(tcpClient, filePath);
         }
 
-        private bool SendFileContent(TcpClient _tcpClient, string filePath)
+        private void ManageRefusedFile(string filePath)
         {
+            // preparing file node for file transfer
+            FileNode fileNode = new FileNode
+            {
+                Name = Path.GetFileName(filePath),
+                ReceiverUserName = _destinationUserName
+            };
+
+            // preparing file transfer for main window
+            FileTransfer fileTransfer = new FileTransfer()
+            {
+                File = fileNode,
+                Status = TransferStatus.Refused
+            };
+
+            InterfaceUtils.ShowBalloonTip(fileTransfer);
+        }
+
+        private void SendFileContent(TcpClient tcpClient, string filePath)
+        {
+            // preparing file stream for reading
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileDimension = fileStream.Length;
-            NetworkStream networkStream = _tcpClient.GetStream();
-            networkStream.WriteTimeout = Constants.TRANSFER_TCP_WRITE_TIMEOUT;
-            
-            FileNode fileNode = new FileNode();
-            fileNode.Name = Path.GetFileName(filePath);
-            fileNode.SenderUserName = Properties.Settings.Default.Name;
-            fileNode.ReceiverUserName = _receiverUserName;
 
+            // preparing network stream for writing
+            NetworkStream networkStream = tcpClient.GetStream();
+            networkStream.WriteTimeout = Constants.TRANSFER_TCP_WRITE_TIMEOUT;
+
+            // preparing file node for file transfer
+            FileNode fileNode = new FileNode
+            {
+                Name = Path.GetFileName(filePath),
+                SenderUserName = Properties.Settings.Default.Name,
+                ReceiverUserName = _destinationUserName
+            };
+
+            // preparing file transfer for main window
             FileTransfer fileTransfer = new FileTransfer()
             {
                 File = fileNode,
@@ -92,20 +116,22 @@ namespace PDS_project_2017.Core
 
             int bytesRead;
             long totalBytesRead = 0;
-            DateTime baseDateTime = DateTime.Now;
 
-            // FILE CONTENT
+            // start time for progress bar value calculation
+            DateTime startDateTime = DateTime.Now;
+
+            // iterating while reading file
             while ((bytesRead = fileStream.Read(fileContentBuffer, 0, fileContentBuffer.Length)) > 0 && fileTransfer.ContinueFileTransfer)
             {
                 try
                 {
+                    // writing file content on network stream
                     networkStream.Write(fileContentBuffer, 0, bytesRead);
-                    
                 }
                 catch (IOException ioe)
                 {
                     fileTransfer.Status = TransferStatus.Error;
-                    return false;
+                    return;
                 }
                 
                 totalBytesRead += bytesRead;
@@ -113,70 +139,102 @@ namespace PDS_project_2017.Core
                 fileTransfer.Progress = progress;
 
                 //TODO test purpose
-                Thread.Sleep(Constants.TRANSFER_TCP_SENDER_DELAY + Constants.TRANSFER_TCP_SENDER_DELAY * _index);
+                Thread.Sleep(Constants.TRANSFER_TCP_SENDER_DELAY);
 
-                TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(baseDateTime, bytesRead, totalBytesRead, fileDimension);
+                TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(startDateTime, bytesRead, totalBytesRead, fileDimension);
                 fileTransfer.RemainingTime = remainingTimeSpan;
-                baseDateTime = DateTime.Now;
+
+                // updating start time
+                startDateTime = DateTime.Now;
             }
 
             fileStream.Close();
 
-            if (!fileTransfer.ContinueFileTransfer)
-            {
-                fileTransfer.Status = TransferStatus.Canceled;
-
-                return false;
-            }
-            else
-            {
+            if (fileTransfer.ContinueFileTransfer)
                 fileTransfer.Status = TransferStatus.Completed;
-
-                return true;
-            }
+            else
+                fileTransfer.Status = TransferStatus.Canceled;
         }
         
-        private void SendFileNodeDescription(TcpClient _tcpClient, string filePath)
+        private void SendFileNodeDescription(TcpClient tcpClient, string filePath)
         {
-            // FILE NAME
-            String fileName = Path.GetFileName(filePath);
-            // FILE DIMENSION
+            string fileName = Path.GetFileName(filePath);
             long dimension = new FileInfo(filePath).Length;
 
-            FileNode fileNode = new FileNode();
-            fileNode.Name = fileName;
-            fileNode.Dimension = dimension;
-            fileNode.MimeType = MimeMapping.GetMimeMapping(fileName);
-            fileNode.SenderUserName = Properties.Settings.Default.Name;
+            // preparing file node
+            FileNode fileNode = new FileNode
+            {
+                Name = fileName,
+                Dimension = dimension,
+                MimeType = MimeMapping.GetMimeMapping(fileName),
+                SenderUserName = Properties.Settings.Default.Name
+            };
 
             string jsonFileNodeDescription = JsonConvert.SerializeObject(fileNode);
 
-            TcpUtils.SendDescription(_tcpClient, jsonFileNodeDescription);
+            TcpUtils.SendDescription(tcpClient, jsonFileNodeDescription);
         }
         
         public void SendDirectory()
         {
-            TcpClient _tcpClient = new TcpClient(_server, _port);
-            TcpUtils.SendDirectoryRequest(_tcpClient);
+            TcpClient tcpClient = new TcpClient(_server, _port);
 
+            // sending directory request
+            TcpUtils.SendDirectoryRequest(tcpClient);
+
+            // sending direcroty description
+            DirectoryNode directoryNode = SendDirectoryNodeDescription(tcpClient);
+
+            // gettin response
+            string responseCommand = TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
+            if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
+            {
+                ManageRefusedDirectory(_path);
+                return;
+            }
+
+            // sending directory content
+            SendDirectoryContent(directoryNode, _path);
+
+            tcpClient.Close();
+        }
+
+        private void ManageRefusedDirectory(string path)
+        {
+            // preparing file node for file transfer
+            FileNode fileNode = new FileNode
+            {
+                // name of the directory
+                Name = new DirectoryInfo(path).Name,
+                ReceiverUserName = _destinationUserName
+            };
+
+            // preparing file transfer for main window
+            FileTransfer fileTransfer = new FileTransfer()
+            {
+                File = fileNode,
+                Status = TransferStatus.Refused
+            };
+
+            InterfaceUtils.ShowBalloonTip(fileTransfer);
+        }
+
+        private DirectoryNode SendDirectoryNodeDescription(TcpClient tcpClient)
+        {
+            // preparing directory node
             DirectoryNode directoryNode = FilesUtils.BuildDirectoryNode(_path);
             directoryNode.SenderUserName = Properties.Settings.Default.Name;
 
+            // sending directory node description
             string jsonDirectoryNodeDescription = JsonConvert.SerializeObject(directoryNode);
+            TcpUtils.SendDescription(tcpClient, jsonDirectoryNodeDescription);
 
-            TcpUtils.SendDescription(_tcpClient, jsonDirectoryNodeDescription);
-
-            string responseCommand = TcpUtils.ReceiveCommand(_tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
-
-            if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
-                return;
-
-            SendDirectoryContent(directoryNode, _path);
-            _tcpClient.Close();
+            return directoryNode;
         }
 
-        private bool SendDirectoryContent(DirectoryNode directoryNode, string directoryPath)
+        private void SendDirectoryContent(DirectoryNode directoryNode, string directoryPath)
         {
+            // sending each file in a separate thread
             foreach (var fileNode in directoryNode.FileNodes)
             {
                 string filePath = directoryPath + "\\" + fileNode.Name;
@@ -188,14 +246,8 @@ namespace PDS_project_2017.Core
             }
 
             foreach (var innerDirectoryNode in directoryNode.DirectoryNodes)
-            {
-                bool completed = SendDirectoryContent(innerDirectoryNode, directoryPath + "\\" + innerDirectoryNode.DirectoryName);
-
-                if (!completed)
-                    return false;
-            }
-
-            return true;
+                // recursive call in order to explore inner directories
+                SendDirectoryContent(innerDirectoryNode, directoryPath + "\\" + innerDirectoryNode.DirectoryName);
         }
     }
 }

@@ -61,6 +61,15 @@ namespace PDS_project_2017.Properties {
         }
         
         /// <summary>
+        ///   Cerca una stringa localizzata simile a Lan Sharing Application.
+        /// </summary>
+        internal static string Application_Name {
+            get {
+                return ResourceManager.GetString("Application_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap DefaultProfileImage {
@@ -77,6 +86,24 @@ namespace PDS_project_2017.Properties {
             get {
                 object obj = ResourceManager.GetObject("LAN_Sharing", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a The service has started, you can receive and send file from other users.
+        /// </summary>
+        internal static string Startup_Baloon_Tip_Text {
+            get {
+                return ResourceManager.GetString("Startup_Baloon_Tip_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una stringa localizzata simile a Lan Sharing Application started.
+        /// </summary>
+        internal static string Startup_Baloon_Tip_Title {
+            get {
+                return ResourceManager.GetString("Startup_Baloon_Tip_Title", resourceCulture);
             }
         }
     }

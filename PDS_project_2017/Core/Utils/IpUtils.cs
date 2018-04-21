@@ -12,7 +12,8 @@ namespace PDS_project_2017.Core
             // managing only IPv4 addresses
 
             // TODO test purpose : remove on production environment
-            //return false;
+            if (Constants.FAKE_USERS)
+                return false;
 
             if (GetLocalIPAddress().Equals(remoteIpEndPoint.Address))
                 return true;
@@ -32,6 +33,7 @@ namespace PDS_project_2017.Core
                 }
             }
 
+            // TODO check : exception or error message
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
     }

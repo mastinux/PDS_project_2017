@@ -8,16 +8,18 @@ namespace PDS_project_2017.Core
 {
     class FilesUtils
     {
-        private static object _fileLock = new object();
-        private static object _directoryLock = new object();
+        private static readonly object FileLock = new object();
+        private static readonly object DirectoryLock = new object();
 
+        // this method builds the directory description
         public static DirectoryNode BuildDirectoryNode(string path)
         {
-            var rootDirectoryInfo = new DirectoryInfo(path);
+            DirectoryInfo rootDirectoryInfo = new DirectoryInfo(path);
 
             return CreateDirectoryNode(rootDirectoryInfo);
         }
 
+        // recursive method
         private static DirectoryNode CreateDirectoryNode(DirectoryInfo directoryInfo)
         {
             DirectoryNode directoryNode = new DirectoryNode(directoryInfo.Name);
@@ -38,45 +40,6 @@ namespace PDS_project_2017.Core
             return directoryNode;
         }
         
-        public static TreeView ListDirectory(string path)
-        {
-            TreeView treeView = new TreeView();
-
-            var rootDirectoryInfo = new DirectoryInfo(path);
-
-            treeView.Nodes.Add(CreateTreeNode(rootDirectoryInfo));
-
-            PrintTreeView(treeView.Nodes[0], 0);
-
-            return treeView;
-        }
-
-        private static TreeNode CreateTreeNode(DirectoryInfo directoryInfo)
-        {
-            var directoryNode = new TreeNode(directoryInfo.Name);
-            
-            foreach (var directory in directoryInfo.GetDirectories())
-                directoryNode.Nodes.Add(CreateTreeNode(directory));
-
-            foreach (var file in directoryInfo.GetFiles())
-                directoryNode.Nodes.Add(new TreeNode(file.Name));
-
-            return directoryNode;
-        }
-
-        private static void PrintTreeView(TreeNode treeNode, int level)
-        {
-            for (int i = 0; i < level; i++)
-                Console.Write("\t");
-
-            Console.WriteLine(treeNode.Text);
-
-            foreach (TreeNode node in treeNode.Nodes)
-            {
-                PrintTreeView(node, level + 1);
-            }
-        }
-
         public static FileStream CreateUniqueFile(string filePath)
         {
             int count = 1;
@@ -87,9 +50,7 @@ namespace PDS_project_2017.Core
 
             string fileNameFormat = fileDirectory + "\\" + fileNameWithoutExtension + " ({0})" + fileExtension;
 
-            // TODO understand why first progress bar is closed
-
-            lock (_fileLock)
+            lock (FileLock)
             {
                 while (File.Exists(filePath))
                 {
@@ -108,7 +69,7 @@ namespace PDS_project_2017.Core
 
             string directoryNameFormat = directoryPath + " ({0})";
 
-            lock (_directoryLock)
+            lock (DirectoryLock)
             {
                 while (Directory.Exists(directoryPath))
                 {

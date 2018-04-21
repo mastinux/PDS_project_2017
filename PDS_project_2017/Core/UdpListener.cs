@@ -2,13 +2,11 @@
 using PDS_project_2017.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Windows.Media.Imaging;
+using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
 {
@@ -20,38 +18,37 @@ namespace PDS_project_2017.Core
     {
         private UdpClient _udpServer;
         private User _me;
+        // it notifies the waiting thread that an event has occurred
         private static ManualResetEvent _statusAvailableEvent;
         
         public UdpListener()
         {
             _udpServer = new UdpClient(Constants.DISCOVERY_UDP_PORT);
             _statusAvailableEvent = new ManualResetEvent(!Properties.Settings.Default.PrivateMode);
-            
-            // initing current machine identity
-            UpdateMe();
         }
 
         private void UpdateMe()
         {
             _me = new User
             {
-                Name = UserSettings.LoadName(),
-                Image = UserSettings.LoadImage()
+                Name = InterfaceUtils.LoadName(),
+                Image = InterfaceUtils.LoadImage()
             };
         }
 
         public static void SetStatusAvailableEvent()
         {
+            // responding to udp requests
             _statusAvailableEvent.Set();
         }
 
         public static void ResetStatusAvailableEvent()
         {
-
+            // not responding to udp requests
             _statusAvailableEvent.Reset();
         }
 
-        public void listen() {
+        public void Listen() {
 
             while (_statusAvailableEvent.WaitOne())
             {   
@@ -66,11 +63,12 @@ namespace PDS_project_2017.Core
                     if ( !IpUtils.isSelfMessage(remoteIpEndPoint) )
                     {
                         // reading requester user
-                        string readData = Encoding.ASCII.GetString(recBytes);
+                        //string readData = Encoding.ASCII.GetString(recBytes);
 
-                        User requesterUser = JsonConvert.DeserializeObject<User>(readData);
-                        requesterUser.Id = remoteIpEndPoint.Address.ToString();
+                        //User requesterUser = JsonConvert.DeserializeObject<User>(readData);
+                        //requesterUser.IPAddress = remoteIpEndPoint.Address.ToString();
 
+                        // updating machine identity
                         UpdateMe();
 
                         // preparing response
@@ -83,12 +81,13 @@ namespace PDS_project_2017.Core
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("problems while udp responding, " + e.ToString());
+                    Console.WriteLine("problems while udp responding");
+                    Console.WriteLine(e);
                 }
             }
         }
 
-        private void testSendUser(IPEndPoint remoteIpEndPoint, string name)
+        private void Test_SendUser(IPEndPoint remoteIpEndPoint, string name)
         {
             _me.Name = name;
 
@@ -99,19 +98,21 @@ namespace PDS_project_2017.Core
             _udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
         }
 
-        private void testSendMultipleUsers(IPEndPoint remoteIpEndPoint)
+        private void Test_SendMultipleUsers(IPEndPoint remoteIpEndPoint)
         {
-            List<string> names = new List<string>();
-            names.Add("Antonio");
-            names.Add("Anna");
-            names.Add("Vincenzo");
-            names.Add("Michele");
-            names.Add("Elia");
-            names.Add("Michel");
-            names.Add("Giuseppe");
-            names.Add("Leandro");
-            names.Add("Matteo");
-            names.Add("Gianpiero");
+            List<string> names = new List<string>
+            {
+                "Antonio",
+                "Anna",
+                "Vincenzo",
+                "Michele",
+                "Elia",
+                "Michel",
+                "Giuseppe",
+                "Leandro",
+                "Matteo",
+                "Gianpiero"
+            };
 
             Random random = new Random();
 
@@ -121,24 +122,9 @@ namespace PDS_project_2017.Core
             {
                 int pos = random.Next(0, names.Count);
 
-                testSendUser(remoteIpEndPoint, names[pos]);
+                Test_SendUser(remoteIpEndPoint, names[pos]);
 
                 names.Remove(names[pos]);
-            }
-
-            //testSendUser(remoteIpEndPoint, "PAUL");
-        }
-
-        private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
-        {
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new JpegBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                return new Bitmap(bitmap);
             }
         }
     }

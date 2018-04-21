@@ -7,6 +7,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
+using PDS_project_2017.UI;
 using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
@@ -25,7 +26,7 @@ namespace PDS_project_2017.Core
         public TcpReceiver(int port)
         {
             //IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIPAddress().ToString());
-
+            // TODO test purpose, bind to local ip address
             _tcpServer = new TcpListener(IPAddress.Any, port);
             _tcpServer.Start();
             acceptedFiles = new Dictionary<IPAddress, Dictionary<FileNode, string>>();
@@ -70,6 +71,9 @@ namespace PDS_project_2017.Core
 
             if(destinationDir != null)
             {
+                if (!Properties.Settings.Default.AutoAccept)
+                    InterfaceUtils.ShowMainWindow(false);
+
                 ReceiveDirectoryFile(client, fileNode, destinationDir);
             }
             else
@@ -85,7 +89,7 @@ namespace PDS_project_2017.Core
                 else
                 {
                     // asking user for file acceptance
-                    FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(fileNode);
+                    UI.FilesAcceptance fileAcceptanceWindow = new UI.FilesAcceptance(fileNode);
                     // blocking call until window is closed
                     fileAcceptanceWindow.ShowDialog();
 
@@ -95,6 +99,8 @@ namespace PDS_project_2017.Core
                         TcpUtils.SendAcceptanceResponse(client);
 
                         destinationDir = fileAcceptanceWindow.DestinationDir;
+
+                        InterfaceUtils.ShowMainWindow(false);
                     }
                     else
                     {
@@ -127,7 +133,7 @@ namespace PDS_project_2017.Core
             else
             {
                 // asking user for file acceptance
-                FilesAcceptance fileAcceptanceWindow = new FilesAcceptance(directoryNode);
+                UI.FilesAcceptance fileAcceptanceWindow = new UI.FilesAcceptance(directoryNode);
 
                 // blocking call until window is closed
                 fileAcceptanceWindow.ShowDialog();
@@ -257,7 +263,7 @@ namespace PDS_project_2017.Core
                 ContinueFileTransfer = true,
                 Status = TransferStatus.Pending,
                 Sending = false,
-                SavingPath = destinationDir,
+                DestinationDirectoryPath = destinationDir,
                 ManagementDateTime = DateTime.Now
             };
 
