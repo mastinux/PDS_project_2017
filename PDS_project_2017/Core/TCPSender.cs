@@ -52,7 +52,7 @@ namespace PDS_project_2017.Core
 
             SendFileNodeDescription(tcpClient, filePath);
 
-            string responseCommand = TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length);
+            string responseCommand = TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length); // TODO add try catch
             if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
             {
                 ManageRefusedFile(filePath);

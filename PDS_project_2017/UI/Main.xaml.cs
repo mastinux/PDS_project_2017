@@ -269,8 +269,11 @@ namespace PDS_project_2017
 
         public void ShowWindow(bool sending = true)
         {
-            if (!sending)
+            if (sending)
+                TabControl.SelectedItem = SendingTabItem;
+            else
                 TabControl.SelectedItem = ReceivingTabItem;
+
 
             Show();
             Activate();

@@ -31,7 +31,7 @@
         // delays
         public static int TRANSFER_TCP_SENDER_DELAY = 100;
         public static int TRANSFER_TCP_RECEIVER_DELAY = TRANSFER_TCP_SENDER_DELAY * 0;
-        public static int BALLOONTIP_DELAY = 1000;
+        public static int BALLOONTIP_DELAY = 300;
 
         // IPs
         public static string BROADCAST_IP = "255.255.255.255";
