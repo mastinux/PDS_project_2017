@@ -36,7 +36,6 @@ namespace PDS_project_2017.Core
             _me = new User
             {
                 Name = UserSettings.LoadName(),
-                // TODO check if this operation is expensive as it is performed for each udp request
                 Image = UserSettings.LoadImage()
             };
         }
@@ -80,8 +79,6 @@ namespace PDS_project_2017.Core
                         // sending response
                         _udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
 
-                        // TODO test purpose
-                        //testSendMultipleUsers(remoteIpEndPoint);
                     }
                 }
                 catch (Exception e)

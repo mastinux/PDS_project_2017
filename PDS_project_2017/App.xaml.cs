@@ -73,13 +73,6 @@ namespace PDS_project_2017
 
         private void ProcessCommand(string arg)
         {
-
-            //if (args.Length == 0 || string.Compare(args[0], "-register", true) == 0)
-            //{
-
-            //}
-            //MessageBox.Show(string.Format("File to send: {0}", arg));
-
             usersSelection = new UsersSelection(arg);
             // visualize window
             usersSelection.Show();
@@ -89,18 +82,6 @@ namespace PDS_project_2017
 
         public bool SignalExternalCommandLineArgs(IList<string> args)
         {
-            ////  Builder for the output.
-            //var builder = new StringBuilder();
-
-            //foreach (var arg in args)
-            //{
-            //    //  Count the lines.
-            //    builder.AppendLine(string.Format("File to send: {0}", arg));
-            //}
-
-            //  Show the ouput.
-            //MessageBox.Show(builder.ToString());
-
             //check if there are args
             if (args.Count == 2)
                 ProcessCommand(args[1]);
