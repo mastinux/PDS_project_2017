@@ -3,6 +3,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using PDS_project_2017.Core.Utils;
 using PDS_project_2017.UI;
 using PDS_project_2017.UI.Utils;
 
@@ -27,8 +28,8 @@ namespace PDS_project_2017.Core
 
             _udpClient = new UdpClient {Client = {ReceiveTimeout = Constants.AVAILABLE_USERS_UPDATE_INTERVAL * 1000}};
 
-            _broadcastIp = new IPEndPoint(IPAddress.Broadcast, Constants.DISCOVERY_UDP_PORT);
-            //_broadcastIp = new IPEndPoint(IPAddress.Parse("25.255.255.255"), Constants.DISCOVERY_UDP_PORT);
+            //_broadcastIp = new IPEndPoint(IPAddress.Broadcast, Constants.DISCOVERY_UDP_PORT);
+            _broadcastIp = new IPEndPoint(IPAddress.Parse("25.255.255.255"), Constants.DISCOVERY_UDP_PORT);
 
             // initing current user identity
             _me = new User
@@ -73,7 +74,7 @@ namespace PDS_project_2017.Core
                         CleanUsersEvent();
                     }
 
-                    if (!IpUtils.isSelfMessage(remoteIpEndPoint) && !timedOut)
+                    if (!IpUtils.IsSelfMessage(remoteIpEndPoint) && !timedOut)
                     {
                         // reading response
                         string readData = Encoding.ASCII.GetString(recBytes);

@@ -36,8 +36,5 @@
         // IPs
         public static string BROADCAST_IP = "255.255.255.255";
         public static string HAMACHI_BROADCAST_IP = "25.255.255.255";
-
-        // test 
-        public static bool FAKE_USERS = true;
     }
 }

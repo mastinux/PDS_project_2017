@@ -147,9 +147,7 @@ namespace PDS_project_2017.UI
 
                 Close();
 
-                if (!Constants.FAKE_USERS)
-                    // TODO on production environment remove previous if() and leave ShowMainWindow
-                    InterfaceUtils.ShowMainWindow();
+                InterfaceUtils.ShowMainWindow();
             }
             else
                 this.ShowMessageAsync("Ops", "Choose at least one user");

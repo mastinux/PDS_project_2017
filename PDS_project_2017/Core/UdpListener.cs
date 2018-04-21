@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using PDS_project_2017.UI;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using PDS_project_2017.Core.Utils;
 using PDS_project_2017.UI.Utils;
 
 namespace PDS_project_2017.Core
@@ -60,7 +60,7 @@ namespace PDS_project_2017.Core
                     // blocked until a message is received
                     byte[] recBytes = _udpServer.Receive(ref remoteIpEndPoint);
 
-                    if ( !IpUtils.isSelfMessage(remoteIpEndPoint) )
+                    if ( !IpUtils.IsSelfMessage(remoteIpEndPoint) )
                     {
                         // reading requester user
                         //string readData = Encoding.ASCII.GetString(recBytes);
@@ -76,7 +76,6 @@ namespace PDS_project_2017.Core
 
                         // sending response
                         _udpServer.Send(byteToSend, byteToSend.Length, remoteIpEndPoint);
-
                     }
                 }
                 catch (Exception e)

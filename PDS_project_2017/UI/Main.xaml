@@ -305,10 +305,10 @@
 
                         <DockPanel DockPanel.Dock="Bottom">
 
-                            <Button Content="CLEAR COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right"/>
-                            <Button Content="CLEAR CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Canceled_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right"/>
-                            <Button Content="CLEAR REMOVED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Removed_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right"/>
-                            <Button Content="CLEAR ERRORS" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Error_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" HorizontalAlignment="Right"/>
+                            <Button Content="CLEAR COMPLETED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Completed_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right" Foreground="DarkGreen"/>
+                            <Button Content="CLEAR CANCELED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Canceled_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right" Foreground="Purple"/>
+                            <Button Content="CLEAR REMOVED" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Removed_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" DockPanel.Dock="Right" Foreground="OrangeRed"/>
+                            <Button Content="CLEAR ERRORS" Margin="10,10,10,10" Width="130" Click="Clear_All_R_Error_Button_Click" IsEnabled="{Binding ReceivingTransferList.Count}" HorizontalAlignment="Right" Foreground="DarkRed"/>
 
                         </DockPanel>
 

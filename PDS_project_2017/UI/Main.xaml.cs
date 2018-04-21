@@ -363,7 +363,7 @@ namespace PDS_project_2017
 
         private void Clear_All_R_Removed_Button_Click(object sender, RoutedEventArgs e)
         {
-            PurgeListFrom(SendingTransferList, TransferStatus.Removed);
+            PurgeListFrom(ReceivingTransferList, TransferStatus.Removed);
         }
 
         private void Clear_All_R_Error_Button_Click(object sender, RoutedEventArgs e)
