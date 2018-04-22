@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using System.Web;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using PDS_project_2017.Core.Entities;
 using PDS_project_2017.Core.Utils;
@@ -51,8 +52,18 @@ namespace PDS_project_2017.Core
             TcpUtils.SendFileRequest(tcpClient);
 
             SendFileNodeDescription(tcpClient, filePath);
+            string responseCommand;
 
-            string responseCommand = TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length); // TODO add try catch
+            try
+            {
+                responseCommand = TcpUtils.ReceiveCommand(tcpClient, Constants.TRANSFER_TCP_ACCEPT.Length); 
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Timeout waiting for user response", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            
             if (!responseCommand.Equals(Constants.TRANSFER_TCP_ACCEPT))
             {
                 ManageRefusedFile(filePath);
