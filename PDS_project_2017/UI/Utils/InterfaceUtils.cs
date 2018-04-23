@@ -55,7 +55,7 @@ namespace PDS_project_2017.UI.Utils
             string f = Properties.Settings.Default.Image;
             byte[] bytes = Convert.FromBase64String(f);
 
-            System.IO.MemoryStream mem = new System.IO.MemoryStream(bytes);
+            MemoryStream mem = new MemoryStream(bytes);
 
             BitmapImage bitmapImage = new BitmapImage();
             bitmapImage.BeginInit();
@@ -90,8 +90,8 @@ namespace PDS_project_2017.UI.Utils
         {
             Bitmap scaledImg = (Bitmap)ScaleImage(img, 100);
 
-            System.IO.MemoryStream mem = new System.IO.MemoryStream();
-            scaledImg.Save(mem, System.Drawing.Imaging.ImageFormat.Jpeg);
+            MemoryStream mem = new MemoryStream();
+            scaledImg.Save(mem, ImageFormat.Jpeg);
 
             string base64String = Convert.ToBase64String(mem.ToArray());
             Properties.Settings.Default.Image = base64String;

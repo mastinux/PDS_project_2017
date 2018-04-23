@@ -58,7 +58,8 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>PDS_project_2017_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>PDS_project_2017.App</StartupObject>
@@ -205,7 +206,6 @@
     </EmbeddedResource>
     <None Include="Core\file_transfer_protocol.md" />
     <None Include="packages.config" />
-    <None Include="PDS_project_2017_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
