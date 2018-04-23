@@ -26,7 +26,6 @@ namespace PDS_project_2017.Core
         public TcpReceiver(int port)
         {
             //IPAddress localAddr = IPAddress.Parse(IpUtils.GetLocalIpAddress().ToString());
-            // TODO test purpose, bind to local ip address
             _tcpServer = new TcpListener(IPAddress.Any, port);
             _tcpServer.Start();
             acceptedFiles = new Dictionary<IPAddress, Dictionary<FileNode, string>>();

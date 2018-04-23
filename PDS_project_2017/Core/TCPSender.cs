@@ -148,8 +148,7 @@ namespace PDS_project_2017.Core
                 totalBytesRead += bytesRead;
                 double progress = (((double)totalBytesRead / (double)fileStream.Length) * 100);
                 fileTransfer.Progress = progress;
-
-                //TODO test purpose
+                
                 Thread.Sleep(Constants.TRANSFER_TCP_SENDER_DELAY);
 
                 TimeSpan remainingTimeSpan = TcpUtils.ComputeRemainingTime(startDateTime, bytesRead, totalBytesRead, fileDimension);

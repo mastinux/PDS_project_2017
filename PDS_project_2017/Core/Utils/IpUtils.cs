@@ -31,7 +31,6 @@ namespace PDS_project_2017.Core.Utils
                 }
             }
 
-            // TODO check : exception or error message
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
@@ -55,7 +54,6 @@ namespace PDS_project_2017.Core.Utils
                 }
             }
 
-            // TODO check : exception or error message
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
     }

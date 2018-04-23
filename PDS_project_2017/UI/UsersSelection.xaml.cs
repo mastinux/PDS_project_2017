@@ -81,9 +81,8 @@ namespace PDS_project_2017.UI
             // checking if user already exists
             foreach (var user in AvailableUsers)
             {
-                // TODO test purpose - on production environment use IPAddress instead of Name
-                //if (user.IPAddress.Equals(newAvailableUser.IPAddress))
-                if (user.Name.Equals(newAvailableUser.Name))
+                if (user.IPAddress.Equals(newAvailableUser.IPAddress))
+                //if (user.Name.Equals(newAvailableUser.Name))
                 {
                     // updating already present user
                     user.Name = newAvailableUser.Name;
